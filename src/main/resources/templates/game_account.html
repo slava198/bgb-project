@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Title</title>
+    <script th:replace="insert/header :: headerElement"></script>
+</head>
+<body>
+<script th:replace="insert/header :: navbar"></script>
+<div th:if="${error != null}" style="text-align: center">
+    <span th:text="${error}" style="background-color: lightpink; "></span>
+</div>
+<div class="container" th:if="${error == null}">
+    <div class="row" sec:authorize="!isAuthenticated()">
+        <a href="/">Back</a>
+    </div>
+    <div class="row" sec:authorize="isAuthenticated()">
+        <a href="/user/back">Back</a>
+    </div>
+
+    <!--    GAME DETAILS-->
+    <div class="row">
+        <h1 th:text="${game.getTitle()}"></h1>
+    </div>
+    <div class="row justify-content-left">
+
+        <table cellpadding="20px">
+            <tr>
+                <td>
+                    <div><img th:src="${game.getLogo()}" height="150px"></div>
+                    <div><span>Rating: <span th:text="${game.getRating()}"></span></span></div>
+                    <div><span>Meetings: <span th:text="${game.getNumberOfMeetings()}"></span></span></div>
+                    <div><span>Gamers: <span th:text="${game.getNumberOfOwners()}"></span></span></div>
+                    <div sec:authorize="isAuthenticated()"><a th:href="@{/user/remove_game(gameId = ${game.id})}">Delete game</a></div>
+                </td>
+                <td valign="top">
+                    <p th:text="${game.getDescription()}"></p>
+                </td>
+            </tr>
+
+        </table>
+
+
+
+    </div><br>
+
+    <!--    MEETINGS-->
+    <div sec:authorize="isAuthenticated()">
+
+    <div class="row"  >
+        <h1 align="left">Meetings <a th:href="@{/user/createMeet_page(gameId = ${game.id})}">+</a></h1>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-9">
+        <table class="table">
+            <tr>
+                <th>City</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th align="center">Members</th>
+                <th>Creator</th>
+
+            </tr>
+            <th:block th:each="meeting : ${game.getMeetings()}">
+                <tr>
+
+                    <td th:text="${meeting.getCity().getName()}" height="16px"></td>
+                    <td th:text="${meeting.getLocation()}" ></td>
+                    <td th:text="${#temporals.format(meeting.getDateTime(), 'dd-MM-yyyy')}" ></td>
+                    <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
+                    <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
+                    <td th:text="${meeting.getCreator().getLogin()}"></td>
+                    <td><a th:href="@{/user/add_meet(meetId = ${meeting.id})}">Take part</a></td>
+                </tr>
+            </th:block>
+        </table>
+        </div>
+    </div>
+
+    </div>
+
+
+
+
+    <!--    <table cellpadding="5" cellspacing="0">-->
+    <!--        <tr>-->
+    <!--            <td id="column_2">-->
+    <!--                <div>-->
+    <!--                    <h1>Game details</h1>-->
+    <!--                    <img th:src="${game.getLogo()}" height="150px">-->
+    <!--                    <h4 th:text="${game.getTitle()}"></h4>-->
+    <!--                    <h4 th:text="${game.getDescription()}"></h4>-->
+    <!--                    <table>-->
+    <!--                        <tr>-->
+    <!--                            <td>Meetings:</td>-->
+    <!--                            <td><h4 th:text="${game.getNumberOfMeetings()}"></h4></td>-->
+    <!--                        </tr>-->
+    <!--                        <tr>-->
+    <!--                            <td>Gamers:</td>-->
+    <!--                            <td><h4 th:text="${game.getNumberOfOwners()}"></h4>-->
+    <!--                        </tr>-->
+    <!--                    </table>-->
+    <!--                    <a th:href="@{/user/remove_game(gameId = ${game.id})}">Remove game</a><br>-->
+
+    <!--                </div>-->
+    <!--            </td>-->
+    <!--            <td id="column_3">-->
+    <!--                    <span>-->
+    <!--                        <h1>Meetings <a th:href="@{/user/createMeet_page(gameId = ${game.id})}">+</a></h1>-->
+    <!--                    </span>-->
+
+    <!--                <table class="table">-->
+    <!--                    <tr>-->
+
+    <!--                        <th>Location</th>-->
+    <!--                        <th>Date</th>-->
+    <!--                        <th>Members</th>-->
+    <!--                        <th>Leave</th>-->
+
+    <!--                    </tr>-->
+    <!--                    <th:block th:each="meeting : ${game.getMeetings()}">-->
+    <!--                        <tr>-->
+    <!--                            <td th:text="${meeting.getCreator().getLogin()}" height="16px"></td>-->
+    <!--                            <td th:text="${meeting.getLocation()}" height="16px"></td>-->
+    <!--                            <td th:text="${meeting.getDateTime()}" align="right"></td>-->
+    <!--                            <td th:text="${meeting.getNumberOfMembers()}" align="right"></td>-->
+    <!--                            <td><a th:href="@{/user/add_meet(meetId = ${meeting.id})}">Take part</a></td>-->
+
+    <!--                        </tr>-->
+    <!--                    </th:block>-->
+    <!--                </table>-->
+
+
+    <!--            </td>-->
+    <!--        </tr>-->
+    <!--    </table>-->
+</div>
+
+
+</body>
+</html>

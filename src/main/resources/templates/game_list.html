@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Adding games</title>
+    <script th:replace="insert/header :: headerElement"></script>
+</head>
+<body>
+<script th:replace="insert/header :: navbar"></script>
+
+
+
+<!--                       ************************************                 -->
+
+<div class="container">
+
+    <div class="row">
+        <a href="/user/back">Back</a>
+    </div>
+    <div class="row">
+        <h1 th:text="${user.login}"></h1>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <table class="table">
+                <tr>
+                    <th></th>
+                    <th>Title</th>
+                    <th>Rating</th>
+                    <th>Owners</th>
+                    <th>Meetings</th>
+
+                </tr>
+                <th:block th:if="${games}" th:each="game: ${games}">
+                    <tr th:if="${game.getIsActive()}">
+                        <td align="center"><img th:src="${game.getLogo()}" height="30px"></td>
+                        <td th:text="${game.getTitle()}" height="16px"></td>
+                        <td  th:text="${game.getRating()}" align="center"></td>
+                        <td th:text="${game.getNumberOfOwners()}" align="center"></td>
+                        <td th:text="${game.getNumberOfMeetings()}" align="center"></td>
+                        <td><a th:href="@{/user/add_game(gameId = ${game.id})}">Add to collection</a></td>
+                    </tr>
+                </th:block>
+            </table>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

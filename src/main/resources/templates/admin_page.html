@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <title>ADMIN</title>
+    <script th:replace="insert/header :: headerElement"></script>
+</head>
+<body>
+<script th:replace="insert/header :: navbar"></script>
+<div th:if="${error != null}" style="text-align: center">
+    <span th:text="${error}" style="background-color: lightpink; "></span>
+</div>
+<table cellpadding="5" cellspacing="0">
+    <tr valign="top" align="center">
+        <td id="col2">
+            <div>
+                <h1>Users</h1>
+                <table class="table">
+                    <tr>
+                        <th>Login</th>
+                        <th>Password</th>
+                        <th>Date of birth</th>
+                        <th>Location</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <th:block th:each="usr : ${users}">
+                        <tr>
+                            <!--                <td><img th:src="${usr.getAvator()}" height="30px"></td>-->
+                            <td th:text="${usr.getLogin()}" height="16px"></td>
+                            <td th:text="${usr.getPassword()}" align="right"></td>
+                            <td th:text="${usr.getDateOfBirth()}" align="right"></td>
+                            <td th:text="${usr.getCity().getName()}" align="right"></td>
+                            <td th:if="${usr.getIsActive()}"><a th:href="@{/admin/changeUserStatus(userId = ${usr.getId()})}">Deactivate</a></td>
+                            <td th:if="${!usr.getIsActive()}"><a th:href="@{/admin/changeUserStatus(userId = ${usr.getId()})}">Activate</a></td>
+<!--                            <td th:text="${usr.()}" align="right"></td>-->
+
+                            <!--                <td><a th:href="@{/user/removeGameById(login = ${user.login}, id = ${game.id})}">Delete</a></td>-->
+                        </tr>
+                    </th:block>
+                </table>
+
+            </div>
+        </td>
+        <td id="col3">
+            <div>
+                <span>
+                    <h1>Board games <a href="/admin/createGame_page">+</a></h1>
+<!--                    <a href="/admin/createGame_page">add</a>-->
+                </span>
+
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        <th>Title</th>
+                        <th>Rating</th>
+                        <th>Owners</th>
+                        <th>Meetings</th>
+                        <th></th>
+                    </tr>
+                    <th:block th:each="game : ${games}">
+                        <tr>
+                            <td><img th:src="${game.getLogo()}" height="30px"></td>
+                            <td th:text="${game.getTitle()}" height="16px"></td>
+                            <td th:text="${game.getRating()}" align="right"></td>
+                            <td th:text="${game.getNumberOfOwners()}" align="right"></td>
+                            <td th:text="${game.getNumberOfMeetings()}" align="right"></td>
+                            <td th:if="${game.getIsActive()}"><a th:href="@{/admin/changeGameStatus(gameId = ${game.getId()})}">Deactivate</a></td>
+                            <td th:if="${!game.getIsActive()}"><a th:href="@{/admin/changeGameStatus(gameId = ${game.getId()})}">Activate</a></td>
+                        </tr>
+                    </th:block>
+                </table>
+
+            </div>
+        </td>
+        <td id="col4">
+            <div>
+                <span>
+                    <h1>Cities <a href="/admin/add_city">+</a></h1>
+                </span>
+                <table class="table">
+                    <th:block th:each="city : ${cities}">
+                        <tr>
+                            <td><img th:src="${city.getLogo()}" height="30px"></td>
+                            <td th:text="${city.getName()}"></td>
+
+                        </tr>
+                    </th:block>
+                </table>
+
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+</body>
+</html>

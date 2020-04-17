@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create board game</title>
+    <script th:replace="insert/header :: headerElement"></script>
+</head>
+<body>
+<script th:replace="insert/header :: navbar"></script>
+<h1>Create board game</h1>
+<!--<a th:href="@{/user/see_game(gameId = ${game.getId()})}">Back</a>-->
+
+<form method="post" action="/admin/add_city">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+    <!--                ERROR-->
+    <div class="alert alert-danger" role="alert" th:if="${error}"
+         th:text="${error}">
+    </div>
+    <div>
+        <p>Logo: <input name="logo"></p>
+    </div>
+    <div>
+        <p>Name: <input name="name"></p>
+    </div>
+    <div>
+        <input type="submit" value="Save city">
+    </div>
+
+    <!--    <button id="saveBtn">Save</button>-->
+    <!--    <button id="cancelBtn">Cancel</button>-->
+</form>
+
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:replace="insert/header :: headerElement"></script>
+</head>
+<body>
+<script th:replace="insert/header :: navbar"></script>
+<div th:if="${error != null}" style="text-align: center">
+    <span th:text="${error}" style="background-color: lightpink; "></span>
+</div>
+
+<div class="container" th:if="${error == null}">
+    <div class="row justify-content-center">
+        <div class="col-2">
+            <h1 th:text="${user.login}"></h1>
+            <a href="/user/update_page">Change account</a>
+        </div>
+        <div class="col-5" th:if="!${#arrays.isEmpty(gameCollection)}">
+                        <h1>My games <a th:href="@{/user/gameList_page}">+</a></h1>
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        <th>Board game</th>
+                        <th align="center">Rating</th>
+                        <!--                            <th>Owners</th>-->
+                        <!--                            <th>Meetings</th>-->
+
+                    </tr>
+                    <th:block th:each="game : ${gameCollection}">
+                        <tr>
+                            <td align="center"><img th:src="${game.getLogo()}" height="30px"></td>
+                            <td th:text="${game.getTitle()}" height="16px"></td>
+<!--                            <td th:text="${game.getTitle()}" height="16px"></td>-->
+                            <td th:text="${game.getRating()}" align="center"></td>
+                            <!--                                <td th:text="${game.getNumberOfOwners()}" align="right"></td>-->
+                            <!--                                <td th:text="${game.getNumberOfMeetings()}" align="right"></td>-->
+                            <td><a th:href="@{/user/see_game(gameId = ${game.id})}">See more...</a></td>
+
+                        </tr>
+                    </th:block>
+                </table>
+        </div>
+    </div>
+    <div class="row justify-content-center" th:if="${#arrays.isEmpty(gameCollection)}">
+        <div class="col" >
+            <h4>Your game list is empty. Try to<a th:href="@{/user/gameList_page}">add games</a>.</h4>
+        </div>
+    </div>
+    <div class="row justify-content-center" th:if="${#arrays.isEmpty(meetingSet)}">
+        <div class="col" >
+            <h4>You doesn't have any meeting.</h4>
+        </div>
+    </div>
+    <div class="row justify-content-center" th:if="!${#arrays.isEmpty(meetingSet)}">
+        <div class="col-10">
+            <h1>My meetings</h1>
+            <table class="table">
+                <tr>
+                    <th>Board game</th>
+                    <th>City</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th align="center">Members</th>
+                    <th>Creator</th>
+                </tr>
+                <th:block th:each="meeting : ${meetingSet}">
+                    <tr>
+                        <td th:text="${meeting.getGame().getTitle()}" height="30px"></td>
+                        <td th:text="${meeting.getCity().getName()}" height="16px"></td>
+                        <td th:text="${meeting.getLocation()}" height="16px"></td>
+                        <td th:text="${#temporals.format(meeting.getDateTime(), 'dd-MM-yyyy')}" ></td>
+                        <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
+                        <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
+                        <td th:text="${meeting.getCreator().getLogin()}"></td>
+                        <td><a th:href="@{/user/leave_meet(meetId = ${meeting.getId()})}">Leave</a></td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+    </div>
+    <br>
+    <div class="row justify-content-center" th:if="${#arrays.isEmpty(user.getCreatedMeets())}">
+        <div class="col-5" >
+            <h4>You haven't create any meeting.</h4>
+        </div>
+    </div>
+    <div class="row justify-content-center" th:if="!${#arrays.isEmpty(user.getCreatedMeets())}">
+        <div class="col-9">
+            <h1>My own meetings</h1>
+            <table class="table">
+                <tr>
+                    <th>Board game</th>
+                    <th>City</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th align="center">Members</th>
+                </tr>
+                <th:block th:each="meeting : ${user.getCreatedMeets()}">
+                    <tr>
+                        <td th:text="${meeting.getGame().getTitle()}" height="30px"></td>
+                        <td th:text="${meeting.getCity().getName()}" height="16px"></td>
+                        <td th:text="${meeting.getLocation()}" height="16px"></td>
+                        <td th:text="${#temporals.format(meeting.getDateTime(), 'dd-MM-yyyy')}" ></td>
+                        <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
+                        <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
+                        <td><a th:href="@{/user/delete_meet(meetId = ${meeting.id})}">Delete</a></td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
