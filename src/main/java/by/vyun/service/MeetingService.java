@@ -18,7 +18,6 @@ public class MeetingService {
     UserRepo userRepo;
     CityRepo cityRepo;
 
-
     public List<Meeting> getAllMeetings() {
         return meetingRepo.findAll();
     }
@@ -26,8 +25,6 @@ public class MeetingService {
     public Meeting getMeetingById(int id) {
         return meetingRepo.getFirstById(id);
     }
-
-
 
     public void createMeet(int userId, Meeting meeting, String cityName) {
         meeting.setCity(cityRepo.getFirstByName(cityName));
@@ -43,8 +40,6 @@ public class MeetingService {
     public List<City> getAllCities() {
         return cityRepo.findAll();
     }
-
-
 
 
 

@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import static javax.persistence.GenerationType.*;
 
 
 @Data
@@ -22,25 +22,24 @@ import java.util.List;
         property = "@meetingId")
 public class Meeting {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
+    @GeneratedValue(strategy = AUTO)
+    private int id;
 
     @ManyToOne()
     @JoinColumn(name = "cityId")
-    City city;
-
-    String location;
+    private City city;
+    private String location;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    LocalDateTime dateTime;
+    private LocalDateTime dateTime;
 
     @ManyToOne
     @JoinColumn(name = "creatorId")
-    User creator;
+    private User creator;
 
     @ManyToOne()
     @JoinColumn(name = "game_id")
-    BoardGame game;
+    private BoardGame game;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

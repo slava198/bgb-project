@@ -2,7 +2,6 @@ package by.vyun.service;
 
 
 import by.vyun.exception.CityException;
-import by.vyun.model.BoardGame;
 import by.vyun.model.City;
 import by.vyun.repo.CityRepo;
 import lombok.AllArgsConstructor;
@@ -23,7 +22,6 @@ public class CityService {
         if (cityRepo.getFirstByName(city.getName()) != null) {
             throw new CityException("City name duplicated!");
         }
-
         return cityRepo.save(city);
     }
 

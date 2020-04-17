@@ -2,6 +2,7 @@ package by.vyun.service;
 
 import by.vyun.model.User;
 import by.vyun.repo.UserRepo;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,10 +16,9 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class SecurityUserService implements UserDetailsService {
 
-
-    @Autowired
     private UserRepo userRepo;
 
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException{
@@ -39,10 +39,10 @@ public class SecurityUserService implements UserDetailsService {
                         getAuthorities(user.getRoles()));
     }
 
+
     private static List<GrantedAuthority> getAuthorities (Set<String> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String role : roles) {
-
             authorities.add(new SimpleGrantedAuthority(role));
         }
         return authorities;

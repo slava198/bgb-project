@@ -1,12 +1,9 @@
 package by.vyun.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.util.Set;
 
@@ -23,16 +20,13 @@ public class BoardGame {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
-    String logo;
-    String title;
-    String description;
-    Integer age = 0;
-    float rating = 0;
-//    @Column(columnDefinition = "true")
-
-    Boolean isActive = true;
-
+    private Integer id;
+    private String logo;
+    private String title;
+    private String description;
+    private Integer age = 0;
+    private float rating = 0;
+    private Boolean isActive = true;
 
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -41,11 +35,10 @@ public class BoardGame {
         joinColumns = {@JoinColumn(name = "game_id")},
         inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    Set<User> owners;
+    private Set<User> owners;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
-    Set<Meeting> meetings;
-
+    private Set<Meeting> meetings;
 
 
     public Integer getNumberOfOwners() {

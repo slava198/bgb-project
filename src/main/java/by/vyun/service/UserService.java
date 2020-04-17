@@ -18,11 +18,11 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class UserService {
-
     UserRepo userRepo;
     BoardGameRepo gameRepo;
     MeetingRepo meetingRepo;
     CityRepo cityRepo;
+
 
     public void changeUserStatus(int userId) {
         User user = userRepo.getFirstById(userId);
@@ -57,7 +57,7 @@ public class UserService {
         if (foundedUser == null) {
             throw new RegistrationException("Login not founded!");
         }
-        if (!foundedUser.checkPassword(password)) {
+        if (foundedUser.checkPassword(password)) {
             throw new RegistrationException("Invalid password!");
         }
         return foundedUser;
@@ -92,7 +92,6 @@ public class UserService {
 
 
     public List<BoardGame> getUnsubscribedGames(User currentUser) {
-//        List<BoardGame> unsubscribedGames = new ArrayList<>();
         List<BoardGame> allGames = gameRepo.findAll();
         for (BoardGame game : currentUser.getGameCollection()) {
             if (allGames.contains(game)) {
@@ -110,7 +109,6 @@ public class UserService {
         if (!currentUser.getMeetingSet().contains(meeting)) {
             currentUser.addMeeting(meeting);
         }
-        //meetingRepo.flush();
         return userRepo.saveAndFlush(currentUser);
     }
 
@@ -135,7 +133,6 @@ public class UserService {
         }
         return createdMeets;
     }
-
 
     public List<User> getAllUsers() {
         return userRepo.findAll();

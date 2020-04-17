@@ -9,12 +9,8 @@ import by.vyun.service.BoardGameService;
 import by.vyun.service.MeetingService;
 import by.vyun.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -33,9 +29,6 @@ public class UserRestController {
     @GetMapping("/allGameList")
     @ResponseBody
     public List<BoardGame> allGameList() {
-
-
-
         return gameService.getAllGames();
     }
 
@@ -99,7 +92,6 @@ public class UserRestController {
     @PostMapping("/user/game")
     public User addGame(@RequestBody int userId, @RequestBody int gameId) {
         return userService.addGame(userId, gameId);
-
     }
 
     @DeleteMapping("/user/game")
@@ -115,7 +107,6 @@ public class UserRestController {
         User currentUser = userService.getUserById(userId);
         meet.setGame(gameService.getGameById(gameId));
         meetingService.createMeet(currentUser.getId(), meet, cityName);
-        //userService.takePartInMeeting(currentUser.getId(), meet.getId());
         return "ok";
     }
 
@@ -139,7 +130,6 @@ public class UserRestController {
         userService.leaveMeeting(userId, meetId);
         return "ok";
     }
-
 
 
 

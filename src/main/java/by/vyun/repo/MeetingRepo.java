@@ -7,7 +7,4 @@ public interface MeetingRepo extends JpaRepository<Meeting, Integer> {
 
     Meeting getFirstById(int id);
 
-
-
-
 }

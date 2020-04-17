@@ -9,7 +9,6 @@ import by.vyun.model.User;
 import by.vyun.service.BoardGameService;
 import by.vyun.service.CityService;
 import by.vyun.service.UserService;
-
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,15 +27,10 @@ public class AdminController {
     BoardGameService gameService;
     CityService cityService;
 
-    User getCurrentUser() {
+    private User getCurrentUser() {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
-//    @GetMapping("registrationPage")
-//    public String registrationPage() {
-//        return "registration";
-//
-//    }
 
     @GetMapping("/createGame_page")
     public String createGame() {
@@ -45,7 +39,7 @@ public class AdminController {
     }
 
     @PostMapping("/add_game")
-    public String addGame(BoardGame game, Model model, HttpSession session) {
+    public String addGame(BoardGame game, Model model) {
         try {
             gameService.add(game);
         }

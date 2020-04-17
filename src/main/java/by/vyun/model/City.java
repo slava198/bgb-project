@@ -5,17 +5,18 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import static javax.persistence.GenerationType.*;
 
 @Data
 @Entity
 public class City {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
-    String logo;
-    String name;
+    @GeneratedValue(strategy = AUTO)
+    private Integer id;
+    private String logo;
+    private String name;
 
 }
