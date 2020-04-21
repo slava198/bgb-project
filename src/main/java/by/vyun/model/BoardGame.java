@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -25,7 +26,7 @@ public class BoardGame {
     private String title;
     private String description;
     private Integer age = 0;
-    private float rating = 0;
+    //private float rating = 0;
     private Boolean isActive = true;
 
 
@@ -40,6 +41,19 @@ public class BoardGame {
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private Set<Meeting> meetings;
 
+    @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
+    private List<GameRating> ratings;
+
+    public float getRating() {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0;
+        }
+        float x = 0;
+        for (GameRating rating: ratings) {
+            x += rating.getRate();
+        }
+        return x / ratings.size();
+    }
 
     public Integer getNumberOfOwners() {
         if(owners == null) {

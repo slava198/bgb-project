@@ -50,6 +50,14 @@ public class UserController {
         return "game_list";
     }
 
+    @GetMapping("/rateGame_page")
+    public String rateGamePage(int gameId, Model model) {
+        model.addAttribute("gameId", gameId);
+        return "game_rate";
+    }
+
+
+
     @GetMapping("/createMeet_page")
     public String createMeet(int gameId, Model model) {
         BoardGame game = gameService.getGameById(gameId);
@@ -144,6 +152,16 @@ public class UserController {
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
         return "account";
     }
+
+    @GetMapping("/rate_game")
+    public String rateGame(Integer gameId, float rate, Model model) {
+        User currentUser = getCurrentUser();
+        gameService.rateGame(gameId, currentUser.getId(), rate);
+        model.addAttribute("game", gameService.getGameById(gameId));
+        model.addAttribute("user", currentUser);
+        return "game_account";
+    }
+
 
     @GetMapping("/see_game")
     public String seeGame(Integer gameId, Model model) {
