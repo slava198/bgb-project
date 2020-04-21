@@ -39,7 +39,7 @@ public class UserController {
     public String updatePage(Model model) {
         model.addAttribute("user", getCurrentUser());
         model.addAttribute("cities", cityService.getAllCityNames());
-        return "update_account";
+        return "user_update";
     }
 
     @GetMapping("/gameList_page")
@@ -53,6 +53,7 @@ public class UserController {
     @GetMapping("/createMeet_page")
     public String createMeet(int gameId, Model model) {
         BoardGame game = gameService.getGameById(gameId);
+        model.addAttribute("user", getCurrentUser());
         model.addAttribute("game", game);
         model.addAttribute("cities", cityService.getAllCityNames());
         return "meet_create";
@@ -96,12 +97,12 @@ public class UserController {
             if (currentUser.checkPassword(changedUser.getPassword())) {
                 model.addAttribute("error", "Invalid current password!");
                 model.addAttribute("user", currentUser);
-                return "update_account";
+                return "user_update";
             }
             if (!newPassword.equals(newPasswordConfirm)) {
                 model.addAttribute("error", "New password and it's confirmations are the different!");
                 model.addAttribute("user", currentUser);
-                return "update_account";
+                return "user_update";
             }
             changedUser.setPassword(newPassword);
             changedUser.setCity(cityService.getCityByName(cityName));

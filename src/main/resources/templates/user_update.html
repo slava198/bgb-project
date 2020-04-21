@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
 
     <title>Title</title>
-    <script th:replace="insert/header :: headerElement"></script>
+    <script th:replace="insert/fragment :: headerElement"></script>
 </head>
 <body>
-<script th:replace="insert/header :: navbar"></script>
+<script th:replace="insert/fragment :: navbar"></script>
 <div th:if="${error}" style="text-align: center">
     <span th:text="${error}" style="background-color: lightpink; "></span>
 </div>
@@ -52,13 +52,22 @@
 
                     <!--                LOCATION-->
                     <div class="form-group row">
-                        <label class="col-md-4 col-form-label">Location:</label>
+                        <label class="col-md-4 col-form-label">City:</label>
                         <div class="col-md-8">
                             <select  class="form-control" name="cityName">
-                                <option th:each="city : ${cities}" th:text="${city}"></option>
+                                <option th:each="city : ${cities}" th:text="${city}"
+                                        th:selected="${city==user.getCity().getName()}"></option>
                             </select>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-4 col-form-label">Address:</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="address" th:value="${user.getAddress()}"/>
+                        </div>
+                    </div>
+
 
                     <!--                DATE OF BIRTH-->
                     <div class="form-group row">

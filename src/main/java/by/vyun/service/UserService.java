@@ -67,6 +67,7 @@ public class UserService {
     public User update(int id, User changedUser) throws RegistrationException {
             User currentUser = userRepo.getFirstById(id);
             currentUser.setCity(changedUser.getCity());
+            currentUser.setAddress(changedUser.getAddress());
             currentUser.setDateOfBirth(changedUser.getDateOfBirth());
             currentUser.setPassword(changedUser.getPassword());
             return userRepo.saveAndFlush(currentUser);

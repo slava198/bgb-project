@@ -5,10 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script th:replace="insert/header :: headerElement"></script>
+    <script th:replace="insert/fragment :: headerElement"></script>
 </head>
 <body>
-<script th:replace="insert/header :: navbar"></script>
+<script th:replace="insert/fragment :: navbar"></script>
 <div th:if="${error != null}" style="text-align: center">
     <span th:text="${error}" style="background-color: lightpink; "></span>
 </div>

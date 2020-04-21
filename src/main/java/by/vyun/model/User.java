@@ -24,20 +24,16 @@ public class User {
     private Integer id;
     private String login;
     private String password;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
-
     @ManyToOne()
     @JoinColumn(name = "cityId")
     private City city;
+    private String address;
     private Integer rating = 0;
     private Boolean isActive = true;
-
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles = Collections.singleton("ROLE_USER");
-
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "games_owners",
@@ -45,7 +41,6 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "game_id")}
     )
     private List<BoardGame> gameCollection;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "meetings_members",
@@ -53,9 +48,10 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "meeting_id")}
     )
     private List<Meeting> meetingSet;
-
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
     private List<Meeting> createdMeets;
+
+
 
 
     public boolean checkPassword(String password) {

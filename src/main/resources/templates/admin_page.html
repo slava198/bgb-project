@@ -2,13 +2,14 @@
 <html lang="en">
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <title>ADMIN</title>
-    <script th:replace="insert/header :: headerElement"></script>
+    <script th:replace="insert/fragment :: headerElement"></script>
+
 </head>
 <body>
-<script th:replace="insert/header :: navbar"></script>
+<script th:replace="insert/fragment :: navbar"></script>
 <div th:if="${error != null}" style="text-align: center">
     <span th:text="${error}" style="background-color: lightpink; "></span>
 </div>
@@ -17,15 +18,18 @@
         <td id="col2">
             <div>
                 <h1>Users</h1>
-                <table class="table">
+                <table class="table" id="users">
+                    <thead>
                     <tr>
-                        <th>Login</th>
-                        <th>Password</th>
-                        <th>Date of birth</th>
-                        <th>Location</th>
+                        <th class="btn-light" onclick="sortTable(0, 'users')"><a href="#">Login</a></th>
+                        <th class="btn-light" onclick="sortTable(1, 'users')"><a href="#">Password</a></th>
+                        <th class="btn-light" onclick="sortTable(2, 'users')"><a href="#">Date of birth</a></th>
+                        <th class="btn-light" onclick="sortTable(3, 'users')"><a href="#">Location</a></th>
                         <th></th>
                         <th></th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <th:block th:each="usr : ${users}">
                         <tr>
                             <!--                <td><img th:src="${usr.getAvator()}" height="30px"></td>-->
@@ -40,6 +44,7 @@
                             <!--                <td><a th:href="@{/user/removeGameById(login = ${user.login}, id = ${game.id})}">Delete</a></td>-->
                         </tr>
                     </th:block>
+                    </tbody>
                 </table>
 
             </div>
@@ -51,13 +56,13 @@
 <!--                    <a href="/admin/createGame_page">add</a>-->
                 </span>
 
-                <table class="table">
+                <table class="table" id="games">
                     <tr>
                         <th></th>
-                        <th>Title</th>
-                        <th>Rating</th>
-                        <th>Owners</th>
-                        <th>Meetings</th>
+                        <th class="btn-light" onclick="sortTable(1, 'games')"><a href="#">Title</a></th>
+                        <th class="btn-light" onclick="sortTable(2, 'games')"><a href="#">Rating</a></th>
+                        <th class="btn-light" onclick="sortTable(3, 'games')"><a href="#">Owners</a></th>
+                        <th class="btn-light" onclick="sortTable(4, 'games')"><a href="#">Meetings</a></th>
                         <th></th>
                     </tr>
                     <th:block th:each="game : ${games}">
@@ -95,11 +100,7 @@
     </tr>
 </table>
 
-
-
-
-
-
+<script th:replace="insert/fragment :: table-sort"></script>
 
 </body>
 </html>
