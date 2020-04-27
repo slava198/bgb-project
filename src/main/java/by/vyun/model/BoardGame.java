@@ -12,8 +12,8 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"owners", "meetings"})
-@EqualsAndHashCode(exclude = {"owners", "meetings"})
+@ToString(exclude = {"owners", "meetings", "ratings"})
+@EqualsAndHashCode(exclude = {"owners", "meetings", "ratings"})
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@boardGameId")
@@ -42,15 +42,15 @@ public class BoardGame {
     private Set<Meeting> meetings;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
-    private List<GameRating> ratings;
+    private List<Rating> ratings;
 
     public float getRating() {
         if (ratings == null || ratings.isEmpty()) {
             return 0;
         }
         float x = 0;
-        for (GameRating rating: ratings) {
-            x += rating.getRate();
+        for (Rating rating: ratings) {
+            x += rating.getGameRate();
         }
         return x / ratings.size();
     }

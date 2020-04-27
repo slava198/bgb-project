@@ -20,8 +20,12 @@
             <!--                RATE-->
             <div class="form-group row">
                 <label class="col-md-4 col-form-label">Rate:</label>
-                <div class="col-md-12">
-                    <input class="form-control" type="range" name="rate"></input>
+                <div class="col-md-6">
+                    <select  class="form-control" name="rate">
+                        <option th:each="n : ${#numbers.sequence(1,10)}" th:value="${n}" th:text="${n}"
+                                th:selected="${n == oldRate}"/>
+                    </select>
+<!--                    <input class="form-control" type="number" name="rate" th:value="${oldRate}"></input>-->
                 </div>
             </div>
             <input type="hidden" th:name="gameId" th:value="${gameId}"/>

@@ -77,7 +77,9 @@
                         <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
                         <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
                         <td th:text="${meeting.getCreator().getLogin()}"></td>
-                        <td><a th:href="@{/user/leave_meet(meetId = ${meeting.getId()})}">Leave</a></td>
+<!--                        <td><a th:href="@{/user/leave_meet(meetId = ${meeting.getId()})}">Leave</a></td>-->
+                        <td><a th:href="@{/user/see_meet(meetId = ${meeting.getId()})}">See details</a></td>
+
                     </tr>
                 </th:block>
             </table>
@@ -89,32 +91,33 @@
             <h4>You haven't create any meeting.</h4>
         </div>
     </div>
-    <div class="row justify-content-center" th:if="!${#arrays.isEmpty(user.getCreatedMeets())}">
-        <div class="col-9">
-            <h1>My own meetings</h1>
-            <table class="table">
-                <tr>
-                    <th>Board game</th>
-                    <th>City</th>
-                    <th>Location</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th align="center">Members</th>
-                </tr>
-                <th:block th:each="meeting : ${user.getCreatedMeets()}">
-                    <tr>
-                        <td th:text="${meeting.getGame().getTitle()}" height="30px"></td>
-                        <td th:text="${meeting.getCity().getName()}" height="16px"></td>
-                        <td th:text="${meeting.getLocation()}" height="16px"></td>
-                        <td th:text="${#temporals.format(meeting.getDateTime(), 'dd-MM-yyyy')}" ></td>
-                        <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
-                        <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
-                        <td><a th:href="@{/user/delete_meet(meetId = ${meeting.id})}">Delete</a></td>
-                    </tr>
-                </th:block>
-            </table>
-        </div>
-    </div>
+<!--    <div class="row justify-content-center" th:if="!${#arrays.isEmpty(user.getCreatedMeets())}">-->
+<!--        <div class="col-9">-->
+<!--            <h1>My own meetings</h1>-->
+<!--            <table class="table">-->
+<!--                <tr>-->
+<!--                    <th>Board game</th>-->
+<!--                    <th>City</th>-->
+<!--                    <th>Location</th>-->
+<!--                    <th>Date</th>-->
+<!--                    <th>Time</th>-->
+<!--                    <th align="center">Members</th>-->
+<!--                </tr>-->
+<!--                <th:block th:each="meeting : ${user.getCreatedMeets()}">-->
+<!--                    <tr>-->
+<!--                        <td th:text="${meeting.getGame().getTitle()}" height="30px"></td>-->
+<!--                        <td th:text="${meeting.getCity().getName()}" height="16px"></td>-->
+<!--                        <td th:text="${meeting.getLocation()}" height="16px"></td>-->
+<!--                        <td th:text="${#temporals.format(meeting.getDateTime(), 'dd-MM-yyyy')}" ></td>-->
+<!--                        <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>-->
+<!--                        <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>-->
+<!--                        <td><a th:href="@{/user/delete_meet(meetId = ${meeting.id})}">Delete</a></td>-->
+<!--                        <td><a th:href="@{/user/see_meet(meetId = ${meeting.getId()})}">See details</a></td>-->
+<!--                    </tr>-->
+<!--                </th:block>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--    </div>-->
 
 </div>
 

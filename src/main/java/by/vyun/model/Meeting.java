@@ -47,7 +47,9 @@ public class Meeting {
             joinColumns = {@JoinColumn(name = "meeting_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    List<User> members;
+    private List<User> members;
+
+    private MeetingState state = MeetingState.Created;
 
     public int getNumberOfMembers() {
         if(members == null) {

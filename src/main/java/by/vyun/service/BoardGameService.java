@@ -2,10 +2,11 @@ package by.vyun.service;
 
 
 import by.vyun.exception.BoardGameException;
+import by.vyun.exception.InvalidInputException;
 import by.vyun.model.BoardGame;
-import by.vyun.model.GameRating;
+import by.vyun.model.Rating;
 import by.vyun.repo.BoardGameRepo;
-import by.vyun.repo.GameRatingRepo;
+import by.vyun.repo.RatingRepo;
 import by.vyun.repo.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.List;
 public class BoardGameService {
     UserRepo userRepo;
     BoardGameRepo gameRepo;
-    GameRatingRepo gameRatingRepo;
+    RatingRepo ratingRepo;
 
     public List<BoardGame> getAllGames() {
         return gameRepo.findAll();
@@ -46,15 +47,33 @@ public class BoardGameService {
     }
 
 
-    public void rateGame(Integer gameId, Integer userId, float rate) {
-        GameRating rating = gameRatingRepo.findGameRatingByUserIdAndGameId(userId, gameId);
+    public void rateGame(Integer gameId, Integer userId, float gameRate) throws InvalidInputException {
+        if (gameRate < 1 || gameRate > 10) {
+            throw new InvalidInputException("Rating must be from 1 to 10");
+        }
+        Rating rating = ratingRepo.findGameRatingByUserIdAndGameId(userId, gameId);
         if (rating != null) {
-            rating.setRate(rate);
-            gameRatingRepo.saveAndFlush(rating);
+            rating.setGameRate(gameRate);
         }
         else {
-            gameRatingRepo.saveAndFlush(new GameRating(gameRepo.getFirstById(gameId),
-                    userRepo.getFirstById(userId), rate));
+            rating = new Rating();
+            rating.setGame(gameRepo.getFirstById(gameId));
+            rating.setUser(userRepo.getFirstById(userId));
+            rating.setGameRate(gameRate);
         }
+        ratingRepo.saveAndFlush(rating);
     }
+
+    public float getGameRatingByUserIdAndGameId(int gameId, int userId) {
+        Rating rating = ratingRepo.findGameRatingByUserIdAndGameId(userId, gameId);
+        if (rating != null) {
+            return rating.getGameRate();
+        }
+        else {
+            return 1;
+        }
+
+    }
+
+
 }

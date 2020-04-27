@@ -1,6 +1,5 @@
 package by.vyun.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @NoArgsConstructor
-public class GameRating {
+public class Rating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +19,14 @@ public class GameRating {
     @OneToOne
     @JoinColumn(name = "userId")
     private User user;
-    private float rate;
+    private float gameRate;
+    private float userExperience;
+    private int completedMeets;
 
-    public GameRating(BoardGame game, User user, float rate) {
-        this.game = game;
-        this.user = user;
-        this.rate = rate;
-    }
+
+//    public Rating(BoardGame game, User user, float gameRate) {
+//        this.game = game;
+//        this.user = user;
+//        this.gameRate = gameRate;
+//    }
 }

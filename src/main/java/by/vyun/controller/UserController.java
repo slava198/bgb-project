@@ -1,5 +1,6 @@
 package by.vyun.controller;
 
+import by.vyun.exception.InvalidInputException;
 import by.vyun.exception.RegistrationException;
 import by.vyun.model.*;
 import by.vyun.service.BoardGameService;
@@ -24,6 +25,9 @@ public class UserController {
     BoardGameService gameService;
     MeetingService meetingService;
     CityService cityService;
+
+
+
 
     private User getCurrentUser() {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -53,8 +57,42 @@ public class UserController {
     @GetMapping("/rateGame_page")
     public String rateGamePage(int gameId, Model model) {
         model.addAttribute("gameId", gameId);
+        model.addAttribute("oldRate",
+                gameService.getGameRatingByUserIdAndGameId(gameId, getCurrentUser().getId()));
         return "game_rate";
     }
+
+    @GetMapping("/see_meet")
+    public String seeMeet(Integer meetId, Model model) {
+        Meeting meet = meetingService.getMeetingById(meetId);
+        model.addAttribute("meet", meet);
+        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("ratingDTO", new MeetingResultDTO());
+        if (meet.getDateTime().isBefore(LocalDateTime.now()) && meet.getState() == MeetingState.Created) {
+            meetingService.startMeet(meetId);
+        }
+        return "meet_account";
+    }
+
+    @GetMapping("/activate_meet")
+    public String activateMeet(int meetId, Model model) {
+        Meeting meet = meetingService.activateMeet(meetId);
+        model.addAttribute("meet", meet);
+        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("ratingDTO", new MeetingResultDTO());
+        return "meet_account";
+    }
+
+    @PostMapping("/rate_meeting")
+    public String rateMeeting(MeetingResultDTO results, int meetId, Model model) {
+        meetingService.addResults(results, meetId, getCurrentUser());
+        Meeting meet = meetingService.getMeetingById(meetId);
+        model.addAttribute("meet", meet);
+        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("ratingDTO", new MeetingResultDTO());
+        return "meet_account";
+    }
+
 
 
 
@@ -156,11 +194,25 @@ public class UserController {
     @GetMapping("/rate_game")
     public String rateGame(Integer gameId, float rate, Model model) {
         User currentUser = getCurrentUser();
-        gameService.rateGame(gameId, currentUser.getId(), rate);
-        model.addAttribute("game", gameService.getGameById(gameId));
+        try {
+            gameService.rateGame(gameId, currentUser.getId(), rate);
+        }
+        catch (InvalidInputException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("gameId", gameId);
+            model.addAttribute("oldRate",
+                    gameService.getGameRatingByUserIdAndGameId(gameId, getCurrentUser().getId()));
+            return "game_rate";
+        }
+        BoardGame game = gameService.getGameById(gameId);
+        model.addAttribute("meetings", game.getMeetings());
+        model.addAttribute("game", game);
         model.addAttribute("user", currentUser);
         return "game_account";
     }
+
+
+
 
 
     @GetMapping("/see_game")
@@ -168,6 +220,7 @@ public class UserController {
         BoardGame game = gameService.getGameById(gameId);
         model.addAttribute("game", game);
         model.addAttribute("user", getCurrentUser());
+        model.addAttribute("meetings", game.getMeetings());
         return "game_account";
     }
 
@@ -188,19 +241,25 @@ public class UserController {
         return "account";
     }
 
+
+
+
     @PostMapping("/create_meet")
     public String createMeet(String cityName, String location,
                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
                              int gameId, Model model) {
         User currentUser = getCurrentUser();
+        BoardGame game = gameService.getGameById(gameId);
         Meeting meet = new Meeting();
         meet.setLocation(location);
         meet.setDateTime(dateTime);
-        meet.setGame(gameService.getGameById(gameId));
-        meetingService.createMeet(currentUser.getId(), meet, cityName);
+        meet.setGame(game);
+        meet = meetingService.createMeet(currentUser.getId(), meet, cityName);
+        userService.takePartInMeeting(currentUser.getId(), meet.getId());
         currentUser = userService.getUserById(currentUser.getId());
         model.addAttribute("user", currentUser);
-        model.addAttribute("game", gameService.getGameById(gameId));
+        model.addAttribute("meetings", game.getMeetings());
+        model.addAttribute("game", game);
         return "game_account";
     }
 
@@ -208,8 +267,10 @@ public class UserController {
     public String addMeeting(int meetId, Model model) {
         User currentUser = getCurrentUser();
         currentUser = userService.takePartInMeeting(currentUser.getId(), meetId);
-        model.addAttribute("game", meetingService.getMeetingById(meetId).getGame());
+        BoardGame game = meetingService.getMeetingById(meetId).getGame();
+        model.addAttribute("game", game);
         model.addAttribute("user", currentUser);
+        model.addAttribute("meetings", game.getMeetings());
         return "game_account";
     }
 
@@ -223,6 +284,20 @@ public class UserController {
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
         return "account";
+    }
+
+    @GetMapping("/delete_user_from_meet")
+    public String deleteUserFromMeeting(int userId, int meetId, Model model) {
+        userService.leaveMeeting(userId, meetId);
+        Meeting meet = meetingService.getMeetingById(meetId);
+        model.addAttribute("meet", meet);
+        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("ratingDTO", new MeetingResultDTO());
+        if (meet.getDateTime().isBefore(LocalDateTime.now()) && meet.getState() == MeetingState.Created) {
+            meetingService.startMeet(meetId);
+        }
+
+        return "meet_account";
     }
 
     //**********************************end meet

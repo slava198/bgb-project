@@ -36,6 +36,8 @@
                     <div sec:authorize="isAuthenticated()"><a th:href="@{/user/remove_game(gameId = ${game.id})}">Delete game</a></div>
                     <div sec:authorize="isAuthenticated()">
                         <a th:href="@{/user/rateGame_page(gameId=${game.getId()})}">Rate game</a>
+                        <p th:text="${user.getCommonExperience()}"></p>
+                        <p th:text="${user.getExperienceInGame(game)}"></p>
                     </div>
 
                 </td>
@@ -68,7 +70,7 @@
                 <th>Creator</th>
 
             </tr>
-            <th:block th:each="meeting : ${game.getMeetings()}">
+            <th:block th:each="meeting : ${meetings}">
                 <tr>
 
                     <td th:text="${meeting.getCity().getName()}" height="16px"></td>
@@ -77,7 +79,9 @@
                     <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
                     <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
                     <td th:text="${meeting.getCreator().getLogin()}"></td>
-                    <td><a th:href="@{/user/add_meet(meetId = ${meeting.id})}">Take part</a></td>
+                    <td th:if="!${user.getMeetingSet().contains(meeting)}"><a th:href="@{/user/add_meet(meetId = ${meeting.getId()})}">Take part</a></td>
+                    <td th:if="${user.getMeetingSet().contains(meeting)}">Already in!</td>
+
                 </tr>
             </th:block>
         </table>

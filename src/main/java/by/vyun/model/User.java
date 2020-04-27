@@ -10,8 +10,8 @@ import java.util.*;
 
 @Entity
 @Data
-@ToString(exclude = {"gameCollection", "meetingSet", "createdMeets"})
-@EqualsAndHashCode(exclude = {"gameCollection", "meetingSet", "createdMeets"})
+@ToString(exclude = {"gameCollection", "meetingSet", "createdMeets", "ratings"})
+@EqualsAndHashCode(exclude = {"gameCollection", "meetingSet", "createdMeets", "ratings"})
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIdentityInfo(
@@ -30,7 +30,6 @@ public class User {
     @JoinColumn(name = "cityId")
     private City city;
     private String address;
-    private Integer rating = 0;
     private Boolean isActive = true;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles = Collections.singleton("ROLE_USER");
@@ -48,10 +47,38 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "meeting_id")}
     )
     private List<Meeting> meetingSet;
+
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
     private List<Meeting> createdMeets;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Rating> ratings;
 
+
+
+
+    public float getCommonExperience() {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0;
+        }
+        float us_ex = 0;
+        for (Rating rating: ratings) {
+            us_ex += rating.getUserExperience();
+        }
+        return us_ex;
+    }
+
+    public float getExperienceInGame(BoardGame game) {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0;
+        }
+        for (Rating rating: ratings) {
+            if (rating.getGame() == game){
+                return rating.getUserExperience();
+            }
+        }
+        return 0;
+    }
 
 
     public boolean checkPassword(String password) {
