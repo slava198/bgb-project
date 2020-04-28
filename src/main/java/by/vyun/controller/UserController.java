@@ -1,6 +1,7 @@
 package by.vyun.controller;
 
 import by.vyun.exception.InvalidInputException;
+import by.vyun.exception.MeetingException;
 import by.vyun.exception.RegistrationException;
 import by.vyun.model.*;
 import by.vyun.service.BoardGameService;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import java.time.LocalDateTime;
 
 @Controller
@@ -25,8 +27,6 @@ public class UserController {
     BoardGameService gameService;
     MeetingService meetingService;
     CityService cityService;
-
-
 
 
     private User getCurrentUser() {
@@ -58,7 +58,7 @@ public class UserController {
     public String rateGamePage(int gameId, Model model) {
         model.addAttribute("gameId", gameId);
         model.addAttribute("oldRate",
-                gameService.getGameRatingByUserIdAndGameId(gameId, getCurrentUser().getId()));
+                gameService.getRatingValueByUserIdAndGameId(gameId, getCurrentUser().getId()));
         return "game_rate";
     }
 
@@ -68,6 +68,7 @@ public class UserController {
         model.addAttribute("meet", meet);
         model.addAttribute("user", getCurrentUser());
         model.addAttribute("ratingDTO", new MeetingResultDTO());
+        model.addAttribute("voicedUsers", meetingService.getVoicedUsers(meetId));
         if (meet.getDateTime().isBefore(LocalDateTime.now()) && meet.getState() == MeetingState.Created) {
             meetingService.startMeet(meetId);
         }
@@ -76,21 +77,53 @@ public class UserController {
 
     @GetMapping("/activate_meet")
     public String activateMeet(int meetId, Model model) {
-        Meeting meet = meetingService.activateMeet(meetId);
-        model.addAttribute("meet", meet);
+        try{
+            meetingService.activateMeet(meetId);
+        }
+        catch (Exception ex) {
+            model.addAttribute("error", ex.getMessage());
+        }
+        model.addAttribute("meet", meetingService.getMeetingById(meetId));
         model.addAttribute("user", getCurrentUser());
         model.addAttribute("ratingDTO", new MeetingResultDTO());
+        model.addAttribute("voicedUsers", meetingService.getVoicedUsers(meetId));
         return "meet_account";
     }
 
     @PostMapping("/rate_meeting")
     public String rateMeeting(MeetingResultDTO results, int meetId, Model model) {
-        meetingService.addResults(results, meetId, getCurrentUser());
+        try {
+            meetingService.addResults(results, meetId, getCurrentUser());
+        } catch (InvalidInputException ex) {
+            model.addAttribute("error", ex.getMessage());
+        }
         Meeting meet = meetingService.getMeetingById(meetId);
         model.addAttribute("meet", meet);
         model.addAttribute("user", getCurrentUser());
         model.addAttribute("ratingDTO", new MeetingResultDTO());
+        model.addAttribute("voicedUsers", meetingService.getVoicedUsers(meetId));
         return "meet_account";
+
+    }
+
+    @GetMapping("/close_meet")
+    public String closeMeet(int meetId, Model model) {
+        try {
+            meetingService.closeMeet(meetId);
+        } catch (MeetingException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("meet", meetingService.getMeetingById(meetId));
+            model.addAttribute("user", getCurrentUser());
+            model.addAttribute("ratingDTO", new MeetingResultDTO());
+            model.addAttribute("voicedUsers", meetingService.getVoicedUsers(meetId));
+            return "meet_account";
+        }
+        User currentUser = getCurrentUser();
+        model.addAttribute("user", currentUser);
+        model.addAttribute("gameCollection", currentUser.getGameCollection());
+        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+        return "account";
     }
 
 
@@ -196,12 +229,11 @@ public class UserController {
         User currentUser = getCurrentUser();
         try {
             gameService.rateGame(gameId, currentUser.getId(), rate);
-        }
-        catch (InvalidInputException ex) {
+        } catch (InvalidInputException ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("gameId", gameId);
             model.addAttribute("oldRate",
-                    gameService.getGameRatingByUserIdAndGameId(gameId, getCurrentUser().getId()));
+                    gameService.getRatingValueByUserIdAndGameId(gameId, getCurrentUser().getId()));
             return "game_rate";
         }
         BoardGame game = gameService.getGameById(gameId);
@@ -210,9 +242,6 @@ public class UserController {
         model.addAttribute("user", currentUser);
         return "game_account";
     }
-
-
-
 
 
     @GetMapping("/see_game")
@@ -232,7 +261,7 @@ public class UserController {
     public String deleteMeet(int meetId, Model model) {
         User currentUser = getCurrentUser();
         currentUser = userService.deleteMeeting(currentUser.getId(), meetId);
-        meetingService.removeMeet(meetId);
+        meetingService.deleteMeet(meetId);
         currentUser = userService.getUserById(currentUser.getId());
         model.addAttribute("user", currentUser);
         model.addAttribute("gameCollection", currentUser.getGameCollection());
@@ -240,8 +269,6 @@ public class UserController {
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
         return "account";
     }
-
-
 
 
     @PostMapping("/create_meet")

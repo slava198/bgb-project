@@ -30,7 +30,7 @@
             <tr>
                 <td>
                     <div><img th:src="${game.getLogo()}" height="150px"></div>
-                    <div><span>Rating: <span th:text="${game.getRating()}"></span></span></div>
+                    <div><span>Rating: <span th:text="${game.getRatingValue()}"></span></span></div>
                     <div><span>Meetings: <span th:text="${game.getNumberOfMeetings()}"></span></span></div>
                     <div><span>Gamers: <span th:text="${game.getNumberOfOwners()}"></span></span></div>
                     <div sec:authorize="isAuthenticated()"><a th:href="@{/user/remove_game(gameId = ${game.id})}">Delete game</a></div>
@@ -79,7 +79,13 @@
                     <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
                     <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
                     <td th:text="${meeting.getCreator().getLogin()}"></td>
-                    <td th:if="!${user.getMeetingSet().contains(meeting)}"><a th:href="@{/user/add_meet(meetId = ${meeting.getId()})}">Take part</a></td>
+                    <div th:if="${!user.getMeetingSet().contains(meeting)}">
+                        <td th:if="${meeting.getState().name() != 'Activated'}">
+                            <a th:href="@{/user/add_meet(meetId = ${meeting.getId()})}">Take part</a>
+                        </td>
+                        <td th:if="${meeting.getState().name() == 'Activated'}">Unable to take part (meeting in process)</td>
+                    </div>
+
                     <td th:if="${user.getMeetingSet().contains(meeting)}">Already in!</td>
 
                 </tr>

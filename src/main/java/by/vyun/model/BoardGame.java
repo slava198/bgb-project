@@ -44,15 +44,20 @@ public class BoardGame {
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<Rating> ratings;
 
-    public float getRating() {
+    public double getRatingValue() {
         if (ratings == null || ratings.isEmpty()) {
             return 0;
         }
-        float x = 0;
+        double ratingSum = 0;
+        int ratingNum = 0;
         for (Rating rating: ratings) {
-            x += rating.getGameRate();
+            double rate = rating.getGameRate();
+            if (rate != 0){
+                ratingSum += rate;
+                ratingNum++;
+            }
         }
-        return x / ratings.size();
+        return ratingSum / ratingNum;
     }
 
     public Integer getNumberOfOwners() {

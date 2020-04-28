@@ -64,7 +64,7 @@ public class BoardGameService {
         ratingRepo.saveAndFlush(rating);
     }
 
-    public float getGameRatingByUserIdAndGameId(int gameId, int userId) {
+    public double getRatingValueByUserIdAndGameId(int gameId, int userId) {
         Rating rating = ratingRepo.findGameRatingByUserIdAndGameId(userId, gameId);
         if (rating != null) {
             return rating.getGameRate();

@@ -49,7 +49,12 @@ public class Meeting {
     )
     private List<User> members;
 
+    @OneToMany(mappedBy = "meet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MeetingResult> results;
+
     private MeetingState state = MeetingState.Created;
+
+
 
     public int getNumberOfMembers() {
         if(members == null) {

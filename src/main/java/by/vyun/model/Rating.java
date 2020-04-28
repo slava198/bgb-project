@@ -19,9 +19,9 @@ public class Rating {
     @OneToOne
     @JoinColumn(name = "userId")
     private User user;
-    private float gameRate;
-    private float userExperience;
-    private int completedMeets;
+    private double gameRate = 0;
+    private double userExperience = 0;
+    private int completedMeets = 0;
 
 
 //    public Rating(BoardGame game, User user, float gameRate) {

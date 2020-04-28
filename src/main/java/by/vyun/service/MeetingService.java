@@ -1,11 +1,10 @@
 package by.vyun.service;
 
 
+import by.vyun.exception.MeetingException;
+import by.vyun.exception.InvalidInputException;
 import by.vyun.model.*;
-import by.vyun.repo.CityRepo;
-import by.vyun.repo.MeetingRepo;
-import by.vyun.repo.MeetingResultRepo;
-import by.vyun.repo.UserRepo;
+import by.vyun.repo.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +20,8 @@ public class MeetingService {
     MeetingResultRepo meetingResultRepo;
     UserRepo userRepo;
     CityRepo cityRepo;
+    BoardGameRepo boardGameRepo;
+    RatingRepo ratingRepo;
 
 
     public List<Meeting> getAllMeetings() {
@@ -43,16 +44,29 @@ public class MeetingService {
         return meetingRepo.saveAndFlush(meet);
     }
 
-    public Meeting activateMeet(int meetId) {
+    public Meeting activateMeet(int meetId) throws MeetingException {
         Meeting meet = meetingRepo.getFirstById(meetId);
+        if (meet.getNumberOfMembers() < 2) {
+            throw new MeetingException("Meeting should have at least 2 members!");
+        }
         meet.setState(MeetingState.Activated);
         return meetingRepo.saveAndFlush(meet);
     }
 
-    public void addResults(MeetingResultDTO results, int meetId, User currentUser) {
+    public void addResults(MeetingResultDTO results, int meetId, User currentUser) throws InvalidInputException {
+        int ratingsSum = 0;
+        for (MeetingResultElement resultElement : results.getResults()) {
+            if (resultElement.getRate() == null) {
+                throw new InvalidInputException("All rating fields should be filled!");
+            }
+            ratingsSum += resultElement.getRate();
+        }
         Meeting meet = meetingRepo.getFirstById(meetId);
+        if (ratingsSum > meet.getNumberOfMembers()){
+            throw new InvalidInputException("Sum of the rates shouldn't exceed number of the members!");
+        }
         MeetingResult result;
-        float userExperience = currentUser.getExperienceInGame(meet.getGame());
+        double userExperience = currentUser.getExperienceInGame(meet.getGame());
         for (MeetingResultElement resultElement : results.getResults()) {
             result = new MeetingResult();
             result.setFrom(currentUser);
@@ -61,10 +75,34 @@ public class MeetingService {
             result.setPoints(((userExperience + ACCELERATING_INDEX) * resultElement.getRate()) / DECELERATING_INDEX);
             meetingResultRepo.save(result);
         }
-        System.out.println(getNumberOfNoVoiced(meetId));
+        System.out.println(getNumberOfVoiced(meetId));
     }
 
-    public List<User> getAllVoicedUsers(int meetId) {
+    public void closeMeet(int meetId) throws MeetingException {
+        if (getNumberOfVoiced(meetId) < 2) {
+            throw new MeetingException("At least 2 members should voiced!");
+        }
+        BoardGame game = meetingRepo.getFirstById(meetId).getGame();
+        List<User> voicedMembers = getVoicedUsers(meetId);
+        List<MeetingResult> meetingResults = meetingResultRepo.getAllByMeetId(meetId);
+
+        for (User member : voicedMembers) {
+            for (MeetingResult result : meetingResults) {
+                if (result.getTo() == member) {
+                    member.addExperienceInGame(game, result.getPoints());
+                }
+            }
+            Rating rating = member.getRatingInGame(game);
+            rating.setCompletedMeets(rating.getCompletedMeets() + 1);
+            ratingRepo.saveAndFlush(rating);
+        }
+//        meetingResults.clear();
+////        meetingResultRepo.flush();
+        deleteMeet(meetId);
+    }
+
+
+    public List<User> getVoicedUsers(int meetId) {
         List<User> voicedUsers = new ArrayList<>();
         List<MeetingResult> results = meetingResultRepo.getAllByMeetId(meetId);
             for (MeetingResult meetResult : results) {
@@ -77,14 +115,14 @@ public class MeetingService {
 
 
 
-    public int getNumberOfNoVoiced(int meetId) {
+    public int getNumberOfVoiced(int meetId) {
         List<User> members = meetingRepo.getFirstById(meetId).getMembers();
         List<MeetingResult> results = meetingResultRepo.getAllByMeetId(meetId);
-        int result = members.size();
+        int result = 0;
         for (User member : members) {
             for (MeetingResult meetResult : results) {
                 if (meetResult.getFrom() == member) {
-                    result--;
+                    result++;
                     break;
                 }
             }
@@ -94,7 +132,7 @@ public class MeetingService {
     }
 
 
-    public void removeMeet(int id) {
+    public void deleteMeet(int id) {
         meetingRepo.deleteById(id);
         meetingRepo.flush();
     }

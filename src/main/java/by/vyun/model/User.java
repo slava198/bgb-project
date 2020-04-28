@@ -68,7 +68,7 @@ public class User {
         return us_ex;
     }
 
-    public float getExperienceInGame(BoardGame game) {
+    public double getExperienceInGame(BoardGame game) {
         if (ratings == null || ratings.isEmpty()) {
             return 0;
         }
@@ -78,6 +78,30 @@ public class User {
             }
         }
         return 0;
+    }
+
+    public void addExperienceInGame(BoardGame game, double experience) {
+        Rating rating = getRatingInGame(game);
+        if (rating == null) {
+            rating = new Rating();
+            rating.setUser(this);
+            rating.setGame(game);
+            ratings.add(rating);
+        }
+        rating.setUserExperience(rating.getUserExperience() + experience);
+    }
+
+
+    public Rating getRatingInGame(BoardGame game) {
+        if (ratings.isEmpty()) {
+            return null;
+        }
+        for (Rating rating: ratings) {
+            if (rating.getGame() == game){
+                return rating;
+            }
+        }
+        return null;
     }
 
 

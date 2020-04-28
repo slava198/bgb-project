@@ -113,7 +113,7 @@ public class UserRestController {
     @DeleteMapping("/user/meet")
     public String deleteMeet(int userId, int meetId) {
         userService.deleteMeeting(userId, meetId);
-        meetingService.removeMeet(meetId);
+        meetingService.deleteMeet(meetId);
         return "ok";
     }
 

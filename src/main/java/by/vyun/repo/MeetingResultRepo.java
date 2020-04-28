@@ -9,6 +9,7 @@ import java.util.List;
 public interface MeetingResultRepo extends JpaRepository<MeetingResult, Integer> {
 
     List<MeetingResult> getAllByMeetId(Integer id);
+    void deleteByMeetId(int id);
 
 
 }

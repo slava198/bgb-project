@@ -35,7 +35,7 @@
                             <td align="center"><img th:src="${game.getLogo()}" height="30px"></td>
                             <td th:text="${game.getTitle()}" height="16px"></td>
 <!--                            <td th:text="${game.getTitle()}" height="16px"></td>-->
-                            <td th:text="${game.getRating()}" align="center"></td>
+                            <td th:text="${game.getRatingValue()}" align="center"></td>
                             <!--                                <td th:text="${game.getNumberOfOwners()}" align="right"></td>-->
                             <!--                                <td th:text="${game.getNumberOfMeetings()}" align="right"></td>-->
                             <td><a th:href="@{/user/see_game(gameId = ${game.id})}">See more...</a></td>
@@ -86,11 +86,11 @@
         </div>
     </div>
     <br>
-    <div class="row justify-content-center" th:if="${#arrays.isEmpty(user.getCreatedMeets())}">
-        <div class="col-5" >
-            <h4>You haven't create any meeting.</h4>
-        </div>
-    </div>
+<!--    <div class="row justify-content-center" th:if="${#arrays.isEmpty(user.getCreatedMeets())}">-->
+<!--        <div class="col-5" >-->
+<!--            <h4>You haven't create any meeting.</h4>-->
+<!--        </div>-->
+<!--    </div>-->
 <!--    <div class="row justify-content-center" th:if="!${#arrays.isEmpty(user.getCreatedMeets())}">-->
 <!--        <div class="col-9">-->
 <!--            <h1>My own meetings</h1>-->

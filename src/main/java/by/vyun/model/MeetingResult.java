@@ -11,7 +11,7 @@ public class MeetingResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "meet_id")
     private Meeting meet;
     @OneToOne
