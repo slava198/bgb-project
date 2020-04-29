@@ -2,16 +2,16 @@ package by.vyun.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
+
+import static javax.persistence.GenerationType.*;
 
 @Data
 @Entity
 @NoArgsConstructor
 public class Rating {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private int id;
     @ManyToOne
     @JoinColumn(name = "gameId")
@@ -23,10 +23,4 @@ public class Rating {
     private double userExperience = 0;
     private int completedMeets = 0;
 
-
-//    public Rating(BoardGame game, User user, float gameRate) {
-//        this.game = game;
-//        this.user = user;
-//        this.gameRate = gameRate;
-//    }
 }

@@ -1,6 +1,5 @@
 package by.vyun.controller;
 
-
 import by.vyun.exception.RegistrationException;
 import by.vyun.model.BoardGame;
 import by.vyun.model.Meeting;
@@ -10,6 +9,7 @@ import by.vyun.service.MeetingService;
 import by.vyun.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @AllArgsConstructor
@@ -37,6 +37,7 @@ public class UserRestController {
         User currentUser = userService.getUserById(userId);
         return currentUser.getGameCollection();
     }
+
     @GetMapping("/userMeetingList")
     public List<Meeting> meetingList(int userId) {
         User currentUser = userService.getUserById(userId);
@@ -49,8 +50,7 @@ public class UserRestController {
     public String registration(User user, String cityName) {
         try {
             userService.registration(user, cityName);
-        }
-        catch (RegistrationException ex) {
+        } catch (RegistrationException ex) {
             System.out.println(ex.getMessage());
             return ex.getMessage();
         }
@@ -62,8 +62,7 @@ public class UserRestController {
         User signedUser = new User();
         try {
             signedUser = userService.signIn(login, password);
-        }
-        catch (RegistrationException ex) {
+        } catch (RegistrationException ex) {
             System.out.println(ex.getMessage());
         }
         return signedUser;
@@ -74,8 +73,7 @@ public class UserRestController {
         User currentUser = new User();
         try {
             currentUser = userService.update(userId, changedUser);
-        }
-        catch (RegistrationException ex) {
+        } catch (RegistrationException ex) {
             System.out.println(ex.getMessage());
         }
         return currentUser;
@@ -117,21 +115,17 @@ public class UserRestController {
         return "ok";
     }
 
-
     @PutMapping("/user/meet_in")
     public String addMeeting(int userId, int meetId) {
         userService.takePartInMeeting(userId, meetId);
         return "ok";
     }
 
-
     @PutMapping("/user/meet_out")
     public String leaveMeeting(int userId, int meetId) {
         userService.leaveMeeting(userId, meetId);
         return "ok";
     }
-
-
 
 
 }

@@ -1,11 +1,15 @@
 package by.vyun.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
+
+import static javax.persistence.GenerationType.*;
 
 
 @Entity
@@ -18,21 +22,24 @@ import java.util.*;
         generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@userId")
 public class User {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = AUTO)
     private Integer id;
     private String login;
     private String password;
+    private String address;
+    private Boolean isActive = true;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
+
     @ManyToOne()
     @JoinColumn(name = "cityId")
     private City city;
-    private String address;
-    private Boolean isActive = true;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles = Collections.singleton("ROLE_USER");
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "games_owners",
@@ -40,6 +47,7 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "game_id")}
     )
     private List<BoardGame> gameCollection;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "meetings_members",
@@ -55,14 +63,12 @@ public class User {
     private List<Rating> ratings;
 
 
-
-
     public float getCommonExperience() {
         if (ratings == null || ratings.isEmpty()) {
             return 0;
         }
         float us_ex = 0;
-        for (Rating rating: ratings) {
+        for (Rating rating : ratings) {
             us_ex += rating.getUserExperience();
         }
         return us_ex;
@@ -72,8 +78,8 @@ public class User {
         if (ratings == null || ratings.isEmpty()) {
             return 0;
         }
-        for (Rating rating: ratings) {
-            if (rating.getGame() == game){
+        for (Rating rating : ratings) {
+            if (rating.getGame() == game) {
                 return rating.getUserExperience();
             }
         }
@@ -96,8 +102,8 @@ public class User {
         if (ratings.isEmpty()) {
             return null;
         }
-        for (Rating rating: ratings) {
-            if (rating.getGame() == game){
+        for (Rating rating : ratings) {
+            if (rating.getGame() == game) {
                 return rating;
             }
         }

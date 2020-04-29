@@ -1,12 +1,13 @@
 package by.vyun.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
+import static javax.persistence.GenerationType.*;
+
 
 @Data
 @Entity
@@ -20,21 +21,20 @@ import java.util.Set;
 public class BoardGame {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = AUTO)
     private Integer id;
     private String logo;
     private String title;
     private String description;
     private Integer age = 0;
-    //private float rating = 0;
     private Boolean isActive = true;
 
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "games_owners",
-        joinColumns = {@JoinColumn(name = "game_id")},
-        inverseJoinColumns = {@JoinColumn(name = "user_id")}
+            name = "games_owners",
+            joinColumns = {@JoinColumn(name = "game_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private Set<User> owners;
 
@@ -50,9 +50,9 @@ public class BoardGame {
         }
         double ratingSum = 0;
         int ratingNum = 0;
-        for (Rating rating: ratings) {
+        for (Rating rating : ratings) {
             double rate = rating.getGameRate();
-            if (rate != 0){
+            if (rate != 0) {
                 ratingSum += rate;
                 ratingNum++;
             }
@@ -61,14 +61,14 @@ public class BoardGame {
     }
 
     public Integer getNumberOfOwners() {
-        if(owners == null) {
+        if (owners == null) {
             return 0;
         }
         return owners.size();
     }
 
     public Integer getNumberOfMeetings() {
-        if(meetings == null) {
+        if (meetings == null) {
             return 0;
         }
         return meetings.size();

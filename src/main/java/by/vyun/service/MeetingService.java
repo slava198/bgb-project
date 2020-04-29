@@ -1,6 +1,5 @@
 package by.vyun.service;
 
-
 import by.vyun.exception.MeetingException;
 import by.vyun.exception.InvalidInputException;
 import by.vyun.model.*;
@@ -28,9 +27,11 @@ public class MeetingService {
         return meetingRepo.findAll();
     }
 
+
     public Meeting getMeetingById(int id) {
         return meetingRepo.getFirstById(id);
     }
+
 
     public Meeting createMeet(int userId, Meeting meeting, String cityName) {
         meeting.setCity(cityRepo.getFirstByName(cityName));
@@ -38,11 +39,13 @@ public class MeetingService {
         return meetingRepo.saveAndFlush(meeting);
     }
 
+
     public Meeting startMeet(int meetId) {
         Meeting meet = meetingRepo.getFirstById(meetId);
         meet.setState(MeetingState.Started);
         return meetingRepo.saveAndFlush(meet);
     }
+
 
     public Meeting activateMeet(int meetId) throws MeetingException {
         Meeting meet = meetingRepo.getFirstById(meetId);
@@ -53,6 +56,7 @@ public class MeetingService {
         return meetingRepo.saveAndFlush(meet);
     }
 
+
     public void addResults(MeetingResultDTO results, int meetId, User currentUser) throws InvalidInputException {
         int ratingsSum = 0;
         for (MeetingResultElement resultElement : results.getResults()) {
@@ -62,7 +66,7 @@ public class MeetingService {
             ratingsSum += resultElement.getRate();
         }
         Meeting meet = meetingRepo.getFirstById(meetId);
-        if (ratingsSum > meet.getNumberOfMembers()){
+        if (ratingsSum > meet.getNumberOfMembers()) {
             throw new InvalidInputException("Sum of the rates shouldn't exceed number of the members!");
         }
         MeetingResult result;
@@ -72,11 +76,11 @@ public class MeetingService {
             result.setFrom(currentUser);
             result.setMeet(meet);
             result.setTo(userRepo.getFirstById(resultElement.getUserIdTo()));
-            result.setPoints(((userExperience + ACCELERATING_INDEX) * resultElement.getRate()) / DECELERATING_INDEX);
+            result.setPoints(((userExperience + ACCELERATE_INDEX) * resultElement.getRate()) / DECELERATE_INDEX);
             meetingResultRepo.save(result);
         }
-        System.out.println(getNumberOfVoiced(meetId));
     }
+
 
     public void closeMeet(int meetId) throws MeetingException {
         if (getNumberOfVoiced(meetId) < 2) {
@@ -85,7 +89,6 @@ public class MeetingService {
         BoardGame game = meetingRepo.getFirstById(meetId).getGame();
         List<User> voicedMembers = getVoicedUsers(meetId);
         List<MeetingResult> meetingResults = meetingResultRepo.getAllByMeetId(meetId);
-
         for (User member : voicedMembers) {
             for (MeetingResult result : meetingResults) {
                 if (result.getTo() == member) {
@@ -96,8 +99,6 @@ public class MeetingService {
             rating.setCompletedMeets(rating.getCompletedMeets() + 1);
             ratingRepo.saveAndFlush(rating);
         }
-//        meetingResults.clear();
-////        meetingResultRepo.flush();
         deleteMeet(meetId);
     }
 
@@ -105,14 +106,13 @@ public class MeetingService {
     public List<User> getVoicedUsers(int meetId) {
         List<User> voicedUsers = new ArrayList<>();
         List<MeetingResult> results = meetingResultRepo.getAllByMeetId(meetId);
-            for (MeetingResult meetResult : results) {
-                if (!voicedUsers.contains(meetResult.getFrom())) {
-                    voicedUsers.add(meetResult.getFrom());
-                }
+        for (MeetingResult meetResult : results) {
+            if (!voicedUsers.contains(meetResult.getFrom())) {
+                voicedUsers.add(meetResult.getFrom());
             }
+        }
         return voicedUsers;
     }
-
 
 
     public int getNumberOfVoiced(int meetId) {
@@ -127,7 +127,6 @@ public class MeetingService {
                 }
             }
         }
-
         return result;
     }
 
@@ -137,10 +136,10 @@ public class MeetingService {
         meetingRepo.flush();
     }
 
+
     public List<City> getAllCities() {
         return cityRepo.findAll();
     }
-
 
 
 }

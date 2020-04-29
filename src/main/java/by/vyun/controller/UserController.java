@@ -126,9 +126,6 @@ public class UserController {
         return "account";
     }
 
-
-
-
     @GetMapping("/createMeet_page")
     public String createMeet(int gameId, Model model) {
         BoardGame game = gameService.getGameById(gameId);
@@ -140,15 +137,6 @@ public class UserController {
 
 
     //**********************begin user
-//    @GetMapping("/login")
-//    public String loginPage(Model model, String error, String logout) {
-//        if (error != null)
-//            model.addAttribute("error", "Your username and password is invalid.");
-//        if (logout != null)
-//            model.addAttribute("message", "You have been logged out successfully.");
-//        return "login";
-//    }
-
 
     @PostMapping("/registration")
     public String registration(User user, String passwordConfirm, String cityName, Model model) {
@@ -165,7 +153,6 @@ public class UserController {
             return "registration";
         }
         return "redirect:/";
-
     }
 
 
@@ -198,7 +185,6 @@ public class UserController {
         return "redirect:/";
 
     }
-
 //*******************************end user
 
 
@@ -207,7 +193,6 @@ public class UserController {
     public String addGame(Integer gameId, Model model) {
         User currentUser = getCurrentUser();
         currentUser = userService.addGame(currentUser.getId(), gameId);
-
         model.addAttribute("user", currentUser);
         model.addAttribute("games", userService.getUnsubscribedGames(getCurrentUser()));
         return "game_list";
@@ -243,7 +228,6 @@ public class UserController {
         return "game_account";
     }
 
-
     @GetMapping("/see_game")
     public String seeGame(Integer gameId, Model model) {
         BoardGame game = gameService.getGameById(gameId);
@@ -252,7 +236,6 @@ public class UserController {
         model.addAttribute("meetings", game.getMeetings());
         return "game_account";
     }
-
 //***********************************end game
 
 
@@ -323,11 +306,10 @@ public class UserController {
         if (meet.getDateTime().isBefore(LocalDateTime.now()) && meet.getState() == MeetingState.Created) {
             meetingService.startMeet(meetId);
         }
-
         return "meet_account";
     }
-
     //**********************************end meet
+
 
     @GetMapping("/back")
     public String back(Model model) {

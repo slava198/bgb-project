@@ -1,6 +1,5 @@
 package by.vyun.service;
 
-
 import by.vyun.exception.CityException;
 import by.vyun.model.City;
 import by.vyun.repo.CityRepo;

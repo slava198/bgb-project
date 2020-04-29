@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
 import static javax.persistence.GenerationType.*;
 
 
@@ -57,13 +59,11 @@ public class Meeting {
 
 
     public int getNumberOfMembers() {
-        if(members == null) {
+        if (members == null) {
             return 0;
         }
         return members.size();
     }
-
-
 
 
 }

@@ -1,13 +1,11 @@
 package by.vyun.model;
 
 import lombok.Data;
-
 import javax.persistence.*;
 
 @Data
 @Entity
 public class MeetingResult {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

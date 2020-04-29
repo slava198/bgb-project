@@ -1,6 +1,5 @@
 package by.vyun.service;
 
-
 import by.vyun.exception.BoardGameException;
 import by.vyun.exception.InvalidInputException;
 import by.vyun.model.BoardGame;
@@ -24,6 +23,7 @@ public class BoardGameService {
         return gameRepo.findAll();
     }
 
+
     public BoardGame getGameById(int id) {
         return gameRepo.getFirstById(id);
     }
@@ -39,11 +39,11 @@ public class BoardGameService {
         return gameRepo.save(game);
     }
 
+
     public void changeGameStatus(int id) {
         BoardGame game = gameRepo.getOne(id);
         game.setIsActive(!game.getIsActive());
         gameRepo.saveAndFlush(game);
-
     }
 
 
@@ -54,8 +54,7 @@ public class BoardGameService {
         Rating rating = ratingRepo.findGameRatingByUserIdAndGameId(userId, gameId);
         if (rating != null) {
             rating.setGameRate(gameRate);
-        }
-        else {
+        } else {
             rating = new Rating();
             rating.setGame(gameRepo.getFirstById(gameId));
             rating.setUser(userRepo.getFirstById(userId));
@@ -64,15 +63,14 @@ public class BoardGameService {
         ratingRepo.saveAndFlush(rating);
     }
 
+
     public double getRatingValueByUserIdAndGameId(int gameId, int userId) {
         Rating rating = ratingRepo.findGameRatingByUserIdAndGameId(userId, gameId);
         if (rating != null) {
             return rating.getGameRate();
-        }
-        else {
+        } else {
             return 1;
         }
-
     }
 
 

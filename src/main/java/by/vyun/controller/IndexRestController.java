@@ -16,7 +16,6 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/mobile")
 public class IndexRestController {
-
     UserService userService;
     BoardGameService gameService;
 

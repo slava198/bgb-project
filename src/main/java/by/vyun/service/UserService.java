@@ -30,16 +30,18 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
+
     public User getUserById(Integer id) {
         return userRepo.getFirstById(id);
     }
+
+
     public User getUserByLogin(String login) {
         return userRepo.getFirstByLogin(login);
     }
 
 
     public User registration(User user, String cityName) throws RegistrationException {
-
         if (user.getLogin().trim().length() * user.getPassword().trim().length() * cityName.trim().length() == 0) {
             throw new RegistrationException("Empty login, password or location field!");
         }
@@ -65,12 +67,12 @@ public class UserService {
 
 
     public User update(int id, User changedUser) throws RegistrationException {
-            User currentUser = userRepo.getFirstById(id);
-            currentUser.setCity(changedUser.getCity());
-            currentUser.setAddress(changedUser.getAddress());
-            currentUser.setDateOfBirth(changedUser.getDateOfBirth());
-            currentUser.setPassword(changedUser.getPassword());
-            return userRepo.saveAndFlush(currentUser);
+        User currentUser = userRepo.getFirstById(id);
+        currentUser.setCity(changedUser.getCity());
+        currentUser.setAddress(changedUser.getAddress());
+        currentUser.setDateOfBirth(changedUser.getDateOfBirth());
+        currentUser.setPassword(changedUser.getPassword());
+        return userRepo.saveAndFlush(currentUser);
     }
 
 
@@ -103,7 +105,6 @@ public class UserService {
     }
 
 
-
     public User takePartInMeeting(int userId, int meetingId) {
         User currentUser = userRepo.getFirstById(userId);
         Meeting meeting = meetingRepo.getFirstById(meetingId);
@@ -113,17 +114,20 @@ public class UserService {
         return userRepo.saveAndFlush(currentUser);
     }
 
+
     public User leaveMeeting(int userId, int meetingId) {
         User currentUser = userRepo.getFirstById(userId);
         currentUser.leaveMeeting(meetingRepo.getFirstById(meetingId));
         return userRepo.saveAndFlush(currentUser);
     }
 
+
     public User deleteMeeting(int userId, int meetingId) {
         User currentUser = userRepo.getFirstById(userId);
         currentUser.deleteMeeting(meetingRepo.getFirstById(meetingId));
         return userRepo.saveAndFlush(currentUser);
     }
+
 
     public List<Meeting> getCreatedMeets(User currentUser) {
         List<Meeting> createdMeets = new ArrayList<>();
@@ -135,10 +139,10 @@ public class UserService {
         return createdMeets;
     }
 
+
     public List<User> getAllUsers() {
         return userRepo.findAll();
     }
-
 
 
 }

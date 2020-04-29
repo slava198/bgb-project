@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @AllArgsConstructor
 public class IndexController {
-
     UserService userService;
     BoardGameService gameService;
     MeetingService meetingService;
@@ -30,7 +29,6 @@ public class IndexController {
     @PostMapping("/account")
     public String account(Model model) {
         User signedUser = userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
-
         model.addAttribute("user", signedUser);
         model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
         model.addAttribute("gameCollection", signedUser.getGameCollection());
