@@ -34,17 +34,19 @@
                     <div><span>Meetings: <span th:text="${game.getNumberOfMeetings()}"></span></span></div>
                     <div><span>Gamers: <span th:text="${game.getNumberOfOwners()}"></span></span></div>
                     <div sec:authorize="isAuthenticated()">
-                        <a th:href="@{/user/remove_game(gameId = ${game.id})}">Delete game</a><br>
-                        <a th:href="@{/user/rateGame_page(gameId=${game.getId()})}">Rate game</a>
-
+                        <form onSubmit='return confirm("Delete game from your collection?");'
+                        th:action="@{/user/remove_game}" method="get">
+                            <input hidden name="gameId" th:value="${game.getId()}">
+                            <input class="btn btn-link" type="submit" value="Delete game">
+                        </form>
+<!--                        <a th:href="@{/user/remove_game(gameId = ${game.id})}">Delete game</a><br>-->
+                        <a class="btn btn-link" th:href="@{/user/rateGame_page(gameId=${game.getId()})}">Rate game</a>
                     </div>
-
                 </td>
                 <td valign="top">
                     <p th:text="${game.getDescription()}"></p>
                 </td>
             </tr>
-
         </table>
 
 

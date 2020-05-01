@@ -40,9 +40,11 @@
 
 
                         <a th:if="${meet.getState().name() != 'Activated'}"
+                           th:onclick="return confirm('Delete meeting?')"
                            th:href="@{/user/delete_meet(meetId = ${meet.getId()})}">Delete meeting</a>
 
                         <a th:if="${meet.getState().name() == 'Activated'}"
+                           th:onclick="return confirm('Close meeting?')"
                            th:href="@{/user/close_meet(meetId = ${meet.getId()})}">Close meeting</a>
 
                         <br>
@@ -67,12 +69,9 @@
                                     <th class="btn-light" onclick="sortTable(0, 'users')"><a href="#">Login</a></th>
                                     <th class="btn-light" onclick="sortTable(1, 'users')"><a href="#">City</a></th>
                                     <th class="btn-light" onclick="sortTable(1, 'users')"><a href="#">Address</a></th>
-                                    <th class="btn-light" onclick="sortTable(2, 'users')"><a href="#">Date of birth</a>
-                                    </th>
-                                    <th class="btn-light" onclick="sortTable(3, 'users')"><a href="#">Game
-                                        experience</a></th>
-                                    <th class="btn-light" onclick="sortTable(3, 'users')"><a href="#">Common
-                                        experience</a></th>
+                                    <th class="btn-light" onclick="sortTable(2, 'users')"><a href="#">Age</a></th>
+                                    <th class="btn-light" onclick="sortTable(3, 'users')"><a href="#">Game experience</a></th>
+                                    <th class="btn-light" onclick="sortTable(3, 'users')"><a href="#">Common experience</a></th>
 
                                 </tr>
                                 </thead>
@@ -82,17 +81,18 @@
                                         <td th:text="${usr.getLogin()}" height="16px"></td>
                                         <td th:text="${usr.getCity().getName()}" align="right"></td>
                                         <td th:text="${usr.getAddress()}" align="right"></td>
-                                        <td th:text="${usr.getDateOfBirth()}" align="right"></td>
+                                        <td th:text="${usr.getAge()}" align="right"></td>
                                         <td th:text="${usr.getExperienceInGame(meet.getGame())}" align="right"></td>
-                                        <td th:text="${usr.getCommonExperience()}" align="right"></td>
-
-                                        <td th:if="${meet.getCreator() == user and user != usr and meet.getState().name() != 'Activated'}">
-                                            <a th:href="@{/user/delete_user_from_meet(userId = ${usr.getId()}, meetId = ${meet.getId()})}">Delete
-                                                from meeting</a>
-                                        </td>
-                                        <td th:if="${meet.getCreator() == user and user == usr and meet.getState().name() != 'Activated'}">
-                                            Creator
-                                        </td>
+                                        <td th:text="${usr.getTotalExperience()}" align="right"></td>
+                                        <div th:if="${meet.getCreator() == user and meet.getState().name() != 'Activated'}">
+                                            <td th:if="${user != usr}">
+                                                <a th:onclick="return confirm('Delete user from meeting?')"
+                                                   th:href="@{/user/delete_user_from_meet(userId = ${usr.getId()}, meetId = ${meet.getId()})}">Delete</a>
+                                            </td>
+                                            <td th:if="${user == usr}">
+                                                Creator
+                                            </td>
+                                        </div>
 
                                         <td th:if="${meet.getState().name() == 'Activated' and !voicedUsers.contains(user)}">
                                             <input hidden th:name="|results[${itemStat.index}].userIdTo|"
@@ -120,7 +120,6 @@
 
 
 </div>
-
 
 </body>
 </html>
