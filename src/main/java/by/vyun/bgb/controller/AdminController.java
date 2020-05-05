@@ -38,7 +38,7 @@ public class AdminController {
         return "game_create";
     }
 
-    @PostMapping("/add_game")
+    @PostMapping("/game")
     public String addGame(BoardGame game, Model model) {
         try {
             gameService.add(game);
@@ -47,10 +47,8 @@ public class AdminController {
             return "game_create";
         }
         model.addAttribute("user", getCurrentUser());
-        model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("games", gameService.getAllGames());
-        model.addAttribute("cities", cityService.getAllCities());
-        return "admin_page";
+        return "admin_games";
     }
 
     @GetMapping("/add_city")
@@ -67,10 +65,8 @@ public class AdminController {
             return "city_create";
         }
         model.addAttribute("user", getCurrentUser());
-        model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("games", gameService.getAllGames());
         model.addAttribute("cities", cityService.getAllCities());
-        return "admin_page";
+        return "admin_cities";
     }
 
     @PostMapping("/update")
@@ -90,6 +86,52 @@ public class AdminController {
         return "redirect:/";
     }
 
+
+    @GetMapping("/games")
+    public String getGames(Model model) {
+        User currentUser = getCurrentUser();
+        model.addAttribute("user", currentUser);
+        if (currentUser.getRoles().contains("ROLE_ADMIN")) {
+            model.addAttribute("games", gameService.getAllGames());
+            return "admin_games";
+        }
+        model.addAttribute("createdMeetings", userService.getCreatedMeets(currentUser));
+        model.addAttribute("gameCollection", currentUser.getGameCollection());
+        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+        return "account";
+    }
+
+
+    @GetMapping("/users")
+    public String getUsers(Model model) {
+        User currentUser = getCurrentUser();
+        model.addAttribute("user", currentUser);
+        if (currentUser.getRoles().contains("ROLE_ADMIN")) {
+            model.addAttribute("users", userService.getAllUsers());
+            return "admin_users";
+        }
+        model.addAttribute("createdMeetings", userService.getCreatedMeets(currentUser));
+        model.addAttribute("gameCollection", currentUser.getGameCollection());
+        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+        return "account";
+    }
+
+    @GetMapping("/cities")
+    public String getCities(Model model) {
+        User currentUser = getCurrentUser();
+        model.addAttribute("user", currentUser);
+        if (currentUser.getRoles().contains("ROLE_ADMIN")) {
+            model.addAttribute("cities", cityService.getAllCities());
+            return "admin_cities";
+        }
+        model.addAttribute("createdMeetings", userService.getCreatedMeets(currentUser));
+        model.addAttribute("gameCollection", currentUser.getGameCollection());
+        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+        return "account";
+    }
 
     @GetMapping("/admin_page")
     public String signIn(Model model) {
@@ -112,10 +154,8 @@ public class AdminController {
     public String changeGameStatus(int gameId, Model model) {
         gameService.changeGameStatus(gameId);
         model.addAttribute("user", getCurrentUser());
-        model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("games", gameService.getAllGames());
-        model.addAttribute("cities", cityService.getAllCities());
-        return "admin_page";
+        return "admin_games";
     }
 
 
@@ -124,9 +164,7 @@ public class AdminController {
         userService.changeUserStatus(userId);
         model.addAttribute("user", getCurrentUser());
         model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("games", gameService.getAllGames());
-        model.addAttribute("cities", cityService.getAllCities());
-        return "admin_page";
+        return "admin_users";
     }
 
 

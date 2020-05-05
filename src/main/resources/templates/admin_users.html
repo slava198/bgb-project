@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Admin page</title>
+    <script th:replace="insert/fragment :: headerElement"></script>
+
+
+</head>
+<body>
+
+<script th:replace="insert/fragment :: navbar"></script>
+<div th:if="${error != null}" style="text-align: center">
+    <span th:text="${error}" style="background-color: lightpink; "></span>
+</div>
+<div class="container">
+    <div class="row justify-content-center">
+        <h2>Users</h2>
+        <table class="table" id="users">
+            <tr>
+                <th class="btn-dark"><a>Avatar</a></th>
+                <th class="btn-dark" onclick="sortTable(1, 'users')"><a>Login</a></th>
+<!--                <th class="btn-dark" onclick="sortTable(2, 'users')"><a>Password</a></th>-->
+                <th class="btn-dark" onclick="sortTable(2, 'users')"><a>Date of birth</a></th>
+                <th class="btn-dark" onclick="sortTable(3, 'users')"><a>Experience</a></th>
+                <th class="btn-dark" onclick="sortTable(4, 'users')"><a>Meetings</a></th>
+                <th class="btn-dark" onclick="sortTable(5, 'users')"><a>City</a></th>
+                <th class="btn-dark" onclick="sortTable(6, 'users')"><a>Address</a></th>
+                <th class="btn-dark"></th>
+            </tr>
+            <th:block th:each="usr : ${users}">
+                <tr>
+                    <td><img th:src="${'data:image/png;base64,' + usr.getAvatar().getPicture()}" width="30px"></td>
+                    <td th:text="${usr.getLogin()}" height="16px"></td>
+<!--                    <td th:text="${usr.getPassword()}" align="right"></td>-->
+                    <td th:text="${usr.getDateOfBirth()}" ></td>
+                    <td th:text="${usr.getTotalExperience()}" align="center"></td>
+                    <td th:text="${usr.getCompletedMeetsNumber()}" align="center"></td>
+                    <td th:text="${usr.getCity().getName()}" ></td>
+                    <td th:text="${usr.getAddress()}" ></td>
+                    <td th:if="${usr.getIsActive()}"><a class="btn btn-outline-dark btn-sm my-1" th:href="@{/admin/changeUserStatus(userId = ${usr.getId()})}">Deactivate</a></td>
+                    <td th:if="${!usr.getIsActive()}"><a class="btn btn-outline-dark btn-sm my-1" th:href="@{/admin/changeUserStatus(userId = ${usr.getId()})}">Activate</a></td>
+                    <!--                            <td th:text="${usr.()}" align="right"></td>-->
+
+                    <!--                <td><a th:href="@{/user/removeGameById(login = ${user.login}, id = ${game.id})}">Delete</a></td>-->
+                </tr>
+            </th:block>
+        </table>
+    </div>
+</div>
+
+
+<script th:replace="insert/fragment :: table-sort"></script>
+
+</body>
+</html>

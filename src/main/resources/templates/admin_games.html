@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <title>Admin page</title>
+    <script th:replace="insert/fragment :: headerElement"></script>
+
+
+</head>
+<body>
+
+<script th:replace="insert/fragment :: navbar"></script>
+<div th:if="${error != null}" style="text-align: center">
+    <span th:text="${error}" style="background-color: lightpink; "></span>
+</div>
+<div class="container">
+    <div class="row justify-content-center">
+        <span>
+            <h2>Board games <a class="btn btn-outline-dark btn-sm my-1" href="/admin/createGame_page">+</a></h2>
+        </span>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <table class="table" id="games">
+                <tr>
+                    <th class="btn-dark"></th>
+                    <th class="btn-dark" onclick="sortTable(1, 'games')"><a>Title</a></th>
+                    <th class="btn-dark" onclick="sortTable(2, 'games')" align="center"><a>Rating</a></th>
+                    <th class="btn-dark" onclick="sortTable(3, 'games')" align="center"><a>Owners</a></th>
+                    <th class="btn-dark" onclick="sortTable(4, 'games')" align="center"><a>Meetings</a></th>
+                    <th class="btn-dark"></th>
+                </tr>
+                <th:block th:each="game : ${games}">
+                    <tr>
+                        <td><img th:src="${game.getLogo()}" height="30px" align="center"></td>
+                        <td th:text="${game.getTitle()}"></td>
+                        <td th:text="${game.getRatingValue()}" align="center"></td>
+                        <td th:text="${game.getNumberOfOwners()}" align="center"></td>
+                        <td th:text="${game.getNumberOfMeetings()}" align="center"></td>
+                        <td th:if="${game.getIsActive()}"><a class="btn btn-outline-dark btn-sm my-1"
+                                                             th:href="@{/admin/changeGameStatus(gameId = ${game.getId()})}">Deactivate</a>
+                        </td>
+                        <td th:if="${!game.getIsActive()}"><a class="btn btn-outline-dark btn-sm my-1"
+                                                              th:href="@{/admin/changeGameStatus(gameId = ${game.getId()})}">Activate</a>
+                        </td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script th:replace="insert/fragment :: table-sort"></script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <title>Admin page</title>
+    <script th:replace="insert/fragment :: headerElement"></script>
+
+
+</head>
+<body>
+
+<script th:replace="insert/fragment :: navbar"></script>
+<div th:if="${error != null}" style="text-align: center">
+    <span th:text="${error}" style="background-color: lightpink; "></span>
+</div>
+<div class="container ">
+    <div class="row justify-content-center">
+        <span>
+            <h2>Cities <a class="btn btn-outline-dark btn-sm my-1" href="/admin/add_city">+</a></h2>
+        </span>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <table class="table" id="cities">
+                <tr>
+                    <th class="btn-dark"></th>
+                    <th class="btn-dark" onclick="sortTable(1, 'cities')"><a>Name</a></th>
+                    <th class="btn-dark" onclick="sortTable(2, 'cities')"><a>Gamers</a></th>
+                    <th class="btn-dark" onclick="sortTable(3, 'cities')"><a>Meetings</a></th>
+
+                </tr>
+                <th:block th:each="city : ${cities}">
+                    <tr>
+                        <td><img th:src="${city.getLogo()}" height="30px"></td>
+                        <td th:text="${city.getName()}"></td>
+                        <td th:text="${city.getNumberOfGamers()}" align="center"></td>
+                        <td th:text="${city.getNumberOfMeetings()}" align="center"></td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script th:replace="insert/fragment :: table-sort"></script>
+
+</body>
+</html>

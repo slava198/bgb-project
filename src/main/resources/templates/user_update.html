@@ -14,94 +14,90 @@
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-3">
-            <a class="btn btn-outline-dark btn-sm my-1" href="/user/back">Back</a>
-            <h1 th:text="${user.login}"></h1>
-            <img th:src="${'data:image/png;base64,' + user.getAvatar().getPicture()}" width="120">
-        </div>
-        <div class="col-7">
-            <div class="card w-55" style="margin: 1.5em auto">
-                <div class="card-header"><h3>Update user</h3></div>
-                <div class="card-body">
-                    <form action="/user/update" method="post" enctype="multipart/form-data">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <!--                AVATAR-->
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label">New avatar image:</label>
-                            <div class="col-md-8">
-                                <input type="file" name="imageFile"
-                                       class="form-control-file">
-                            </div>
-                        </div>
-
-
-                        <!--                ERROR-->
-                        <div class="alert alert-danger" role="alert" th:if="${error}"
-                             th:text="${error}"></div>
-
-
-                        <!--                PASSWORD-->
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label">Current password:</label>
-                            <div class="col-md-8">
-                                <input type="password" class="form-control" name="password"
-                                       th:value="${user.password}"/>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label">New password:</label>
-                            <div class="col-md-8">
-                                <input type="password" class="form-control" name="newPassword"
-                                       th:value="${user.password}"/>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label">Confirm the password:</label>
-                            <div class="col-md-8">
-                                <input type="password" class="form-control" name="newPasswordConfirm"
-                                       th:value="${user.password}"/>
-                            </div>
-                        </div>
-
-                        <!--                LOCATION-->
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label">City:</label>
-                            <div class="col-md-8">
-                                <select class="form-control" name="cityName">
-                                    <option th:each="city : ${cities}" th:text="${city}"
-                                            th:selected="${city==user.getCity().getName()}"></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label">Address:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="address" th:value="${user.getAddress()}"/>
-                            </div>
-                        </div>
-
-
-                        <!--                DATE OF BIRTH-->
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label">Date of birth:</label>
-                            <div class="col-md-8">
-                                <input name="dateOfBirth" type="date" th:value="${user.getDateOfBirth()}"
-                                       class="form-control">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-outline-dark btn-sm my-1">Update</button>
-
-                    </form>
-
+        <a class="btn btn-outline-dark btn-sm my-1" href="/user/back">Back</a>
+    </div>
+    <div class="card w-50" style="margin: 1.5em auto">
+        <div class="card-header"><h3>Update user</h3></div>
+        <div class="card-body">
+            <form action="/user/update" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <!--                AVATAR-->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">New avatar image:</label>
+                    <div class="col-md-8">
+                        <input type="file" name="imageFile"
+                               class="form-control-file">
+                    </div>
                 </div>
-            </div>
+
+
+                <!--                ERROR-->
+                <div class="alert alert-danger" role="alert" th:if="${error}"
+                     th:text="${error}"></div>
+
+
+                <!--                PASSWORD-->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Current password:</label>
+                    <div class="col-md-8">
+                        <input type="password" class="form-control" name="password"
+                               th:value="${user.password}"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">New password:</label>
+                    <div class="col-md-8">
+                        <input type="password" class="form-control" name="newPassword"
+                               th:value="${user.password}"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Confirm the password:</label>
+                    <div class="col-md-8">
+                        <input type="password" class="form-control" name="newPasswordConfirm"
+                               th:value="${user.password}"/>
+                    </div>
+                </div>
+
+                <!--                LOCATION-->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">City:</label>
+                    <div class="col-md-8">
+                        <select class="form-control" name="cityName">
+                            <option th:each="city : ${cities}" th:text="${city}"
+                                    th:selected="${city==user.getCity().getName()}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Address:</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" name="address" th:value="${user.getAddress()}"/>
+                    </div>
+                </div>
+
+
+                <!--                DATE OF BIRTH-->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Date of birth:</label>
+                    <div class="col-md-8">
+                        <input name="dateOfBirth" type="date" th:value="${user.getDateOfBirth()}"
+                               class="form-control">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-outline-dark btn-sm my-1">Update</button>
+
+            </form>
 
         </div>
 
 
     </div>
+
+
+</div>
 
 </div>
 

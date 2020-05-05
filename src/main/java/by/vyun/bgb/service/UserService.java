@@ -52,7 +52,7 @@ public class UserService {
             throw new RegistrationException("Login duplicated!");
         }
         Image avatar = new Image();
-        if (imageFile == null) {
+        if (imageFile.isEmpty()) {
             avatar.setData(imageRepo.findFirstByName(DEFAULT_AVATAR).getData());
             avatar.setName(user.getLogin());
         } else {
@@ -115,9 +115,14 @@ public class UserService {
 
 
     public List<BoardGame> getUnsubscribedGames(User currentUser) {
-        List<BoardGame> allGames = gameRepo.findAll();
+        List<BoardGame> allGames = new ArrayList<>();
+        for (BoardGame game : gameRepo.findAll()) {
+            if (game.getIsActive()) {
+                allGames.add(game);
+            }
+        }
         for (BoardGame game : currentUser.getGameCollection()) {
-            if (allGames.contains(game)) {
+            if (!game.getIsActive() || allGames.contains(game)) {
                 allGames.remove(game);
             }
         }

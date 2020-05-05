@@ -13,35 +13,30 @@
     <span th:text="${error}" style="background-color: lightpink; "></span>
 </div>
 
-<!--<form action="/user/image" method="post" enctype="multipart/form-data">-->
-<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
-<!--    <input type="text" name="name">-->
-<!--    <input type="file" name="file">-->
-<!--    <input type="submit">-->
-<!--</form>-->
-<!--<a href="/user/image?name=www">Image</a>-->
+
 
 <div class="container" th:if="${error == null}">
     <div class="row justify-content-center">
         <div class="col-3">
-            <h1 th:text="${user.login}"></h1>
-            <img th:src="${'data:image/png;base64,' + user.getAvatar().getPicture()}" width="120">
+            <br>
+            <img th:src="${'data:image/png;base64,' + user.getAvatar().getPicture()}" padding="10px" width="120">
             <h4><span th:text="${user.getAge()}"></span> years old</h4>
             <h5><span th:text="${user.getTotalExperience()}"></span> experience points</h5>
             <h5><span th:text="${user.getCompletedMeetsNumber()}"></span> meets completed</h5>
             <a class="btn btn-outline-dark btn-sm my-1" href="/user/update_page">Change account</a>
         </div>
         <div class="col-7" th:if="${#arrays.isEmpty(gameCollection)}">
-                <h4>Your game list is empty. Try to <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/gameList_page}">add games</a>.</h4>
+                <h4>Your game list is empty.<br> Try to <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/gameList_page}">add games</a></h4>
         </div>
         <div class="col-7" th:if="!${#arrays.isEmpty(gameCollection)}">
-                        <h1>My games <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/gameList_page}">+</a></h1>
-                <table class="table">
+                        <h2>My games <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/gameList_page}">+</a></h2>
+                <table class="table" id="games">
                     <tr>
-                        <th></th>
-                        <th>Board game</th>
-                        <th align="center">Game rating</th>
-                        <th align="center">My experience in game</th>
+                        <th class="btn-dark"></th>
+                        <th class="btn-dark" onclick="sortTable(1, 'games')"><a>Board game</a></th>
+                        <th class="btn-dark" onclick="sortTable(2, 'games')"><a>Game rating</a></th>
+                        <th class="btn-dark" onclick="sortTable(3, 'games')"><a>My experience in game</a></th>
+                        <th class="btn-dark"></th>
 
                     </tr>
                     <th:block th:each="game : ${gameCollection}">
@@ -64,17 +59,19 @@
 
 
     <div class="row justify-content-center" th:if="!${#arrays.isEmpty(meetingSet)}">
-        <div class="col-10">
-            <h1>My meetings</h1>
-            <table class="table">
+        <div class="col-12">
+            <h2>My meetings</h2>
+            <table class="table" id="meets">
                 <tr>
-                    <th>Board game</th>
-                    <th>City</th>
-                    <th>Location</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th align="center">Members</th>
-                    <th>Creator</th>
+                    <th class="btn-dark" onclick="sortTable(0, 'meets')"><a>Board game</a></th>
+                    <th class="btn-dark" onclick="sortTable(1, 'meets')"><a>City</a></th>
+                    <th class="btn-dark" onclick="sortTable(2, 'meets')"><a>Location</a></th>
+                    <th class="btn-dark" onclick="sortTable(3, 'meets')"><a>Date</a></th>
+                    <th class="btn-dark" onclick="sortTable(4, 'meets')"><a>Time</a></th>
+                    <th class="btn-dark" onclick="sortTable(5, 'meets')"><a>Members</a></th>
+                    <th class="btn-dark" onclick="sortTable(6, 'meets')"><a>Creator</a></th>
+                    <th class="btn-dark" onclick="sortTable(7, 'meets')"><a>Status</a></th>
+                    <th class="btn-dark"></th>
                 </tr>
                 <th:block th:each="meeting : ${meetingSet}">
                     <tr>
@@ -85,6 +82,7 @@
                         <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
                         <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
                         <td th:text="${meeting.getCreator().getLogin()}"></td>
+                        <td th:text="${meeting.getState().name()}"></td>
                         <td><a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/see_meet(meetId = ${meeting.getId()})}">See details</a></td>
 
                     </tr>
@@ -96,6 +94,6 @@
 
 
 </div>
-
+<script th:replace="insert/fragment :: table-sort"></script>
 </body>
 </html>
