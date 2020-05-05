@@ -16,8 +16,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Controller
 @AllArgsConstructor
@@ -72,18 +74,18 @@ public class AdminController {
     }
 
     @PostMapping("/update")
-    public String update(User changedUser, Model model, HttpSession session) {
+    public String update(User changedUser, Model model, MultipartFile imageFile) {
         try {
             User currentUser = getCurrentUser();
-            currentUser = userService.update(currentUser.getId(), changedUser);
+            currentUser = userService.update(currentUser.getId(), changedUser, imageFile);
             //session.setAttribute("user", currentUser);
             model.addAttribute("user", currentUser);
             model.addAttribute("users", userService.getAllUsers());
             model.addAttribute("games", gameService.getAllGames());
             model.addAttribute("cities", cityService.getAllCities());
             return "admin_page";
-        } catch (RegistrationException ex) {
-            model.addAttribute("error", ex.getMessage());
+        } catch (RegistrationException | IOException e) {
+            model.addAttribute("error", e.getMessage());
         }
         return "redirect:/";
     }

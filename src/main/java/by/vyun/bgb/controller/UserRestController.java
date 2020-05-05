@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -60,12 +62,12 @@ public class UserRestController {
 
     //************************************** USERS CRUD
     @PostMapping("/user")
-    public String registration(User user, String cityName) {
+    public String registration(User user, String cityName, MultipartFile imageFile) {
         try {
-            userService.registration(user, cityName);
-        } catch (RegistrationException ex) {
-            System.out.println(ex.getMessage());
-            return ex.getMessage();
+            userService.registration(user, cityName, imageFile);
+        } catch (RegistrationException | IOException e) {
+            System.out.println(e.getMessage());
+            return e.getMessage();
         }
         return "ok";
     }
@@ -82,11 +84,11 @@ public class UserRestController {
     }
 
     @PutMapping("/user")
-    public User update(@RequestBody int userId, @RequestBody User changedUser) {
+    public User update(@RequestBody int userId, @RequestBody User changedUser, MultipartFile imageFile) {
         User currentUser = new User();
         try {
-            currentUser = userService.update(userId, changedUser);
-        } catch (RegistrationException ex) {
+            currentUser = userService.update(userId, changedUser, imageFile);
+        } catch (RegistrationException | IOException ex) {
             System.out.println(ex.getMessage());
         }
         return currentUser;

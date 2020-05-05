@@ -4,6 +4,7 @@ import by.vyun.bgb.entity.*;
 import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
 import by.vyun.bgb.exception.RegistrationException;
+import by.vyun.bgb.repository.ImageRepo;
 import by.vyun.bgb.service.BoardGameService;
 import by.vyun.bgb.service.UserService;
 import by.vyun.bgb.entity.*;
@@ -17,8 +18,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 @Controller
 @AllArgsConstructor
@@ -29,9 +33,34 @@ public class UserController {
     MeetingService meetingService;
     CityService cityService;
 
+    ImageRepo imageRepo;
+
 
     private User getCurrentUser() {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    @PostMapping("/image")
+    public String saveImg(String name, MultipartFile file, Model model) throws IOException {
+        Image image = new Image();
+        image.setName(name);
+        byte[] byteImg = file.getBytes();
+        image.setData(byteImg);
+        imageRepo.save(image);
+        User currentUser = getCurrentUser();
+        model.addAttribute("user", currentUser);
+        model.addAttribute("gameCollection", currentUser.getGameCollection());
+        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+        return "account";
+    }
+
+    @GetMapping("/image")
+    public String showImg(String name, Model model) {
+        Image image = imageRepo.findFirstByName(name);
+//        String encodedImg = Base64.getEncoder().encodeToString(image.getData());
+        model.addAttribute("img", image);
+        return "image";
     }
 
     @GetMapping("/registration")
@@ -57,7 +86,7 @@ public class UserController {
 
     @GetMapping("/rateGame_page")
     public String rateGamePage(int gameId, Model model) {
-        model.addAttribute("gameId", gameId);
+        model.addAttribute("game", gameService.getGameById(gameId));
         model.addAttribute("oldRate",
                 gameService.getRatingValueByUserIdAndGameId(gameId, getCurrentUser().getId()));
         return "game_rate";
@@ -140,16 +169,17 @@ public class UserController {
     //**********************begin user
 
     @PostMapping("/registration")
-    public String registration(User user, String passwordConfirm, String cityName, Model model) {
+    public String registration(User user, String passwordConfirm, String cityName,
+                               MultipartFile imageFile, Model model) {
         if (user.checkPassword(passwordConfirm)) {
             model.addAttribute("error", "Password and it's confirmations are the different!");
             model.addAttribute("cities", cityService.getAllCityNames());
             return "registration";
         }
         try {
-            userService.registration(user, cityName);
-        } catch (RegistrationException ex) {
-            model.addAttribute("error", ex.getMessage());
+            userService.registration(user, cityName, imageFile);
+        } catch (RegistrationException | IOException e) {
+            model.addAttribute("error", e.getMessage());
             model.addAttribute("cities", cityService.getAllCityNames());
             return "registration";
         }
@@ -158,7 +188,8 @@ public class UserController {
 
 
     @PostMapping("/update")
-    public String update(User changedUser, String newPassword, String newPasswordConfirm, String cityName, Model model) {
+    public String update(User changedUser, String newPassword, String newPasswordConfirm, String cityName,
+                         MultipartFile imageFile, Model model) {
         try {
             User currentUser = getCurrentUser();
             if (currentUser.checkPassword(changedUser.getPassword())) {
@@ -173,14 +204,14 @@ public class UserController {
             }
             changedUser.setPassword(newPassword);
             changedUser.setCity(cityService.getCityByName(cityName));
-            currentUser = userService.update(currentUser.getId(), changedUser);
+            currentUser = userService.update(currentUser.getId(), changedUser, imageFile);
             currentUser = userService.getUserById(currentUser.getId());
             model.addAttribute("user", currentUser);
             model.addAttribute("gameCollection", currentUser.getGameCollection());
             model.addAttribute("meetingSet", currentUser.getMeetingSet());
             model.addAttribute("createdMeets", currentUser.getCreatedMeets());
             return "account";
-        } catch (RegistrationException ex) {
+        } catch (RegistrationException | IOException ex) {
             model.addAttribute("error", ex.getMessage());
         }
         return "redirect:/";
@@ -213,16 +244,16 @@ public class UserController {
     @GetMapping("/rate_game")
     public String rateGame(Integer gameId, float rate, Model model) {
         User currentUser = getCurrentUser();
+        BoardGame game = gameService.getGameById(gameId);
         try {
             gameService.rateGame(gameId, currentUser.getId(), rate);
         } catch (InvalidInputException ex) {
             model.addAttribute("error", ex.getMessage());
-            model.addAttribute("gameId", gameId);
+            model.addAttribute("game", game);
             model.addAttribute("oldRate",
                     gameService.getRatingValueByUserIdAndGameId(gameId, getCurrentUser().getId()));
             return "game_rate";
         }
-        BoardGame game = gameService.getGameById(gameId);
         model.addAttribute("meetings", game.getMeetings());
         model.addAttribute("game", game);
         model.addAttribute("user", currentUser);

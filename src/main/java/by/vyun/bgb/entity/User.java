@@ -31,6 +31,10 @@ public class User {
     private String address;
     private Boolean isActive = true;
 
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image avatar;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 

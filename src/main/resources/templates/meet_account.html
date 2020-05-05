@@ -14,10 +14,10 @@
 </div>
 <div class="container">
     <div class="row" sec:authorize="!isAuthenticated()">
-        <a href="/">Back</a>
+        <a class="btn btn-outline-dark btn-sm my-1" href="/">Back</a>
     </div>
     <div class="row" sec:authorize="isAuthenticated()">
-        <a href="/user/back">Back</a>
+        <a class="btn btn-outline-dark btn-sm my-1" href="/user/back">Back</a>
     </div>
 
     <!--    GAME DETAILS-->
@@ -39,22 +39,22 @@
                     <div th:if="${meet.getCreator() == user}">
 
 
-                        <a th:if="${meet.getState().name() != 'Activated'}"
+                        <a class="btn btn-outline-dark btn-sm my-1" th:if="${meet.getState().name() != 'Activated'}"
                            th:onclick="return confirm('Delete meeting?')"
                            th:href="@{/user/delete_meet(meetId = ${meet.getId()})}">Delete meeting</a>
 
-                        <a th:if="${meet.getState().name() == 'Activated'}"
+                        <a class="btn btn-outline-dark btn-sm my-1" th:if="${meet.getState().name() == 'Activated'}"
                            th:onclick="return confirm('Close meeting?')"
                            th:href="@{/user/close_meet(meetId = ${meet.getId()})}">Close meeting</a>
 
                         <br>
 
-                        <a th:if="${meet.getState().name() == 'Started'}"
+                        <a class="btn btn-outline-dark btn-sm my-1" th:if="${meet.getState().name() == 'Started'}"
                            th:href="@{/user/activate_meet(meetId = ${meet.getId()})}">Activate meeting</a>
                     </div>
 
                     <div th:if="${!(meet.getCreator() == user) and meet.getState().name() != 'Activated'}">
-                        <a th:href="@{/user/leave_meet(meetId = ${meet.getId()})}">Leave meeting</a>
+                        <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/leave_meet(meetId = ${meet.getId()})}">Leave meeting</a>
                     </div>
 
                 </td>
@@ -86,7 +86,7 @@
                                         <td th:text="${usr.getTotalExperience()}" align="right"></td>
                                         <div th:if="${meet.getCreator() == user and meet.getState().name() != 'Activated'}">
                                             <td th:if="${user != usr}">
-                                                <a th:onclick="return confirm('Delete user from meeting?')"
+                                                <a class="btn btn-outline-dark btn-sm my-1" th:onclick="return confirm('Delete user from meeting?')"
                                                    th:href="@{/user/delete_user_from_meet(userId = ${usr.getId()}, meetId = ${meet.getId()})}">Delete</a>
                                             </td>
                                             <td th:if="${user == usr}">
@@ -108,7 +108,7 @@
                             </table>
                         </fieldset>
                         <input th:if="${meet.getState().name() == 'Activated' and !voicedUsers.contains(user)}"
-                               class="btn btn-lg btn-primary " type="submit" value="Rate members">
+                               class="btn btn-outline-dark btn-sm my-1" type="submit" value="Rate members">
                     </form>
                 </td>
             </tr>

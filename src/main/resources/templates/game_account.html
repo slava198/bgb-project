@@ -14,10 +14,10 @@
 </div>
 <div class="container" th:if="${error == null}">
     <div class="row" sec:authorize="!isAuthenticated()">
-        <a href="/">Back</a>
+        <a class="btn btn-outline-dark btn-sm my-1" href="/">Back</a>
     </div>
     <div class="row" sec:authorize="isAuthenticated()">
-        <a href="/user/back">Back</a>
+        <a class="btn btn-outline-dark btn-sm my-1" href="/user/back">Back</a>
     </div>
 
     <!--    GAME DETAILS-->
@@ -25,79 +25,79 @@
         <h1 th:text="${game.getTitle()}"></h1>
     </div>
     <div class="row justify-content-left">
+        <div class="col-9">
 
-        <table cellpadding="20px">
-            <tr>
-                <td>
-                    <div><img th:src="${game.getLogo()}" height="150px"></div>
-                    <div><span>Rating: <span th:text="${game.getRatingValue()}"></span></span></div>
-                    <div><span>Meetings: <span th:text="${game.getNumberOfMeetings()}"></span></span></div>
-                    <div><span>Gamers: <span th:text="${game.getNumberOfOwners()}"></span></span></div>
-                    <div sec:authorize="isAuthenticated()">
-                        <form onSubmit='return confirm("Delete game from your collection?");'
-                        th:action="@{/user/remove_game}" method="get">
-                            <input hidden name="gameId" th:value="${game.getId()}">
-                            <input class="btn btn-link" type="submit" value="Delete game">
-                        </form>
-<!--                        <a th:href="@{/user/remove_game(gameId = ${game.id})}">Delete game</a><br>-->
-                        <a class="btn btn-link" th:href="@{/user/rateGame_page(gameId=${game.getId()})}">Rate game</a>
-                    </div>
-                </td>
-                <td valign="top">
-                    <p th:text="${game.getDescription()}"></p>
-                </td>
-            </tr>
-        </table>
-
-
-
-    </div><br>
+            <table cellpadding="20px">
+                <tr>
+                    <td>
+                        <div><img th:src="${game.getLogo()}" height="150px"></div>
+                        <div><span>Rating: <span th:text="${game.getRatingValue()}"></span></span></div>
+                        <div><span>Meetings: <span th:text="${game.getNumberOfMeetings()}"></span></span></div>
+                        <div><span>Gamers: <span th:text="${game.getNumberOfOwners()}"></span></span></div>
+                        <div sec:authorize="isAuthenticated()">
+                            <form onSubmit='return confirm("Delete game from your collection?");'
+                                  th:action="@{/user/remove_game}" method="get">
+                                <input hidden name="gameId" th:value="${game.getId()}">
+                                <input class="btn btn-outline-dark btn-sm my-1" type="submit" value="Delete game">
+                            </form>
+                            <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/rateGame_page(gameId=${game.getId()})}">Rate
+                                game</a>
+                        </div>
+                    </td>
+                    <td valign="top">
+                        <p th:text="${game.getDescription()}"></p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br>
 
     <!--    MEETINGS-->
     <div sec:authorize="isAuthenticated()">
-
-    <div class="row"  >
-        <h1 align="left">Meetings <a th:href="@{/user/createMeet_page(gameId = ${game.id})}">+</a></h1>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-9">
-        <table class="table">
-            <tr>
-                <th>City</th>
-                <th>Location</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th align="center">Members</th>
-                <th>Creator</th>
-
-            </tr>
-            <th:block th:each="meeting : ${meetings}">
-                <tr>
-
-                    <td th:text="${meeting.getCity().getName()}" height="16px"></td>
-                    <td th:text="${meeting.getLocation()}" ></td>
-                    <td th:text="${#temporals.format(meeting.getDateTime(), 'dd-MM-yyyy')}" ></td>
-                    <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
-                    <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
-                    <td th:text="${meeting.getCreator().getLogin()}"></td>
-                    <div th:if="${!user.getMeetingSet().contains(meeting)}">
-                        <td th:if="${meeting.getState().name() != 'Activated'}">
-                            <a th:href="@{/user/add_meet(meetId = ${meeting.getId()})}">Take part</a>
-                        </td>
-                        <td th:if="${meeting.getState().name() == 'Activated'}">Unable to take part (meeting in process)</td>
-                    </div>
-
-                    <td th:if="${user.getMeetingSet().contains(meeting)}">Already in!</td>
-
-                </tr>
-            </th:block>
-        </table>
+        <div class="row">
+            <h1 align="left">Meetings
+                <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/createMeet_page(gameId = ${game.id})}">+</a></h1>
         </div>
-    </div>
+        <div class="row justify-content-center">
+            <div class="col-9">
+                <table class="table">
+                    <tr>
+                        <th>City</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th align="center">Members</th>
+                        <th>Creator</th>
+
+                    </tr>
+                    <th:block th:each="meeting : ${meetings}">
+                        <tr>
+
+                            <td th:text="${meeting.getCity().getName()}" height="16px"></td>
+                            <td th:text="${meeting.getLocation()}"></td>
+                            <td th:text="${#temporals.format(meeting.getDateTime(), 'dd-MM-yyyy')}"></td>
+                            <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}"></td>
+                            <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
+                            <td th:text="${meeting.getCreator().getLogin()}"></td>
+                            <div th:if="${!user.getMeetingSet().contains(meeting)}">
+                                <td th:if="${meeting.getState().name() != 'Activated'}">
+                                    <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/add_meet(meetId = ${meeting.getId()})}">Take part</a>
+                                </td>
+                                <td th:if="${meeting.getState().name() == 'Activated'}">Unable to take part (meeting in
+                                    process)
+                                </td>
+                            </div>
+
+                            <td th:if="${user.getMeetingSet().contains(meeting)}">Already in!</td>
+
+                        </tr>
+                    </th:block>
+                </table>
+            </div>
+        </div>
 
     </div>
-
-
 
 
     <!--    <table cellpadding="5" cellspacing="0">-->

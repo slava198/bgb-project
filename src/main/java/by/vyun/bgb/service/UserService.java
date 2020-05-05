@@ -1,18 +1,20 @@
 package by.vyun.bgb.service;
 
-import by.vyun.bgb.repository.BoardGameRepo;
+import by.vyun.bgb.entity.Image;
+import by.vyun.bgb.repository.*;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.exception.RegistrationException;
 import by.vyun.bgb.entity.Meeting;
 import by.vyun.bgb.entity.User;
-import by.vyun.bgb.repository.CityRepo;
-import by.vyun.bgb.repository.MeetingRepo;
-import by.vyun.bgb.repository.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static by.vyun.bgb.entity.Const.DEFAULT_AVATAR;
 
 
 @Service
@@ -22,6 +24,7 @@ public class UserService {
     BoardGameRepo gameRepo;
     MeetingRepo meetingRepo;
     CityRepo cityRepo;
+    ImageRepo imageRepo;
 
 
     public void changeUserStatus(int userId) {
@@ -41,13 +44,23 @@ public class UserService {
     }
 
 
-    public User registration(User user, String cityName) throws RegistrationException {
+    public User registration(User user, String cityName, MultipartFile imageFile) throws RegistrationException, IOException {
         if (user.getLogin().trim().length() * user.getPassword().trim().length() * cityName.trim().length() == 0) {
             throw new RegistrationException("Empty login, password or location field!");
         }
         if (userRepo.getFirstByLogin(user.getLogin()) != null) {
             throw new RegistrationException("Login duplicated!");
         }
+        Image avatar = new Image();
+        if (imageFile == null) {
+            avatar.setData(imageRepo.findFirstByName(DEFAULT_AVATAR).getData());
+            avatar.setName(user.getLogin());
+        } else {
+            avatar.setData(imageFile.getBytes());
+            avatar.setName(imageFile.getOriginalFilename());
+        }
+        imageRepo.saveAndFlush(avatar);
+        user.setAvatar(avatar);
         user.setCity(cityRepo.getFirstByName(cityName));
         user = userRepo.save(user);
         return user;
@@ -66,8 +79,15 @@ public class UserService {
     }
 
 
-    public User update(int id, User changedUser) throws RegistrationException {
+    public User update(int id, User changedUser, MultipartFile imageFile) throws RegistrationException, IOException {
         User currentUser = userRepo.getFirstById(id);
+        if (!imageFile.isEmpty()) {
+            Image avatar = imageRepo.findFirstById(currentUser.getAvatar().getId());
+            avatar.setData(imageFile.getBytes());
+            avatar.setName(imageFile.getOriginalFilename());
+            imageRepo.saveAndFlush(avatar);
+            currentUser.setAvatar(avatar);
+        }
         currentUser.setCity(changedUser.getCity());
         currentUser.setAddress(changedUser.getAddress());
         currentUser.setDateOfBirth(changedUser.getDateOfBirth());

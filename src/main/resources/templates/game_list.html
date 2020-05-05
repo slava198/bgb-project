@@ -17,7 +17,7 @@
 <div class="container">
 
     <div class="row">
-        <a href="/user/back">Back</a>
+        <a class="btn btn-outline-dark btn-sm my-1" href="/user/back">Back</a>
     </div>
     <div class="row">
         <h1 th:text="${user.login}"></h1>
@@ -41,7 +41,7 @@
                         <td th:text="${game.getRatingValue()}" align="center"></td>
                         <td th:text="${game.getNumberOfOwners()}" align="center"></td>
                         <td th:text="${game.getNumberOfMeetings()}" align="center"></td>
-                        <td><a th:href="@{/user/add_game(gameId = ${game.id})}">Add to collection</a></td>
+                        <td><a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/add_game(gameId = ${game.id})}">Add to collection</a></td>
                     </tr>
                 </th:block>
             </table>

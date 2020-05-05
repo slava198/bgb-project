@@ -13,20 +13,29 @@
     <span th:text="${error}" style="background-color: lightpink; "></span>
 </div>
 
+<!--<form action="/user/image" method="post" enctype="multipart/form-data">-->
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+<!--    <input type="text" name="name">-->
+<!--    <input type="file" name="file">-->
+<!--    <input type="submit">-->
+<!--</form>-->
+<!--<a href="/user/image?name=www">Image</a>-->
+
 <div class="container" th:if="${error == null}">
     <div class="row justify-content-center">
         <div class="col-3">
             <h1 th:text="${user.login}"></h1>
+            <img th:src="${'data:image/png;base64,' + user.getAvatar().getPicture()}" width="120">
             <h4><span th:text="${user.getAge()}"></span> years old</h4>
             <h5><span th:text="${user.getTotalExperience()}"></span> experience points</h5>
             <h5><span th:text="${user.getCompletedMeetsNumber()}"></span> meets completed</h5>
-            <a href="/user/update_page">Change account</a>
+            <a class="btn btn-outline-dark btn-sm my-1" href="/user/update_page">Change account</a>
         </div>
         <div class="col-7" th:if="${#arrays.isEmpty(gameCollection)}">
-                <h4>Your game list is empty. Try to <a th:href="@{/user/gameList_page}">add games</a>.</h4>
+                <h4>Your game list is empty. Try to <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/gameList_page}">add games</a>.</h4>
         </div>
         <div class="col-7" th:if="!${#arrays.isEmpty(gameCollection)}">
-                        <h1>My games <a th:href="@{/user/gameList_page}">+</a></h1>
+                        <h1>My games <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/gameList_page}">+</a></h1>
                 <table class="table">
                     <tr>
                         <th></th>
@@ -44,7 +53,7 @@
                             <td th:text="${game.getRatingValue()}" align="center"></td>
                             <td th:text="${user.getExperienceInGame(game)}" align="center"></td>
                             <td>
-                                <a th:href="@{/user/see_game(gameId = ${game.id})}">See more...</a>
+                                <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/see_game(gameId = ${game.id})}">See more...</a>
                             </td>
 
                         </tr>
@@ -76,7 +85,7 @@
                         <td th:text="${#temporals.format(meeting.getDateTime(), 'HH:mm')}" ></td>
                         <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
                         <td th:text="${meeting.getCreator().getLogin()}"></td>
-                        <td><a th:href="@{/user/see_meet(meetId = ${meeting.getId()})}">See details</a></td>
+                        <td><a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/see_meet(meetId = ${meeting.getId()})}">See details</a></td>
 
                     </tr>
                 </th:block>
