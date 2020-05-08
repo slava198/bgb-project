@@ -14,9 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final SecurityUserService securityUserService;
 
-    @Autowired
-    SecurityUserService securityUserService;
+    public WebSecurityConfig(SecurityUserService securityUserService) {
+        this.securityUserService = securityUserService;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -31,7 +33,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/user/registration").permitAll()
                 .and()
                 .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/user/login")
+                //.defaultSuccessUrl("/account", true)
                 .successForwardUrl("/account")
+                .usernameParameter("login")
                 .and()
                 .logout()
                 .logoutUrl("/logout")

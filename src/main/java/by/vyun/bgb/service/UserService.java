@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static by.vyun.bgb.entity.Const.DEFAULT_AVATAR;
 
@@ -25,6 +26,7 @@ public class UserService {
     MeetingRepo meetingRepo;
     CityRepo cityRepo;
     ImageRepo imageRepo;
+    private EmailService emailService;
 
 
     public void changeUserStatus(int userId) {
@@ -62,8 +64,15 @@ public class UserService {
         imageRepo.saveAndFlush(avatar);
         user.setAvatar(avatar);
         user.setCity(cityRepo.getFirstByName(cityName));
+        user.setActivationCode(new Random(999999).nextLong());
+        //new thread
+        sendActivationCode(user);
         user = userRepo.save(user);
         return user;
+    }
+
+    public void sendActivationCode(User user) {
+        emailService.sendSimpleMessage(user.getEmail(), "Activating account", "Your confirmation code is:  " + user.getActivationCode());
     }
 
 

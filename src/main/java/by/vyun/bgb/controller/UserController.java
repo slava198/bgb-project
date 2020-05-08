@@ -5,11 +5,7 @@ import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
 import by.vyun.bgb.exception.RegistrationException;
 import by.vyun.bgb.repository.ImageRepo;
-import by.vyun.bgb.service.BoardGameService;
-import by.vyun.bgb.service.UserService;
-import by.vyun.bgb.entity.*;
-import by.vyun.bgb.service.CityService;
-import by.vyun.bgb.service.MeetingService;
+import by.vyun.bgb.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,23 +18,26 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Base64;
 
 @Controller
 @AllArgsConstructor
 @RequestMapping("/user")
 public class UserController {
-    UserService userService;
-    BoardGameService gameService;
-    MeetingService meetingService;
-    CityService cityService;
+    private final UserService userService;
+    private final BoardGameService gameService;
+    private final MeetingService meetingService;
+    private final CityService cityService;
+    private final ImageRepo imageRepo;
 
-    ImageRepo imageRepo;
 
 
     private User getCurrentUser() {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
     }
+
+
+
+
 
     @PostMapping("/image")
     public String saveImg(String name, MultipartFile file, Model model) throws IOException {
@@ -52,7 +51,7 @@ public class UserController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
     @GetMapping("/image")
@@ -66,7 +65,7 @@ public class UserController {
     @GetMapping("/registration")
     public String registrationPage(Model model) {
         model.addAttribute("cities", cityService.getAllCityNames());
-        return "registration";
+        return "user_register";
     }
 
     @GetMapping("/update_page")
@@ -153,7 +152,7 @@ public class UserController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
     @GetMapping("/createMeet_page")
@@ -168,13 +167,30 @@ public class UserController {
 
     //**********************begin user
 
+    @PostMapping("/login")
+    public String login(Model model, User user) {
+        User currentUser;
+        try {
+            currentUser = userService.signIn(user.getLogin(), user.getPassword());
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "login";
+        }
+        model.addAttribute("user", currentUser);
+        model.addAttribute("gameCollection", currentUser.getGameCollection());
+        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+        return "user_account";
+    }
+
+
     @PostMapping("/registration")
     public String registration(User user, String passwordConfirm, String cityName,
                                MultipartFile imageFile, Model model) {
         if (user.checkPassword(passwordConfirm)) {
             model.addAttribute("error", "Password and it's confirmations are the different!");
             model.addAttribute("cities", cityService.getAllCityNames());
-            return "registration";
+            return "user_register";
         }
         try {
             userService.registration(user, cityName, imageFile);
@@ -210,7 +226,7 @@ public class UserController {
             model.addAttribute("gameCollection", currentUser.getGameCollection());
             model.addAttribute("meetingSet", currentUser.getMeetingSet());
             model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-            return "account";
+            return "user_account";
         } catch (RegistrationException | IOException ex) {
             model.addAttribute("error", ex.getMessage());
         }
@@ -238,7 +254,7 @@ public class UserController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
     @GetMapping("/rate_game")
@@ -282,7 +298,7 @@ public class UserController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
 
@@ -325,7 +341,7 @@ public class UserController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
     @GetMapping("/delete_user_from_meet")
@@ -352,7 +368,7 @@ public class UserController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
 

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Controller
@@ -99,7 +98,7 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
 
@@ -115,7 +114,7 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
     @GetMapping("/cities")
@@ -130,7 +129,7 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
     @GetMapping("/admin_page")
@@ -147,7 +146,7 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 
     @GetMapping("/changeGameStatus")

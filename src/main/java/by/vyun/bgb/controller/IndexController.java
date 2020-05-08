@@ -24,10 +24,17 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model) {
 
-        emailService.sendSimpleMessage("slava198@tut.by", "test", "Your confirmation code is: 135135");
+        // emailService.sendSimpleMessage("slava198@tut.by", "test", "Your confirmation code is: 135135");
 
         model.addAttribute("games", gameService.getAllGames());
         model.addAttribute("meetings", meetingService.getAllMeetings());
+        return "index";
+    }
+
+
+    @GetMapping("login")
+    public String login() {
+        return "user_login";
     }
 
     @PostMapping("/account")
@@ -38,6 +45,6 @@ public class IndexController {
         model.addAttribute("gameCollection", signedUser.getGameCollection());
         model.addAttribute("meetingSet", signedUser.getMeetingSet());
         model.addAttribute("createdMeets", signedUser.getCreatedMeets());
-        return "account";
+        return "user_account";
     }
 }

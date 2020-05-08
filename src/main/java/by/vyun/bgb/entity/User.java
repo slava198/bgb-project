@@ -29,7 +29,10 @@ public class User {
     private String login;
     private String password;
     private String address;
+    private String email;
     private Boolean isActive = true;
+    private Boolean isEnabled = false;
+    private long activationCode;
 
     @OneToOne
     @JoinColumn(name = "image_id")
