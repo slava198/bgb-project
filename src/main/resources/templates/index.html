@@ -9,9 +9,8 @@
 </head>
 <body>
 <script th:replace="insert/fragment :: navbar"></script>
-<div th:if="${error}" style="text-align: center">
-    <span th:text="${error}" style="background-color: lightpink; "></span>
-</div>
+<div class="alert alert-danger" role="alert" th:if="${error}"
+     th:text="${error}"></div>
 
 <div class="container-fluid">
     <h2>Actual board games</h2>

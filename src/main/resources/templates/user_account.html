@@ -45,7 +45,7 @@
                                 <img th:src="${game.getLogo()}" height="30px">
                             </td>
                             <td th:text="${game.getTitle()}" height="16px"></td>
-                            <td th:text="${game.getRatingValue()}" align="center"></td>
+                            <td th:text="${#numbers.formatDecimal(game.getRatingValue(),1,2)}" align="center"></td>
                             <td th:text="${user.getExperienceInGame(game)}" align="center"></td>
                             <td>
                                 <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/see_game(gameId = ${game.id})}">See more...</a>

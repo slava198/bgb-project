@@ -17,7 +17,7 @@
     <div class="card w-50" style="margin: 1.5em auto">
         <div class="card-header"><h3>Create new city</h3></div>
         <div class="card-body">
-            <form method="post" action="/admin/add_city">
+            <form method="post" action="/admin/city">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <!--                ERROR-->
                 <div class="alert alert-danger" role="alert" th:if="${error}"

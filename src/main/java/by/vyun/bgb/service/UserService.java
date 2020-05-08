@@ -79,10 +79,10 @@ public class UserService {
     public User signIn(String login, String password) throws RegistrationException {
         User foundedUser = userRepo.getFirstByLogin(login);
         if (foundedUser == null) {
-            throw new RegistrationException("Login not founded!");
+            throw new RegistrationException("Login not found");
         }
         if (foundedUser.checkPassword(password)) {
-            throw new RegistrationException("Invalid password!");
+            throw new RegistrationException("Invalid password");
         }
         return foundedUser;
     }

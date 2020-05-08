@@ -16,16 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @AllArgsConstructor
 public class IndexController {
-    UserService userService;
-    BoardGameService gameService;
-    MeetingService meetingService;
-    EmailService emailService;
+    private final UserService userService;
+    private final BoardGameService gameService;
+    private final MeetingService meetingService;
+    private final EmailService emailService;
 
     @GetMapping("/")
     public String index(Model model) {
-
-        // emailService.sendSimpleMessage("slava198@tut.by", "test", "Your confirmation code is: 135135");
-
         model.addAttribute("games", gameService.getAllGames());
         model.addAttribute("meetings", meetingService.getAllMeetings());
         return "index";

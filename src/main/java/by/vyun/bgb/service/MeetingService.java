@@ -52,7 +52,7 @@ public class MeetingService {
     public Meeting activateMeet(int meetId) throws MeetingException {
         Meeting meet = meetingRepo.getFirstById(meetId);
         if (meet.getNumberOfMembers() < 2) {
-            throw new MeetingException("Meeting should have at least 2 members!");
+            throw new MeetingException("Meeting should have at least 2 members");
         }
         meet.setState(MeetingState.Activated);
         return meetingRepo.saveAndFlush(meet);
@@ -63,13 +63,13 @@ public class MeetingService {
         int ratingsSum = 0;
         for (MeetingResultElement resultElement : results.getResults()) {
             if (resultElement.getRate() == null) {
-                throw new InvalidInputException("All rating fields should be filled!");
+                throw new InvalidInputException("All rating fields should be filled");
             }
             ratingsSum += resultElement.getRate();
         }
         Meeting meet = meetingRepo.getFirstById(meetId);
         if (ratingsSum > meet.getNumberOfMembers()) {
-            throw new InvalidInputException("Sum of the rates shouldn't exceed number of the members!");
+            throw new InvalidInputException("Sum of the rates shouldn't exceed number of the members");
         }
         MeetingResult result;
         double userExperience = currentUser.getExperienceInGame(meet.getGame());
@@ -86,7 +86,7 @@ public class MeetingService {
 
     public void closeMeet(int meetId) throws MeetingException {
         if (getNumberOfVoiced(meetId) < 2) {
-            throw new MeetingException("At least 2 members should voiced!");
+            throw new MeetingException("At least 2 members should voiced");
         }
         BoardGame game = meetingRepo.getFirstById(meetId).getGame();
         List<User> voicedMembers = getVoicedUsers(meetId);

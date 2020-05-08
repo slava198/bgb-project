@@ -9,34 +9,27 @@
 <p th:fragment="headerElement" th:remove="tag">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<!--    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>-->
-
-<!--    <script-->
-<!--            src="https://code.jquery.com/jquery-3.4.1.min.js"-->
-<!--            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="-->
-<!--            crossorigin="anonymous"></script>-->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
 </p>
 
+
 <div th:fragment="navbar" th:remove="tag">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top">
+
         <a href="/" class="navbar-brand">
             <img src="https://seeklogo.com/images/D/Dices-logo-0B284DF5A0-seeklogo.com.png"
                  height="35px" alt="Boardgame Battleground">
         </a>
         <div class="collapse navbar-collapse" id="navbarText">
             <div class="navbar-nav">
-                <h3 sec:authorize="isAuthenticated()" th:text="${#authentication.getPrincipal().getUsername()}"
-                   href="#" class="nav-item nav-link active"></h3>
-
-
-
+                <h3 sec:authorize="isAuthenticated()"
+                    th:text="${#authentication.getPrincipal().getUsername()}"
+                    href="#" class="nav-item nav-link active">
+                </h3>
             </div>
             <div class="navbar-nav ml-auto">
-
                 <div class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')" style="margin-right: 10px;">
                     <a class=" btn btn-warning dropdown-toggle" href="#"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Admin tools
@@ -47,12 +40,6 @@
                         <a class="dropdown-item" href="/admin/cities">Cities</a>
                     </div>
                 </div>
-
-
-<!--                <div sec:authorize="hasRole('ROLE_ADMIN')">-->
-<!--                    <a href="/admin/admin_page" class="float-left btn btn-warning" style="margin-right: 10px;">Admin-->
-<!--                        page</a>-->
-<!--                </div>-->
 
                 <div sec:authorize="isAuthenticated()">
                     <form action="/user/back" method="get" class="float-right">
@@ -79,11 +66,10 @@
                         </button>
                     </form>
                 </div>
-
-
             </div>
         </div>
     </nav>
+
 </div>
 
 

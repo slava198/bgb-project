@@ -197,7 +197,7 @@ public class UserController {
         } catch (RegistrationException | IOException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("cities", cityService.getAllCityNames());
-            return "registration";
+            return "user_register";
         }
         return "redirect:/";
     }

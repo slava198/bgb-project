@@ -16,10 +16,10 @@ public class CityService {
 
     public City add(City city) throws CityException {
         if (city.getName().trim().length() * city.getLogo().trim().length() == 0) {
-            throw new CityException("Empty name or logo field!");
+            throw new CityException("Empty name or logo field");
         }
         if (cityRepo.getFirstByName(city.getName()) != null) {
-            throw new CityException("City name duplicated!");
+            throw new CityException("City name duplicated");
         }
         return cityRepo.save(city);
     }

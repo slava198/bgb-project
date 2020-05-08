@@ -9,9 +9,8 @@
 </head>
 <body>
 <script th:replace="insert/fragment :: navbar"></script>
-<div th:if="${error != null}" style="text-align: center">
-    <span th:text="${error}" style="background-color: lightpink; "></span>
-</div>
+<div class="alert alert-danger" role="alert" th:if="${error}"
+     th:text="${error}"></div>
 <div class="container" th:if="${error == null}">
     <div class="row" sec:authorize="!isAuthenticated()">
         <a class="btn btn-outline-dark btn-sm my-1" href="/">Back</a>
@@ -37,7 +36,7 @@
                     <td>
 
                         <div><img th:src="${game.getLogo()}" height="150px"></div>
-                        <div><span>Rating: <span th:text="${game.getRatingValue()}"></span></span></div>
+                        <div><span>Rating: <span th:text="${#numbers.formatDecimal(game.getRatingValue(),1,2)}"></span></span></div>
                         <div><span>Meetings: <span th:text="${game.getNumberOfMeetings()}"></span></span></div>
                         <div><span>Owners: <span th:text="${game.getNumberOfOwners()}"></span></span></div>
                         <div sec:authorize="isAuthenticated()">
@@ -76,14 +75,6 @@
                         <th class="btn-dark" onclick="sortTable(4, 'meets')"><a>Members</a></th>
                         <th class="btn-dark" onclick="sortTable(5, 'meets')"><a>Creator</a></th>
                         <th class="btn-dark"></th>
-
-<!--                        <th>City</th>-->
-<!--                        <th>Location</th>-->
-<!--                        <th>Date</th>-->
-<!--                        <th>Time</th>-->
-<!--                        <th align="center">Members</th>-->
-<!--                        <th>Creator</th>-->
-
                     </tr>
                     <th:block th:each="meeting : ${meetings}">
                         <tr>

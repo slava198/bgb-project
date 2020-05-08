@@ -24,9 +24,9 @@ import java.io.IOException;
 @AllArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
-    UserService userService;
-    BoardGameService gameService;
-    CityService cityService;
+    private final UserService userService;
+    private final BoardGameService gameService;
+    private final CityService cityService;
 
     private User getCurrentUser() {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -45,7 +45,7 @@ public class AdminController {
             model.addAttribute("error", ex.getMessage());
             return "game_create";
         }
-        model.addAttribute("user", getCurrentUser());
+        //model.addAttribute("user", getCurrentUser());
         model.addAttribute("games", gameService.getAllGames());
         return "admin_games";
     }
@@ -55,7 +55,7 @@ public class AdminController {
         return "city_create";
     }
 
-    @PostMapping("/add_city")
+    @PostMapping("/city")
     public String addCity(City city, Model model) {
         try {
             cityService.add(city);
@@ -63,33 +63,33 @@ public class AdminController {
             model.addAttribute("error", ex.getMessage());
             return "city_create";
         }
-        model.addAttribute("user", getCurrentUser());
+        //model.addAttribute("user", getCurrentUser());
         model.addAttribute("cities", cityService.getAllCities());
         return "admin_cities";
     }
 
-    @PostMapping("/update")
-    public String update(User changedUser, Model model, MultipartFile imageFile) {
-        try {
-            User currentUser = getCurrentUser();
-            currentUser = userService.update(currentUser.getId(), changedUser, imageFile);
-            //session.setAttribute("user", currentUser);
-            model.addAttribute("user", currentUser);
-            model.addAttribute("users", userService.getAllUsers());
-            model.addAttribute("games", gameService.getAllGames());
-            model.addAttribute("cities", cityService.getAllCities());
-            return "admin_page";
-        } catch (RegistrationException | IOException e) {
-            model.addAttribute("error", e.getMessage());
-        }
-        return "redirect:/";
-    }
+//    @PostMapping("/update")
+//    public String update(User changedUser, Model model, MultipartFile imageFile) {
+//        try {
+//            User currentUser = getCurrentUser();
+//            currentUser = userService.update(currentUser.getId(), changedUser, imageFile);
+//            //session.setAttribute("user", currentUser);
+//            model.addAttribute("user", currentUser);
+//            model.addAttribute("users", userService.getAllUsers());
+//            model.addAttribute("games", gameService.getAllGames());
+//            model.addAttribute("cities", cityService.getAllCities());
+//            return "admin_page";
+//        } catch (RegistrationException | IOException e) {
+//            model.addAttribute("error", e.getMessage());
+//        }
+//        return "redirect:/";
+//    }
 
 
     @GetMapping("/games")
     public String getGames(Model model) {
         User currentUser = getCurrentUser();
-        model.addAttribute("user", currentUser);
+        //model.addAttribute("user", currentUser);
         if (currentUser.getRoles().contains("ROLE_ADMIN")) {
             model.addAttribute("games", gameService.getAllGames());
             return "admin_games";
@@ -120,7 +120,7 @@ public class AdminController {
     @GetMapping("/cities")
     public String getCities(Model model) {
         User currentUser = getCurrentUser();
-        model.addAttribute("user", currentUser);
+        //model.addAttribute("user", currentUser);
         if (currentUser.getRoles().contains("ROLE_ADMIN")) {
             model.addAttribute("cities", cityService.getAllCities());
             return "admin_cities";
@@ -132,27 +132,27 @@ public class AdminController {
         return "user_account";
     }
 
-    @GetMapping("/admin_page")
-    public String signIn(Model model) {
-        User currentUser = getCurrentUser();
-        model.addAttribute("user", currentUser);
-        if (currentUser.getRoles().contains("ROLE_ADMIN")) {
-            model.addAttribute("users", userService.getAllUsers());
-            model.addAttribute("games", gameService.getAllGames());
-            model.addAttribute("cities", cityService.getAllCities());
-            return "admin_page";
-        }
-        model.addAttribute("createdMeetings", userService.getCreatedMeets(currentUser));
-        model.addAttribute("gameCollection", currentUser.getGameCollection());
-        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
-    }
+//    @GetMapping("/admin_page")
+//    public String signIn(Model model) {
+//        User currentUser = getCurrentUser();
+//        model.addAttribute("user", currentUser);
+//        if (currentUser.getRoles().contains("ROLE_ADMIN")) {
+//            model.addAttribute("users", userService.getAllUsers());
+//            model.addAttribute("games", gameService.getAllGames());
+//            model.addAttribute("cities", cityService.getAllCities());
+//            return "admin_page";
+//        }
+//        model.addAttribute("createdMeetings", userService.getCreatedMeets(currentUser));
+//        model.addAttribute("gameCollection", currentUser.getGameCollection());
+//        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+//        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+//        return "user_account";
+//    }
 
     @GetMapping("/changeGameStatus")
     public String changeGameStatus(int gameId, Model model) {
         gameService.changeGameStatus(gameId);
-        model.addAttribute("user", getCurrentUser());
+        //model.addAttribute("user", getCurrentUser());
         model.addAttribute("games", gameService.getAllGames());
         return "admin_games";
     }
@@ -161,7 +161,7 @@ public class AdminController {
     @GetMapping("/changeUserStatus")
     public String changeUserStatus(int userId, Model model) {
         userService.changeUserStatus(userId);
-        model.addAttribute("user", getCurrentUser());
+        //model.addAttribute("user", getCurrentUser());
         model.addAttribute("users", userService.getAllUsers());
         return "admin_users";
     }

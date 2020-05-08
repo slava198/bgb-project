@@ -31,10 +31,10 @@ public class BoardGameService {
 
     public BoardGame add(BoardGame game) throws BoardGameException {
         if (game.getTitle().trim().length() * game.getLogo().trim().length() * game.getDescription().trim().length() == 0) {
-            throw new BoardGameException("Empty logo, title or description field!");
+            throw new BoardGameException("Empty logo, title or description field");
         }
         if (gameRepo.getFirstByTitle(game.getTitle()) != null) {
-            throw new BoardGameException("Title duplicated!");
+            throw new BoardGameException("Title duplicated");
         }
         return gameRepo.save(game);
     }

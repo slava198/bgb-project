@@ -12,9 +12,8 @@
 <body>
 
 <script th:replace="insert/fragment :: navbar"></script>
-<div th:if="${error != null}" style="text-align: center">
-    <span th:text="${error}" style="background-color: lightpink; "></span>
-</div>
+<div class="alert alert-danger" role="alert" th:if="${error}"
+     th:text="${error}"></div>
 <div class="container">
     <div class="row justify-content-center">
         <span>
@@ -36,7 +35,7 @@
                     <tr>
                         <td><img th:src="${game.getLogo()}" height="30px" align="center"></td>
                         <td th:text="${game.getTitle()}"></td>
-                        <td th:text="${game.getRatingValue()}" align="center"></td>
+                        <td th:text="${#numbers.formatDecimal(game.getRatingValue(), 1, 2)}" align="center"></td>
                         <td th:text="${game.getNumberOfOwners()}" align="center"></td>
                         <td th:text="${game.getNumberOfMeetings()}" align="center"></td>
                         <td th:if="${game.getIsActive()}"><a class="btn btn-outline-dark btn-sm my-1"
