@@ -6,6 +6,7 @@ import by.vyun.bgb.entity.Meeting;
 import by.vyun.bgb.entity.User;
 import by.vyun.bgb.service.BoardGameService;
 import by.vyun.bgb.service.MeetingService;
+import by.vyun.bgb.service.SecurityUserService;
 import by.vyun.bgb.service.UserService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,14 +27,17 @@ import java.util.List;
 @RequestMapping("/mobile")
 public class UserRestController {
     private final UserService userService;
+    private final SecurityUserService securityUserService;
     private final BoardGameService gameService;
     private final MeetingService meetingService;
 
-    public UserRestController(UserService userService, BoardGameService gameService, MeetingService meetingService) {
+    public UserRestController(UserService userService, SecurityUserService securityUserService, BoardGameService gameService, MeetingService meetingService) {
         this.userService = userService;
+        this.securityUserService = securityUserService;
         this.gameService = gameService;
         this.meetingService = meetingService;
     }
+
 
     @GetMapping("/gameListPage")
     public List<BoardGame> gameListPage(int userId) {
@@ -64,7 +68,7 @@ public class UserRestController {
     @PostMapping("/user")
     public String registration(User user, String cityName, MultipartFile imageFile) {
         try {
-            userService.registration(user, cityName, imageFile);
+            securityUserService.registration(user, cityName, imageFile);
         } catch (RegistrationException | IOException e) {
             System.out.println(e.getMessage());
             return e.getMessage();
@@ -76,7 +80,7 @@ public class UserRestController {
     public User signIn(String login, String password) {
         User signedUser = new User();
         try {
-            signedUser = userService.signIn(login, password);
+            signedUser = securityUserService.signIn(login, password);
         } catch (RegistrationException ex) {
             System.out.println(ex.getMessage());
         }
@@ -87,7 +91,7 @@ public class UserRestController {
     public User update(@RequestBody int userId, @RequestBody User changedUser, MultipartFile imageFile) {
         User currentUser = new User();
         try {
-            currentUser = userService.update(userId, changedUser, imageFile);
+            currentUser = securityUserService.update(userId, changedUser, imageFile);
         } catch (RegistrationException | IOException ex) {
             System.out.println(ex.getMessage());
         }

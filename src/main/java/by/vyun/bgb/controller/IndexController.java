@@ -34,8 +34,19 @@ public class IndexController {
         return "user_login";
     }
 
+//    @GetMapping("/account")
+//    public String account(Model model) {
+//        User signedUser = userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
+//            model.addAttribute("user", signedUser);
+//            model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
+//            model.addAttribute("gameCollection", signedUser.getGameCollection());
+//            model.addAttribute("meetingSet", signedUser.getMeetingSet());
+//            model.addAttribute("createdMeets", signedUser.getCreatedMeets());
+//            return "user_account";
+//    }
+
     @PostMapping("/account")
-    public String account(Model model) {
+    public String accountPost(Model model) {
         User signedUser = userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
         model.addAttribute("user", signedUser);
         model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
@@ -43,5 +54,8 @@ public class IndexController {
         model.addAttribute("meetingSet", signedUser.getMeetingSet());
         model.addAttribute("createdMeets", signedUser.getCreatedMeets());
         return "user_account";
+
     }
+
+
 }

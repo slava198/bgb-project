@@ -2,27 +2,35 @@ package by.vyun.bgb.config;
 
 
 import by.vyun.bgb.service.SecurityUserService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
+@Data
 @EnableWebSecurity
+//@AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final SecurityUserService securityUserService;
 
-    public WebSecurityConfig(SecurityUserService securityUserService) {
-        this.securityUserService = securityUserService;
-    }
+    private final SecurityUserService securityUserService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+//    public WebSecurityConfig(SecurityUserService securityUserService) {
+//        this.securityUserService = securityUserService;
+//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(securityUserService);
+        auth.userDetailsService(securityUserService).passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -41,15 +49,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .and()
-        ;
-
+                .logoutSuccessUrl("/");
     }
 
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
+
 
 }

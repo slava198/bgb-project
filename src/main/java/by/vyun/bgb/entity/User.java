@@ -32,7 +32,7 @@ public class User {
     private String email;
     private Boolean isActive = true;
     private Boolean isEnabled = false;
-    private long activationCode;
+    private String activationCode;
 
     @OneToOne
     @JoinColumn(name = "image_id")

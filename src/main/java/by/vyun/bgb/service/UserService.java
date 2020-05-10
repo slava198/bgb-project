@@ -25,7 +25,7 @@ public class UserService {
     BoardGameRepo gameRepo;
     MeetingRepo meetingRepo;
     CityRepo cityRepo;
-    ImageRepo imageRepo;
+
     private EmailService emailService;
 
 
@@ -45,64 +45,6 @@ public class UserService {
         return userRepo.getFirstByLogin(login);
     }
 
-
-    public User registration(User user, String cityName, MultipartFile imageFile) throws RegistrationException, IOException {
-        if (user.getLogin().trim().length() * user.getPassword().trim().length() * cityName.trim().length() == 0) {
-            throw new RegistrationException("Empty login, password or location field!");
-        }
-        if (userRepo.getFirstByLogin(user.getLogin()) != null) {
-            throw new RegistrationException("Login duplicated!");
-        }
-        Image avatar = new Image();
-        if (imageFile.isEmpty()) {
-            avatar.setData(imageRepo.findFirstByName(DEFAULT_AVATAR).getData());
-            avatar.setName(user.getLogin());
-        } else {
-            avatar.setData(imageFile.getBytes());
-            avatar.setName(imageFile.getOriginalFilename());
-        }
-        imageRepo.saveAndFlush(avatar);
-        user.setAvatar(avatar);
-        user.setCity(cityRepo.getFirstByName(cityName));
-        user.setActivationCode(new Random(999999).nextLong());
-        //new thread
-        sendActivationCode(user);
-        user = userRepo.save(user);
-        return user;
-    }
-
-    public void sendActivationCode(User user) {
-        emailService.sendSimpleMessage(user.getEmail(), "Activating account", "Your confirmation code is:  " + user.getActivationCode());
-    }
-
-
-    public User signIn(String login, String password) throws RegistrationException {
-        User foundedUser = userRepo.getFirstByLogin(login);
-        if (foundedUser == null) {
-            throw new RegistrationException("Login not found");
-        }
-        if (foundedUser.checkPassword(password)) {
-            throw new RegistrationException("Invalid password");
-        }
-        return foundedUser;
-    }
-
-
-    public User update(int id, User changedUser, MultipartFile imageFile) throws RegistrationException, IOException {
-        User currentUser = userRepo.getFirstById(id);
-        if (!imageFile.isEmpty()) {
-            Image avatar = imageRepo.findFirstById(currentUser.getAvatar().getId());
-            avatar.setData(imageFile.getBytes());
-            avatar.setName(imageFile.getOriginalFilename());
-            imageRepo.saveAndFlush(avatar);
-            currentUser.setAvatar(avatar);
-        }
-        currentUser.setCity(changedUser.getCity());
-        currentUser.setAddress(changedUser.getAddress());
-        currentUser.setDateOfBirth(changedUser.getDateOfBirth());
-        currentUser.setPassword(changedUser.getPassword());
-        return userRepo.saveAndFlush(currentUser);
-    }
 
 
     public User deleteGame(int userId, int gameId) {
@@ -179,4 +121,18 @@ public class UserService {
     }
 
 
+    public void enable(String login, String code) throws RegistrationException {
+        User user = userRepo.getFirstByLogin(login);
+        if (user == null) {
+            throw new RegistrationException("Invalid login");
+        } else if (user.getIsEnabled()) {
+            throw new RegistrationException("Account already enabled");
+        }
+        if (code != null  && user.getActivationCode().equals(code)){
+            user.setIsEnabled(true);
+            userRepo.saveAndFlush(user);
+        } else {
+            throw new RegistrationException("Invalid activation code");
+        }
+    }
 }

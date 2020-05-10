@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final SecurityUserService securityUserService;
     private final BoardGameService gameService;
     private final MeetingService meetingService;
     private final CityService cityService;
@@ -171,16 +172,17 @@ public class UserController {
     public String login(Model model, User user) {
         User currentUser;
         try {
-            currentUser = userService.signIn(user.getLogin(), user.getPassword());
-        } catch (Exception e) {
+            currentUser = securityUserService.signIn(user.getLogin(), user.getPassword());
+        } catch (RegistrationException e) {
             model.addAttribute("error", e.getMessage());
-            return "login";
+            return "user_login";
         }
-        model.addAttribute("user", currentUser);
-        model.addAttribute("gameCollection", currentUser.getGameCollection());
-        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+//        model.addAttribute("user", currentUser);
+//        model.addAttribute("gameCollection", currentUser.getGameCollection());
+//        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+//        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+//        return "user_account";
+        return "redirect:/account";
     }
 
 
@@ -193,13 +195,31 @@ public class UserController {
             return "user_register";
         }
         try {
-            userService.registration(user, cityName, imageFile);
+            securityUserService.registration(user, cityName, imageFile);
         } catch (RegistrationException | IOException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("cities", cityService.getAllCityNames());
             return "user_register";
         }
         return "redirect:/";
+    }
+
+
+    @GetMapping("/enable")
+    public String enablePage(Model model) {
+        return "user_enable";
+    }
+
+    @PostMapping("/enable")
+    public String enable(String login, String code, Model model) {
+        try {
+            userService.enable(login, code);
+        } catch (RegistrationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "user_enable";
+        }
+        model.addAttribute("enabled", "true");
+        return "user_login";
     }
 
 
@@ -220,7 +240,7 @@ public class UserController {
             }
             changedUser.setPassword(newPassword);
             changedUser.setCity(cityService.getCityByName(cityName));
-            currentUser = userService.update(currentUser.getId(), changedUser, imageFile);
+            currentUser = securityUserService.update(currentUser.getId(), changedUser, imageFile);
             currentUser = userService.getUserById(currentUser.getId());
             model.addAttribute("user", currentUser);
             model.addAttribute("gameCollection", currentUser.getGameCollection());
