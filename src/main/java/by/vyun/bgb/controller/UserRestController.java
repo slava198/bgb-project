@@ -88,10 +88,12 @@ public class UserRestController {
     }
 
     @PutMapping("/user")
-    public User update(@RequestBody int userId, @RequestBody User changedUser, MultipartFile imageFile) {
-        User currentUser = new User();
+    public User update(@RequestBody int userId, @RequestBody User changedUser,
+                       String newPassword, String newPasswordConfirm,
+                       String cityName, MultipartFile imageFile) {
+        User currentUser = userService.getUserById(userId);
         try {
-            currentUser = securityUserService.update(userId, changedUser, imageFile);
+            currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName, imageFile);
         } catch (RegistrationException | IOException ex) {
             System.out.println(ex.getMessage());
         }

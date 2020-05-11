@@ -226,31 +226,22 @@ public class UserController {
     @PostMapping("/update")
     public String update(User changedUser, String newPassword, String newPasswordConfirm, String cityName,
                          MultipartFile imageFile, Model model) {
+        User currentUser = getCurrentUser();
         try {
-            User currentUser = getCurrentUser();
-            if (currentUser.checkPassword(changedUser.getPassword())) {
-                model.addAttribute("error", "Invalid current password!");
-                model.addAttribute("user", currentUser);
-                return "user_update";
-            }
-            if (!newPassword.equals(newPasswordConfirm)) {
-                model.addAttribute("error", "New password and it's confirmations are the different!");
-                model.addAttribute("user", currentUser);
-                return "user_update";
-            }
-            changedUser.setPassword(newPassword);
-            changedUser.setCity(cityService.getCityByName(cityName));
-            currentUser = securityUserService.update(currentUser.getId(), changedUser, imageFile);
-            currentUser = userService.getUserById(currentUser.getId());
-            model.addAttribute("user", currentUser);
-            model.addAttribute("gameCollection", currentUser.getGameCollection());
-            model.addAttribute("meetingSet", currentUser.getMeetingSet());
-            model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-            return "user_account";
+            currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName, imageFile);
+            //currentUser = userService.getUserById(currentUser.getId());
+
         } catch (RegistrationException | IOException ex) {
             model.addAttribute("error", ex.getMessage());
+            model.addAttribute("user", getCurrentUser());
+            model.addAttribute("cities", cityService.getAllCityNames());
+            return "user_update";
         }
-        return "redirect:/";
+        model.addAttribute("user", currentUser);
+        model.addAttribute("gameCollection", currentUser.getGameCollection());
+        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+        //model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+        return "user_account";
 
     }
 //*******************************end user

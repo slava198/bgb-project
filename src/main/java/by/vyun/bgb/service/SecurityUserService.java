@@ -35,6 +35,7 @@ public class SecurityUserService implements UserDetailsService {
     private UserRepo userRepo;
     private ImageRepo imageRepo;
     private CityRepo cityRepo;
+    private CityService cityService;
     private EmailService emailService;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -44,11 +45,12 @@ public class SecurityUserService implements UserDetailsService {
         return new BCryptPasswordEncoder(5);
     }
 
-    public SecurityUserService(UserRepo userRepo, ImageRepo imageRepo, CityRepo cityRepo, EmailService emailService) {
+    public SecurityUserService(UserRepo userRepo, ImageRepo imageRepo, CityRepo cityRepo, CityService cityService, EmailService emailService) {
         this.userRepo = userRepo;
         this.imageRepo = imageRepo;
         this.cityRepo = cityRepo;
         this.emailService = emailService;
+        this.cityService = cityService;
     }
 
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
@@ -124,8 +126,29 @@ public class SecurityUserService implements UserDetailsService {
     }
 
 
-    public User update(int id, User changedUser, MultipartFile imageFile) throws RegistrationException, IOException {
-        User currentUser = userRepo.getFirstById(id);
+    public User update(User currentUser, User changedUser,
+                       String newPassword, String newPasswordConfirm,
+                       String cityName, MultipartFile imageFile) throws RegistrationException, IOException {
+
+        if (changedUser.getPassword().isEmpty()) {
+            throw new RegistrationException("Enter current password");
+        }
+        String enc = passwordEncoder.encode(newPassword);
+        if (!passwordEncoder.matches(changedUser.getPassword(), currentUser.getPassword())) {
+            throw new RegistrationException("Invalid current password");
+        }
+        if (!newPassword.isEmpty() || !newPasswordConfirm.isEmpty()) {
+            if (!newPassword.equals(newPasswordConfirm)) {
+                throw new RegistrationException("New password and it's confirmations are the different");
+            } else {
+                currentUser.setPassword(passwordEncoder.encode(newPassword));
+            }
+        }
+
+        if (cityName != null && !cityName.isEmpty()) {
+            currentUser.setCity(cityService.getCityByName(cityName));
+        }
+
         if (!imageFile.isEmpty()) {
             Image avatar = imageRepo.findFirstById(currentUser.getAvatar().getId());
             avatar.setData(imageFile.getBytes());
@@ -133,10 +156,8 @@ public class SecurityUserService implements UserDetailsService {
             imageRepo.saveAndFlush(avatar);
             currentUser.setAvatar(avatar);
         }
-        currentUser.setCity(changedUser.getCity());
         currentUser.setAddress(changedUser.getAddress());
         currentUser.setDateOfBirth(changedUser.getDateOfBirth());
-        currentUser.setPassword(passwordEncoder.encode(changedUser.getPassword()));
         return userRepo.saveAndFlush(currentUser);
     }
 }
