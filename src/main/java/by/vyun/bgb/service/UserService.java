@@ -1,21 +1,15 @@
 package by.vyun.bgb.service;
 
-import by.vyun.bgb.entity.Image;
 import by.vyun.bgb.repository.*;
 import by.vyun.bgb.entity.BoardGame;
-import by.vyun.bgb.exception.RegistrationException;
+import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.entity.Meeting;
 import by.vyun.bgb.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-import static by.vyun.bgb.entity.Const.DEFAULT_AVATAR;
 
 
 @Service
@@ -121,18 +115,18 @@ public class UserService {
     }
 
 
-    public void enable(String login, String code) throws RegistrationException {
+    public void enable(String login, String code) throws UserException {
         User user = userRepo.getFirstByLogin(login);
         if (user == null) {
-            throw new RegistrationException("Invalid login");
+            throw new UserException("Invalid login");
         } else if (user.getIsEnabled()) {
-            throw new RegistrationException("Account already enabled");
+            throw new UserException("Account already enabled");
         }
         if (code != null  && user.getActivationCode().equals(code)){
             user.setIsEnabled(true);
             userRepo.saveAndFlush(user);
         } else {
-            throw new RegistrationException("Invalid activation code");
+            throw new UserException("Invalid activation code");
         }
     }
 }

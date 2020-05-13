@@ -1,6 +1,6 @@
 package by.vyun.bgb.controller;
 
-import by.vyun.bgb.exception.RegistrationException;
+import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.entity.Meeting;
 import by.vyun.bgb.entity.User;
@@ -69,7 +69,7 @@ public class UserRestController {
     public String registration(User user, String cityName, MultipartFile imageFile) {
         try {
             securityUserService.registration(user, cityName, imageFile);
-        } catch (RegistrationException | IOException e) {
+        } catch (UserException | IOException e) {
             System.out.println(e.getMessage());
             return e.getMessage();
         }
@@ -81,7 +81,7 @@ public class UserRestController {
         User signedUser = new User();
         try {
             signedUser = securityUserService.signIn(login, password);
-        } catch (RegistrationException ex) {
+        } catch (UserException ex) {
             System.out.println(ex.getMessage());
         }
         return signedUser;
@@ -94,7 +94,7 @@ public class UserRestController {
         User currentUser = userService.getUserById(userId);
         try {
             currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName, imageFile);
-        } catch (RegistrationException | IOException ex) {
+        } catch (UserException | IOException ex) {
             System.out.println(ex.getMessage());
         }
         return currentUser;

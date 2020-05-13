@@ -3,8 +3,7 @@ package by.vyun.bgb.controller;
 import by.vyun.bgb.entity.*;
 import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
-import by.vyun.bgb.exception.RegistrationException;
-import by.vyun.bgb.repository.ImageRepo;
+import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,39 +27,21 @@ public class UserController {
     private final BoardGameService gameService;
     private final MeetingService meetingService;
     private final CityService cityService;
-    private final ImageRepo imageRepo;
-
 
 
     private User getCurrentUser() {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
-
-
-
-
-    @PostMapping("/image")
-    public String saveImg(String name, MultipartFile file, Model model) throws IOException {
-        Image image = new Image();
-        image.setName(name);
-        byte[] byteImg = file.getBytes();
-        image.setData(byteImg);
-        imageRepo.save(image);
-        User currentUser = getCurrentUser();
-        model.addAttribute("user", currentUser);
-        model.addAttribute("gameCollection", currentUser.getGameCollection());
-        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+    @GetMapping("/account")
+    public String account(Model model) {
+        User signedUser = getCurrentUser();
+        model.addAttribute("user", signedUser);
+        model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
+        model.addAttribute("gameCollection", signedUser.getGameCollection());
+        model.addAttribute("meetingSet", signedUser.getMeetingSet());
+        model.addAttribute("createdMeets", signedUser.getCreatedMeets());
         return "user_account";
-    }
-
-    @GetMapping("/image")
-    public String showImg(String name, Model model) {
-        Image image = imageRepo.findFirstByName(name);
-//        String encodedImg = Base64.getEncoder().encodeToString(image.getData());
-        model.addAttribute("img", image);
-        return "image";
     }
 
     @GetMapping("/registration")
@@ -69,7 +50,7 @@ public class UserController {
         return "user_register";
     }
 
-    @GetMapping("/update_page")
+    @GetMapping("/update")
     public String updatePage(Model model) {
         model.addAttribute("user", getCurrentUser());
         model.addAttribute("cities", cityService.getAllCityNames());
@@ -84,7 +65,7 @@ public class UserController {
         return "game_list";
     }
 
-    @GetMapping("/rateGame_page")
+    @GetMapping("/rate_game")
     public String rateGamePage(int gameId, Model model) {
         model.addAttribute("game", gameService.getGameById(gameId));
         model.addAttribute("oldRate",
@@ -92,7 +73,7 @@ public class UserController {
         return "game_rate";
     }
 
-    @GetMapping("/see_meet")
+    @GetMapping("/meet")
     public String seeMeet(Integer meetId, Model model) {
         Meeting meet = meetingService.getMeetingById(meetId);
         model.addAttribute("meet", meet);
@@ -167,22 +148,15 @@ public class UserController {
 
 
     //**********************begin user
-
     @PostMapping("/login")
     public String login(Model model, User user) {
-        User currentUser;
         try {
-            currentUser = securityUserService.signIn(user.getLogin(), user.getPassword());
-        } catch (RegistrationException e) {
+            securityUserService.signIn(user.getLogin(), user.getPassword());
+        } catch (UserException e) {
             model.addAttribute("error", e.getMessage());
             return "user_login";
         }
-//        model.addAttribute("user", currentUser);
-//        model.addAttribute("gameCollection", currentUser.getGameCollection());
-//        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-//        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-//        return "user_account";
-        return "redirect:/account";
+        return "redirect:/user/account";
     }
 
 
@@ -196,7 +170,7 @@ public class UserController {
         }
         try {
             securityUserService.registration(user, cityName, imageFile);
-        } catch (RegistrationException | IOException e) {
+        } catch (UserException | IOException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("cities", cityService.getAllCityNames());
             return "user_register";
@@ -206,7 +180,7 @@ public class UserController {
 
 
     @GetMapping("/enable")
-    public String enablePage(Model model) {
+    public String enablePage() {
         return "user_enable";
     }
 
@@ -214,7 +188,7 @@ public class UserController {
     public String enable(String login, String code, Model model) {
         try {
             userService.enable(login, code);
-        } catch (RegistrationException e) {
+        } catch (UserException e) {
             model.addAttribute("error", e.getMessage());
             return "user_enable";
         }
@@ -224,24 +198,19 @@ public class UserController {
 
 
     @PostMapping("/update")
-    public String update(User changedUser, String newPassword, String newPasswordConfirm, String cityName,
-                         MultipartFile imageFile, Model model) {
+    public String update(User changedUser,
+                         String newPassword, String newPasswordConfirm,
+                         String cityName, MultipartFile imageFile, Model model) {
         User currentUser = getCurrentUser();
         try {
-            currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName, imageFile);
-            //currentUser = userService.getUserById(currentUser.getId());
-
-        } catch (RegistrationException | IOException ex) {
+            securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName, imageFile);
+        } catch (UserException | IOException ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("user", getCurrentUser());
             model.addAttribute("cities", cityService.getAllCityNames());
             return "user_update";
         }
-        model.addAttribute("user", currentUser);
-        model.addAttribute("gameCollection", currentUser.getGameCollection());
-        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-        //model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        return "redirect:/user/account";
 
     }
 //*******************************end user
@@ -258,17 +227,13 @@ public class UserController {
     }
 
     @GetMapping("/remove_game")
-    public String removeGame(Integer gameId, Model model) {
+    public String removeGame(Integer gameId) {
         User currentUser = userService.deleteGame(getCurrentUser().getId(), gameId);
-        currentUser = userService.getUserById(currentUser.getId());
-        model.addAttribute("user", currentUser);
-        model.addAttribute("gameCollection", currentUser.getGameCollection());
-        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        userService.getUserById(currentUser.getId());
+        return "redirect:/user/account";
     }
 
-    @GetMapping("/rate_game")
+    @PostMapping("/rate_game")
     public String rateGame(Integer gameId, float rate, Model model) {
         User currentUser = getCurrentUser();
         BoardGame game = gameService.getGameById(gameId);
@@ -287,7 +252,7 @@ public class UserController {
         return "game_account";
     }
 
-    @GetMapping("/see_game")
+    @GetMapping("/game")
     public String seeGame(Integer gameId, Model model) {
         BoardGame game = gameService.getGameById(gameId);
         model.addAttribute("game", game);
@@ -300,16 +265,11 @@ public class UserController {
 
     //********************************begin meet
     @GetMapping("/delete_meet")
-    public String deleteMeet(int meetId, Model model) {
+    public String deleteMeet(int meetId) {
         User currentUser = getCurrentUser();
-        currentUser = userService.deleteMeeting(currentUser.getId(), meetId);
+        userService.deleteMeeting(currentUser.getId(), meetId);
         meetingService.deleteMeet(meetId);
-        currentUser = userService.getUserById(currentUser.getId());
-        model.addAttribute("user", currentUser);
-        model.addAttribute("gameCollection", currentUser.getGameCollection());
-        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        return "redirect:/user/account";
     }
 
 
@@ -346,13 +306,8 @@ public class UserController {
     @GetMapping("/leave_meet")
     public String leaveMeeting(int meetId, Model model) {
         User currentUser = getCurrentUser();
-        currentUser = userService.leaveMeeting(currentUser.getId(), meetId);
-        currentUser = userService.getUserById(currentUser.getId());
-        model.addAttribute("user", currentUser);
-        model.addAttribute("gameCollection", currentUser.getGameCollection());
-        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        userService.leaveMeeting(currentUser.getId(), meetId);
+        return "redirect:/user/account";
     }
 
     @GetMapping("/delete_user_from_meet")
@@ -372,14 +327,8 @@ public class UserController {
 
 
     @GetMapping("/back")
-    public String back(Model model) {
-        User currentUser = getCurrentUser();
-        currentUser = userService.getUserById(currentUser.getId());
-        model.addAttribute("user", currentUser);
-        model.addAttribute("gameCollection", currentUser.getGameCollection());
-        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+    public String back() {
+        return "redirect:/user/account";
     }
 
 

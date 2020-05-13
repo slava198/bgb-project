@@ -1,12 +1,11 @@
 package by.vyun.bgb.service;
 
 import by.vyun.bgb.entity.Image;
-import by.vyun.bgb.exception.RegistrationException;
+import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.repository.CityRepo;
 import by.vyun.bgb.repository.ImageRepo;
 import by.vyun.bgb.repository.UserRepo;
 import by.vyun.bgb.entity.User;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -73,7 +73,6 @@ public class SecurityUserService implements UserDetailsService {
                         getAuthorities(user.getRoles()));
     }
 
-
     private static List<GrantedAuthority> getAuthorities(Set<String> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String role : roles) {
@@ -83,12 +82,12 @@ public class SecurityUserService implements UserDetailsService {
     }
 
 
-    public User registration(User user, String cityName, MultipartFile imageFile) throws RegistrationException, IOException {
+    public User registration(User user, String cityName, MultipartFile imageFile) throws UserException, IOException {
         if (user.getLogin().trim().length() * user.getPassword().trim().length() * cityName.trim().length() == 0) {
-            throw new RegistrationException("Empty login, password or location field");
+            throw new UserException("Empty login, password or location field");
         }
         if (userRepo.getFirstByLogin(user.getLogin()) != null) {
-            throw new RegistrationException("Login duplicated");
+            throw new UserException("Login duplicated");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Image avatar = new Image();
@@ -102,25 +101,19 @@ public class SecurityUserService implements UserDetailsService {
         imageRepo.saveAndFlush(avatar);
         user.setAvatar(avatar);
         user.setCity(cityRepo.getFirstByName(cityName));
-        user.setActivationCode(String.valueOf(new Random(100).nextDouble()));
-        //new thread
+        user.setActivationCode(String.valueOf(new Random(LocalDateTime.now().getNano()).nextInt(8999) + 1000));
         sendActivationCode(user);
-        user = userRepo.save(user);
-        return user;
-    }
-
-    public void sendActivationCode(User user) {
-        emailService.sendSimpleMessage(user.getEmail(), "Activating account", "Your confirmation code is:  " + user.getActivationCode());
+        return userRepo.save(user);
     }
 
 
-    public User signIn(String login, String password) throws RegistrationException {
+    public User signIn(String login, String password) throws UserException {
         User foundedUser = userRepo.getFirstByLogin(login);
         if (foundedUser == null) {
-            throw new RegistrationException("Login not found");
+            throw new UserException("Login not found");
         }
         if (foundedUser.checkPassword(passwordEncoder.encode(password))) {
-            throw new RegistrationException("Invalid password");
+            throw new UserException("Invalid password");
         }
         return foundedUser;
     }
@@ -128,18 +121,17 @@ public class SecurityUserService implements UserDetailsService {
 
     public User update(User currentUser, User changedUser,
                        String newPassword, String newPasswordConfirm,
-                       String cityName, MultipartFile imageFile) throws RegistrationException, IOException {
+                       String cityName, MultipartFile imageFile) throws UserException, IOException {
 
         if (changedUser.getPassword().isEmpty()) {
-            throw new RegistrationException("Enter current password");
+            throw new UserException("Enter current password");
         }
-        String enc = passwordEncoder.encode(newPassword);
         if (!passwordEncoder.matches(changedUser.getPassword(), currentUser.getPassword())) {
-            throw new RegistrationException("Invalid current password");
+            throw new UserException("Invalid current password");
         }
         if (!newPassword.isEmpty() || !newPasswordConfirm.isEmpty()) {
             if (!newPassword.equals(newPasswordConfirm)) {
-                throw new RegistrationException("New password and it's confirmations are the different");
+                throw new UserException("New password and it's confirmations are the different");
             } else {
                 currentUser.setPassword(passwordEncoder.encode(newPassword));
             }
@@ -159,5 +151,24 @@ public class SecurityUserService implements UserDetailsService {
         currentUser.setAddress(changedUser.getAddress());
         currentUser.setDateOfBirth(changedUser.getDateOfBirth());
         return userRepo.saveAndFlush(currentUser);
+    }
+
+    public void rescuePassword(int userId) throws UserException {
+        User user = userRepo.getFirstById(userId);
+        if (user == null) {
+            throw new UserException("User not found");
+        }
+        String newPassword = String.valueOf(new Random(LocalDateTime.now().getNano()).nextInt(8999) + 1000);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        sendNewPassword(user, newPassword);
+        userRepo.save(user);
+    }
+
+    public void sendActivationCode(User user) {
+        emailService.sendMessage(user.getEmail(), "Activate account", "Your confirmation code is:  " + user.getActivationCode());
+    }
+
+    public void sendNewPassword(User user, String password) {
+            emailService.sendMessage(user.getEmail(), "Reset password", "Your new password is:  " + password);
     }
 }

@@ -23,7 +23,7 @@
             <h4><span th:text="${user.getAge()}"></span> years old</h4>
             <h5><span th:text="${user.getTotalExperience()}"></span> experience points</h5>
             <h5><span th:text="${user.getCompletedMeetsNumber()}"></span> meets completed</h5>
-            <a class="btn btn-outline-dark btn-sm my-1" href="/user/update_page">Change account</a>
+            <a class="btn btn-outline-dark btn-sm my-1" href="/user/update">Change account</a>
         </div>
         <div class="col-7" th:if="${#arrays.isEmpty(gameCollection)}">
                 <h4>Your game list is empty.<br> Try to <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/gameList_page}">add games</a></h4>
@@ -48,7 +48,7 @@
                             <td th:text="${#numbers.formatDecimal(game.getRatingValue(),1,2)}" align="center"></td>
                             <td th:text="${user.getExperienceInGame(game)}" align="center"></td>
                             <td>
-                                <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/see_game(gameId = ${game.id})}">See more...</a>
+                                <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/game(gameId = ${game.id})}">See more...</a>
                             </td>
 
                         </tr>
@@ -83,7 +83,7 @@
                         <td th:text="${meeting.getNumberOfMembers()}" align="center"></td>
                         <td th:text="${meeting.getCreator().getLogin()}"></td>
                         <td th:text="${meeting.getState().name()}"></td>
-                        <td><a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/see_meet(meetId = ${meeting.getId()})}">See details</a></td>
+                        <td><a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/meet(meetId = ${meeting.getId()})}">See details</a></td>
 
                     </tr>
                 </th:block>

@@ -45,7 +45,7 @@
                                 <input hidden name="gameId" th:value="${game.getId()}">
                                 <input class="btn btn-outline-dark btn-sm my-1" type="submit" value="Delete game">
                             </form>
-                            <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/rateGame_page(gameId=${game.getId()})}">Rate
+                            <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/rate_game(gameId=${game.getId()})}">Rate
                                 game</a>
                         </div>
                     </td>

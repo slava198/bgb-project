@@ -3,7 +3,6 @@ package by.vyun.bgb.controller;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.service.BoardGameService;
 import by.vyun.bgb.service.UserService;
-import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,11 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/mobile")
 public class IndexRestController {
     UserService userService;
     BoardGameService gameService;
+
+    public IndexRestController(UserService userService, BoardGameService gameService) {
+        this.userService = userService;
+        this.gameService = gameService;
+    }
 
     @GetMapping
     public List<Map<String, String>> index() {

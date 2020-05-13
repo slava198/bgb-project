@@ -17,7 +17,7 @@
     <div class="row justify-content-center">
         <th:block th:each="game : ${games}">
                     <div class="col-6 col-md-4 col-lg-2 ml-auto mr-auto mx-auto py-2" th:if="${game.getIsActive()}">
-                        <a th:href="@{/user/see_game(gameId = ${game.getId()})}">
+                        <a th:href="@{/user/game(gameId = ${game.getId()})}">
                             <img th:src="${game.getLogo()}" height="200px">
                         </a>
 

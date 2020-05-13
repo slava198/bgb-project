@@ -9,7 +9,7 @@
 </head>
 <body>
 <script th:replace="insert/fragment :: navbar"></script>
-<div class="alert alert-danger" role="alert" th:if="${error}"
+<div class="row alert alert-danger justify-content-center" role="alert" th:if="${error}"
      th:text="${error}"></div>
 <div class="container">
     <div class="row" sec:authorize="!isAuthenticated()">
@@ -19,7 +19,8 @@
         <a class="btn btn-outline-dark btn-sm my-1" href="/user/back">Back</a>
     </div>
     <div class="row justify-content-center">
-        <h2>
+
+        <h2 class="col-9">
             <span th:text="${meet.getGame().getTitle()}"></span>
             meeting in
             <span th:text="${meet.getCity().getName()}"></span>
@@ -64,7 +65,11 @@
                             <th class="btn-dark" onclick="sortTable(2, 'users')"><a>Age</a></th>
                             <th class="btn-dark" onclick="sortTable(3, 'users')"><a>Game experience</a></th>
                             <th class="btn-dark" onclick="sortTable(4, 'users')"><a>Common experience</a></th>
-                            <th class="btn-dark"></th>
+                            <th class="btn-dark">
+                                <span th:if="${meet.getState().name() == 'Activated'}">
+                                    Rating points
+                                </span>
+                            </th>
                         </tr>
                         <th:block th:each="usr, itemStat : ${meet.getMembers()}">
                             <tr>
@@ -95,8 +100,10 @@
                         </th:block>
                     </table>
                 </fieldset>
-                <input th:if="${meet.getState().name() == 'Activated' and !voicedUsers.contains(user)}"
-                       class="btn btn-outline-dark btn-sm my-1" type="submit" value="Rate members">
+                <div th:if="${meet.getState().name() == 'Activated' and !voicedUsers.contains(user)}">
+                    <input class="btn btn-outline-dark btn-sm my-1" type="submit" value="Rate members">
+                </div>
+
             </form>
         </div>
     </div>
