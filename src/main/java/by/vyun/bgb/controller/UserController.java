@@ -57,7 +57,7 @@ public class UserController {
         return "user_update";
     }
 
-    @GetMapping("/gameList_page")
+    @GetMapping("/game_list")
     public String gameListPage(Model model) {
         User currentUser = getCurrentUser();
         model.addAttribute("user", currentUser);
@@ -292,7 +292,7 @@ public class UserController {
         return "game_account";
     }
 
-    @GetMapping("/add_meet")
+    @GetMapping("/meet_in")
     public String addMeeting(int meetId, Model model) {
         User currentUser = getCurrentUser();
         currentUser = userService.takePartInMeeting(currentUser.getId(), meetId);
@@ -303,25 +303,17 @@ public class UserController {
         return "game_account";
     }
 
-    @GetMapping("/leave_meet")
-    public String leaveMeeting(int meetId, Model model) {
+    @GetMapping("/meet_out")
+    public String leaveMeeting(int meetId) {
         User currentUser = getCurrentUser();
         userService.leaveMeeting(currentUser.getId(), meetId);
         return "redirect:/user/account";
     }
 
-    @GetMapping("/delete_user_from_meet")
-    public String deleteUserFromMeeting(int userId, int meetId, Model model) {
+    @GetMapping("/delete_from_meet")
+    public String deleteUserFromMeeting(int userId, int meetId) {
         userService.leaveMeeting(userId, meetId);
-        Meeting meet = meetingService.getMeetingById(meetId);
-        model.addAttribute("meet", meet);
-        model.addAttribute("user", getCurrentUser());
-        model.addAttribute("ratingDTO", new MeetingResultDTO());
-        model.addAttribute("voicedUsers", meetingService.getVoicedUsers(meetId));
-        if (meet.getDateTime().isBefore(LocalDateTime.now()) && meet.getState() == MeetingState.Created) {
-            meetingService.startMeet(meetId);
-        }
-        return "meet_account";
+        return "redirect:/user/meet?meetId=" + meetId;
     }
     //**********************************end meet
 

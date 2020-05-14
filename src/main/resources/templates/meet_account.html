@@ -48,7 +48,7 @@
                    th:href="@{/user/activate_meet(meetId = ${meet.getId()})}">Activate meeting</a>
             </div>
             <div th:if="${!(meet.getCreator() == user) and meet.getState().name() != 'Activated'}">
-                <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/leave_meet(meetId = ${meet.getId()})}">Leave meeting</a>
+                <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/meet_out(meetId = ${meet.getId()})}">Leave meeting</a>
             </div>
         </div>
 
@@ -81,7 +81,7 @@
                                 <div th:if="${meet.getCreator() == user and meet.getState().name() != 'Activated'}">
                                     <td th:if="${user != usr}">
                                         <a class="btn btn-outline-dark btn-sm my-1" th:onclick="return confirm('Delete user from meeting?')"
-                                           th:href="@{/user/delete_user_from_meet(userId = ${usr.getId()}, meetId = ${meet.getId()})}">Delete</a>
+                                           th:href="@{/user/delete_from_meet(userId = ${usr.getId()}, meetId = ${meet.getId()})}">Delete</a>
                                     </td>
                                     <td th:if="${user == usr}">
                                         Creator

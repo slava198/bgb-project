@@ -29,7 +29,7 @@
                 <h4>Your game list is empty.<br> Try to <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/gameList_page}">add games</a></h4>
         </div>
         <div class="col-7" th:if="!${#arrays.isEmpty(gameCollection)}">
-                        <h2>My games <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/gameList_page}">+</a></h2>
+                        <h2>My games <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/game_list}">+</a></h2>
                 <table class="table" id="games">
                     <tr>
                         <th class="btn-dark"></th>

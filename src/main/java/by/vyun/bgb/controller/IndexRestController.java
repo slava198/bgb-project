@@ -14,8 +14,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/mobile")
 public class IndexRestController {
-    UserService userService;
-    BoardGameService gameService;
+    private final UserService userService;
+    private final BoardGameService gameService;
 
     public IndexRestController(UserService userService, BoardGameService gameService) {
         this.userService = userService;

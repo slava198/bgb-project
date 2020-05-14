@@ -31,7 +31,7 @@ public class AdminController {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
-    @GetMapping("/createGame_page")
+    @GetMapping("/add_game")
     public String createGame() {
         return "game_create";
     }

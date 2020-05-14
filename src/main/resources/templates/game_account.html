@@ -87,7 +87,7 @@
                             <td th:text="${meeting.getCreator().getLogin()}"></td>
                             <div th:if="${!user.getMeetingSet().contains(meeting)}">
                                 <td th:if="${meeting.getState().name() != 'Activated'}">
-                                    <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/add_meet(meetId = ${meeting.getId()})}">Take part</a>
+                                    <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/meet_in(meetId = ${meeting.getId()})}">Take part</a>
                                 </td>
                                 <td th:if="${meeting.getState().name() == 'Activated'}">Meeting in process</td>
                             </div>
