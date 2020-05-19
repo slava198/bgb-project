@@ -2,16 +2,21 @@ package by.vyun.bgb.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import static javax.persistence.GenerationType.*;
-
 
 @Entity
 @Data
@@ -121,7 +126,6 @@ public class User {
         rating.setUserExperience(rating.getUserExperience() + experience);
     }
 
-
     public Rating getRatingInGame(BoardGame game) {
         if (ratings.isEmpty()) {
             return null;
@@ -133,7 +137,6 @@ public class User {
         }
         return null;
     }
-
 
     public boolean checkPassword(String password) {
         return !this.getPassword().equals(password);

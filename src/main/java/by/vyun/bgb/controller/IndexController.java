@@ -30,12 +30,10 @@ public class IndexController {
         return "index";
     }
 
-
     @GetMapping("login")
     public String login() {
         return "user_login";
     }
-
 
     @PostMapping("/account")
     public String accountPost(Model model) {
@@ -46,7 +44,6 @@ public class IndexController {
         model.addAttribute("meetingSet", signedUser.getMeetingSet());
         model.addAttribute("createdMeets", signedUser.getCreatedMeets());
         return "user_account";
-
     }
 
 

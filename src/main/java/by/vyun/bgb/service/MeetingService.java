@@ -4,9 +4,6 @@ import by.vyun.bgb.entity.*;
 import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
 import by.vyun.bgb.repository.*;
-import by.vyun.bgb.entity.*;
-import by.vyun.bgb.repository.*;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,25 +12,29 @@ import java.util.List;
 import static by.vyun.bgb.entity.Const.*;
 
 @Service
-@AllArgsConstructor
 public class MeetingService {
-    MeetingRepo meetingRepo;
-    MeetingResultRepo meetingResultRepo;
-    UserRepo userRepo;
-    CityRepo cityRepo;
-    BoardGameRepo boardGameRepo;
-    RatingRepo ratingRepo;
+    private final MeetingRepo meetingRepo;
+    private final MeetingResultRepo meetingResultRepo;
+    private final UserRepo userRepo;
+    private final CityRepo cityRepo;
+    private final RatingRepo ratingRepo;
 
+    public MeetingService(MeetingRepo meetingRepo, MeetingResultRepo meetingResultRepo,
+                          UserRepo userRepo, CityRepo cityRepo, RatingRepo ratingRepo) {
+        this.meetingRepo = meetingRepo;
+        this.meetingResultRepo = meetingResultRepo;
+        this.userRepo = userRepo;
+        this.cityRepo = cityRepo;
+        this.ratingRepo = ratingRepo;
+    }
 
     public List<Meeting> getAllMeetings() {
         return meetingRepo.findAll();
     }
 
-
     public Meeting getMeetingById(int id) {
         return meetingRepo.getFirstById(id);
     }
-
 
     public Meeting createMeet(int userId, Meeting meeting, String cityName) {
         meeting.setCity(cityRepo.getFirstByName(cityName));
@@ -41,23 +42,20 @@ public class MeetingService {
         return meetingRepo.saveAndFlush(meeting);
     }
 
-
-    public Meeting startMeet(int meetId) {
+    public void startMeet(int meetId) {
         Meeting meet = meetingRepo.getFirstById(meetId);
         meet.setState(MeetingState.Started);
-        return meetingRepo.saveAndFlush(meet);
+        meetingRepo.saveAndFlush(meet);
     }
 
-
-    public Meeting activateMeet(int meetId) throws MeetingException {
+    public void activateMeet(int meetId) throws MeetingException {
         Meeting meet = meetingRepo.getFirstById(meetId);
         if (meet.getNumberOfMembers() < 2) {
             throw new MeetingException("Meeting should have at least 2 members");
         }
         meet.setState(MeetingState.Activated);
-        return meetingRepo.saveAndFlush(meet);
+        meetingRepo.saveAndFlush(meet);
     }
-
 
     public void addResults(MeetingResultDTO results, int meetId, User currentUser) throws InvalidInputException {
         int ratingsSum = 0;
@@ -83,7 +81,6 @@ public class MeetingService {
         }
     }
 
-
     public void closeMeet(int meetId) throws MeetingException {
         if (getNumberOfVoiced(meetId) < 2) {
             throw new MeetingException("At least 2 members should voiced");
@@ -104,7 +101,6 @@ public class MeetingService {
         deleteMeet(meetId);
     }
 
-
     public List<User> getVoicedUsers(int meetId) {
         List<User> voicedUsers = new ArrayList<>();
         List<MeetingResult> results = meetingResultRepo.getAllByMeetId(meetId);
@@ -116,8 +112,7 @@ public class MeetingService {
         return voicedUsers;
     }
 
-
-    public int getNumberOfVoiced(int meetId) {
+    private int getNumberOfVoiced(int meetId) {
         List<User> members = meetingRepo.getFirstById(meetId).getMembers();
         List<MeetingResult> results = meetingResultRepo.getAllByMeetId(meetId);
         int result = 0;
@@ -132,15 +127,9 @@ public class MeetingService {
         return result;
     }
 
-
     public void deleteMeet(int id) {
         meetingRepo.deleteById(id);
         meetingRepo.flush();
-    }
-
-
-    public List<City> getAllCities() {
-        return cityRepo.findAll();
     }
 
 

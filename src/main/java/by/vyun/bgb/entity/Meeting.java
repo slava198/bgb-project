@@ -3,7 +3,11 @@ package by.vyun.bgb.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -57,13 +61,11 @@ public class Meeting {
     private MeetingState state = MeetingState.Created;
 
 
-
     public int getNumberOfMembers() {
         if (members == null) {
             return 0;
         }
         return members.size();
     }
-
 
 }

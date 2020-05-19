@@ -3,16 +3,18 @@ package by.vyun.bgb.service;
 import by.vyun.bgb.exception.CityException;
 import by.vyun.bgb.entity.City;
 import by.vyun.bgb.repository.CityRepo;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class CityService {
-    CityRepo cityRepo;
+    private final CityRepo cityRepo;
+
+    public CityService(CityRepo cityRepo) {
+        this.cityRepo = cityRepo;
+    }
 
     public City add(City city) throws CityException {
         if (city.getName().trim().length() * city.getLogo().trim().length() == 0) {
@@ -39,4 +41,5 @@ public class CityService {
     public City getCityByName(String cityName) {
         return cityRepo.getFirstByName(cityName);
     }
+
 }

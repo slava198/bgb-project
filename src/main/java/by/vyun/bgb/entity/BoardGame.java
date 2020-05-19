@@ -2,10 +2,16 @@ package by.vyun.bgb.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
+
 import static javax.persistence.GenerationType.*;
 
 
@@ -19,7 +25,6 @@ import static javax.persistence.GenerationType.*;
         generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@boardGameId")
 public class BoardGame {
-
     @Id
     @GeneratedValue(strategy = AUTO)
     private Integer id;
@@ -28,7 +33,6 @@ public class BoardGame {
     private String description;
     private Integer age = 0;
     private Boolean isActive = true;
-
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -73,6 +77,5 @@ public class BoardGame {
         }
         return meetings.size();
     }
-
 
 }

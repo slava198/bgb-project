@@ -38,7 +38,6 @@ public class UserRestController {
         this.meetingService = meetingService;
     }
 
-
     @GetMapping("/gameListPage")
     public List<BoardGame> gameListPage(int userId) {
         User currentUser = userService.getUserById(userId);
@@ -63,8 +62,6 @@ public class UserRestController {
         return currentUser.getMeetingSet();
     }
 
-
-    //************************************** USERS CRUD
     @PostMapping("/user")
     public String registration(User user, String cityName, MultipartFile imageFile) {
         try {
@@ -100,9 +97,6 @@ public class UserRestController {
         return currentUser;
     }
 
-
-    //************************************** GAMES CRUD
-
     @GetMapping("/game/{gameId}")
     public BoardGame seeGame(@PathVariable int gameId) {
         return gameService.getGameById(gameId);
@@ -117,9 +111,6 @@ public class UserRestController {
     public User deleteGame(@RequestBody int userId, @RequestBody int gameId) {
         return userService.deleteGame(userId, gameId);
     }
-
-
-    //*********************************** MEETINGS CRUD
 
     @PostMapping("/user/meet")
     public String createMeet(int userId, int gameId, Meeting meet, String cityName) {
@@ -147,6 +138,5 @@ public class UserRestController {
         userService.leaveMeeting(userId, meetId);
         return "ok";
     }
-
 
 }

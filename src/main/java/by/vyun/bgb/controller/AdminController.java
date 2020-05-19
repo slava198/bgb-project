@@ -10,7 +10,6 @@ import by.vyun.bgb.service.SecurityUserService;
 import by.vyun.bgb.service.UserService;
 import by.vyun.bgb.exception.BoardGameException;
 import by.vyun.bgb.exception.CityException;
-import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,13 +18,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@AllArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
     private final BoardGameService gameService;
     private final CityService cityService;
     private final SecurityUserService securityUserService;
+
+    public AdminController(UserService userService, BoardGameService gameService, CityService cityService, SecurityUserService securityUserService) {
+        this.userService = userService;
+        this.gameService = gameService;
+        this.cityService = cityService;
+        this.securityUserService = securityUserService;
+    }
 
     private User getCurrentUser() {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -65,7 +70,6 @@ public class AdminController {
         return "admin_cities";
     }
 
-
     @GetMapping("/games")
     public String getGames(Model model) {
         User currentUser = getCurrentUser();
@@ -79,7 +83,6 @@ public class AdminController {
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
         return "user_account";
     }
-
 
     @GetMapping("/users")
     public String getUsers(Model model) {
@@ -109,7 +112,6 @@ public class AdminController {
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
         return "user_account";
     }
-
 
     @GetMapping("/changeGameStatus")
     public String changeGameStatus(int gameId, Model model) {

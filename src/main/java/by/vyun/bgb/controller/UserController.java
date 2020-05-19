@@ -5,7 +5,6 @@ import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.service.*;
-import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Controller
-@AllArgsConstructor
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
@@ -28,6 +26,14 @@ public class UserController {
     private final MeetingService meetingService;
     private final CityService cityService;
 
+    public UserController(UserService userService, SecurityUserService securityUserService,
+                          BoardGameService gameService, MeetingService meetingService, CityService cityService) {
+        this.userService = userService;
+        this.securityUserService = securityUserService;
+        this.gameService = gameService;
+        this.meetingService = meetingService;
+        this.cityService = cityService;
+    }
 
     private User getCurrentUser() {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -88,10 +94,9 @@ public class UserController {
 
     @GetMapping("/activate_meet")
     public String activateMeet(int meetId, Model model) {
-        try{
+        try {
             meetingService.activateMeet(meetId);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             model.addAttribute("error", ex.getMessage());
         }
         model.addAttribute("meet", meetingService.getMeetingById(meetId));
@@ -114,7 +119,6 @@ public class UserController {
         model.addAttribute("ratingDTO", new MeetingResultDTO());
         model.addAttribute("voicedUsers", meetingService.getVoicedUsers(meetId));
         return "meet_account";
-
     }
 
     @GetMapping("/close_meet")
@@ -146,8 +150,6 @@ public class UserController {
         return "meet_create";
     }
 
-
-    //**********************begin user
     @PostMapping("/login")
     public String login(Model model, User user) {
         try {
@@ -158,7 +160,6 @@ public class UserController {
         }
         return "redirect:/user/account";
     }
-
 
     @PostMapping("/registration")
     public String registration(User user, String passwordConfirm, String cityName,
@@ -178,7 +179,6 @@ public class UserController {
         return "redirect:/";
     }
 
-
     @GetMapping("/enable")
     public String enablePage() {
         return "user_enable";
@@ -196,7 +196,6 @@ public class UserController {
         return "user_login";
     }
 
-
     @PostMapping("/update")
     public String update(User changedUser,
                          String newPassword, String newPasswordConfirm,
@@ -211,12 +210,8 @@ public class UserController {
             return "user_update";
         }
         return "redirect:/user/account";
-
     }
-//*******************************end user
 
-
-    //*****************begin game
     @GetMapping("/add_game")
     public String addGame(Integer gameId, Model model) {
         User currentUser = getCurrentUser();
@@ -260,10 +255,7 @@ public class UserController {
         model.addAttribute("meetings", game.getMeetings());
         return "game_account";
     }
-//***********************************end game
 
-
-    //********************************begin meet
     @GetMapping("/delete_meet")
     public String deleteMeet(int meetId) {
         User currentUser = getCurrentUser();
@@ -271,7 +263,6 @@ public class UserController {
         meetingService.deleteMeet(meetId);
         return "redirect:/user/account";
     }
-
 
     @PostMapping("/create_meet")
     public String createMeet(String cityName, String location,
@@ -315,13 +306,10 @@ public class UserController {
         userService.leaveMeeting(userId, meetId);
         return "redirect:/user/meet?meetId=" + meetId;
     }
-    //**********************************end meet
-
 
     @GetMapping("/back")
     public String back() {
         return "redirect:/user/account";
     }
-
 
 }

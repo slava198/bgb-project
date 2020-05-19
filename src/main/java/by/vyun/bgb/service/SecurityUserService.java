@@ -30,7 +30,6 @@ import static by.vyun.bgb.entity.Const.DEFAULT_AVATAR;
 
 @Data
 @Service
-//@AllArgsConstructor
 public class SecurityUserService implements UserDetailsService {
     private UserRepo userRepo;
     private ImageRepo imageRepo;
@@ -81,8 +80,7 @@ public class SecurityUserService implements UserDetailsService {
         return authorities;
     }
 
-
-    public User registration(User user, String cityName, MultipartFile imageFile) throws UserException, IOException {
+    public void registration(User user, String cityName, MultipartFile imageFile) throws UserException, IOException {
         if (user.getLogin().trim().length() * user.getPassword().trim().length() * cityName.trim().length() == 0) {
             throw new UserException("Empty login, password or location field");
         }
@@ -103,9 +101,8 @@ public class SecurityUserService implements UserDetailsService {
         user.setCity(cityRepo.getFirstByName(cityName));
         user.setActivationCode(String.valueOf(new Random(LocalDateTime.now().getNano()).nextInt(8999) + 1000));
         sendActivationCode(user);
-        return userRepo.save(user);
+        userRepo.save(user);
     }
-
 
     public User signIn(String login, String password) throws UserException {
         User foundedUser = userRepo.getFirstByLogin(login);
@@ -117,7 +114,6 @@ public class SecurityUserService implements UserDetailsService {
         }
         return foundedUser;
     }
-
 
     public User update(User currentUser, User changedUser,
                        String newPassword, String newPasswordConfirm,
@@ -136,11 +132,9 @@ public class SecurityUserService implements UserDetailsService {
                 currentUser.setPassword(passwordEncoder.encode(newPassword));
             }
         }
-
         if (cityName != null && !cityName.isEmpty()) {
             currentUser.setCity(cityService.getCityByName(cityName));
         }
-
         if (!imageFile.isEmpty()) {
             Image avatar = imageRepo.findFirstById(currentUser.getAvatar().getId());
             avatar.setData(imageFile.getBytes());
@@ -164,11 +158,11 @@ public class SecurityUserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    public void sendActivationCode(User user) {
+    private void sendActivationCode(User user) {
         emailService.sendMessage(user.getEmail(), "Activate account", "Your confirmation code is:  " + user.getActivationCode());
     }
 
-    public void sendNewPassword(User user, String password) {
+    private void sendNewPassword(User user, String password) {
             emailService.sendMessage(user.getEmail(), "Reset password", "Your new password is:  " + password);
     }
 }

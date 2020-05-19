@@ -5,7 +5,6 @@ import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.entity.Meeting;
 import by.vyun.bgb.entity.User;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,15 +12,16 @@ import java.util.List;
 
 
 @Service
-@AllArgsConstructor
 public class UserService {
-    UserRepo userRepo;
-    BoardGameRepo gameRepo;
-    MeetingRepo meetingRepo;
-    CityRepo cityRepo;
+    private final UserRepo userRepo;
+    private final BoardGameRepo gameRepo;
+    private final MeetingRepo meetingRepo;
 
-    private EmailService emailService;
-
+    public UserService(UserRepo userRepo, BoardGameRepo gameRepo, MeetingRepo meetingRepo) {
+        this.userRepo = userRepo;
+        this.gameRepo = gameRepo;
+        this.meetingRepo = meetingRepo;
+    }
 
     public void changeUserStatus(int userId) {
         User user = userRepo.getFirstById(userId);
@@ -29,24 +29,19 @@ public class UserService {
         userRepo.saveAndFlush(user);
     }
 
-
     public User getUserById(Integer id) {
         return userRepo.getFirstById(id);
     }
 
-
     public User getUserByLogin(String login) {
         return userRepo.getFirstByLogin(login);
     }
-
-
 
     public User deleteGame(int userId, int gameId) {
         User user = userRepo.getFirstById(userId);
         user.deleteGameFromCollection(gameRepo.getFirstById(gameId));
         return userRepo.saveAndFlush(user);
     }
-
 
     public User addGame(int userId, int gameId) {
         User user = userRepo.getFirstById(userId);
@@ -57,7 +52,6 @@ public class UserService {
         gameRepo.flush();
         return userRepo.saveAndFlush(user);
     }
-
 
     public List<BoardGame> getUnsubscribedGames(User currentUser) {
         List<BoardGame> allGames = new ArrayList<>();
@@ -74,7 +68,6 @@ public class UserService {
         return allGames;
     }
 
-
     public User takePartInMeeting(int userId, int meetingId) {
         User currentUser = userRepo.getFirstById(userId);
         Meeting meeting = meetingRepo.getFirstById(meetingId);
@@ -84,20 +77,17 @@ public class UserService {
         return userRepo.saveAndFlush(currentUser);
     }
 
-
-    public User leaveMeeting(int userId, int meetingId) {
+    public void leaveMeeting(int userId, int meetingId) {
         User currentUser = userRepo.getFirstById(userId);
         currentUser.leaveMeeting(meetingRepo.getFirstById(meetingId));
-        return userRepo.saveAndFlush(currentUser);
+        userRepo.saveAndFlush(currentUser);
     }
 
-
-    public User deleteMeeting(int userId, int meetingId) {
+    public void deleteMeeting(int userId, int meetingId) {
         User currentUser = userRepo.getFirstById(userId);
         currentUser.deleteMeeting(meetingRepo.getFirstById(meetingId));
-        return userRepo.saveAndFlush(currentUser);
+        userRepo.saveAndFlush(currentUser);
     }
-
 
     public List<Meeting> getCreatedMeets(User currentUser) {
         List<Meeting> createdMeets = new ArrayList<>();
@@ -109,11 +99,9 @@ public class UserService {
         return createdMeets;
     }
 
-
     public List<User> getAllUsers() {
         return userRepo.findAll();
     }
-
 
     public void enable(String login, String code) throws UserException {
         User user = userRepo.getFirstByLogin(login);
@@ -122,11 +110,12 @@ public class UserService {
         } else if (user.getIsEnabled()) {
             throw new UserException("Account already enabled");
         }
-        if (code != null  && user.getActivationCode().equals(code)){
+        if (user.getActivationCode().equals(code)) {
             user.setIsEnabled(true);
             userRepo.saveAndFlush(user);
         } else {
             throw new UserException("Invalid activation code");
         }
     }
+
 }

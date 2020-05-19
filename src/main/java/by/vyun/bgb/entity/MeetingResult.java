@@ -3,11 +3,13 @@ package by.vyun.bgb.entity;
 import lombok.Data;
 import javax.persistence.*;
 
+import static javax.persistence.GenerationType.*;
+
 @Data
 @Entity
 public class MeetingResult {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Integer id;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "meet_id")

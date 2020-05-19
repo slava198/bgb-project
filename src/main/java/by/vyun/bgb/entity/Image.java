@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-
 import java.util.Base64;
 
 import static javax.persistence.GenerationType.*;
@@ -24,6 +23,5 @@ public class Image {
     public String getPicture() {
         return Base64.getEncoder().encodeToString(data);
     }
-
 
 }
