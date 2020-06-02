@@ -63,14 +63,28 @@ public class UserRestController {
     }
 
     @PostMapping("/user")
-    public String registration(User user, String cityName, MultipartFile imageFile) {
+    public String registration(@RequestBody User user, String passwordConfirm,
+                               String cityName, @RequestBody MultipartFile imageFile) {
+        if (user.checkPassword(passwordConfirm)) {
+            return "false";
+        }
         try {
             securityUserService.registration(user, cityName, imageFile);
         } catch (UserException | IOException e) {
             System.out.println(e.getMessage());
             return e.getMessage();
         }
-        return "ok";
+        return "true";
+    }
+
+    @PostMapping("/enable")
+    public String enable(String login, String code) {
+        try {
+            userService.enable(login, code);
+        } catch (UserException e) {
+            return  e.getMessage();
+        }
+        return "true";
     }
 
     @GetMapping("/user")
@@ -85,9 +99,9 @@ public class UserRestController {
     }
 
     @PutMapping("/user")
-    public User update(@RequestBody int userId, @RequestBody User changedUser,
+    public User update(int userId, @RequestBody User changedUser,
                        String newPassword, String newPasswordConfirm,
-                       String cityName, MultipartFile imageFile) {
+                       String cityName, @RequestBody MultipartFile imageFile) {
         User currentUser = userService.getUserById(userId);
         try {
             currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName, imageFile);
@@ -103,40 +117,40 @@ public class UserRestController {
     }
 
     @PostMapping("/user/game")
-    public User addGame(@RequestBody int userId, @RequestBody int gameId) {
+    public User addGame(int userId, int gameId) {
         return userService.addGame(userId, gameId);
     }
 
     @DeleteMapping("/user/game")
-    public User deleteGame(@RequestBody int userId, @RequestBody int gameId) {
+    public User deleteGame(int userId, int gameId) {
         return userService.deleteGame(userId, gameId);
     }
 
     @PostMapping("/user/meet")
-    public String createMeet(int userId, int gameId, Meeting meet, String cityName) {
+    public String createMeet(int userId, int gameId, @RequestBody Meeting meet, String cityName) {
         User currentUser = userService.getUserById(userId);
         meet.setGame(gameService.getGameById(gameId));
         meetingService.createMeet(currentUser.getId(), meet, cityName);
-        return "ok";
+        return "true";
     }
 
     @DeleteMapping("/user/meet")
     public String deleteMeet(int userId, int meetId) {
         userService.deleteMeeting(userId, meetId);
         meetingService.deleteMeet(meetId);
-        return "ok";
+        return "true";
     }
 
     @PutMapping("/user/meet_in")
     public String addMeeting(int userId, int meetId) {
         userService.takePartInMeeting(userId, meetId);
-        return "ok";
+        return "true";
     }
 
     @PutMapping("/user/meet_out")
     public String leaveMeeting(int userId, int meetId) {
         userService.leaveMeeting(userId, meetId);
-        return "ok";
+        return "true";
     }
 
 }

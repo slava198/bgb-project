@@ -30,9 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .loginProcessingUrl("/user/login")
-                //.defaultSuccessUrl("/account", true)
-                .successForwardUrl("/account")
+                .loginProcessingUrl("/user/login") // for logging with implicit method
+                .defaultSuccessUrl("/user/account", true) //GET-link after success login
+                //.successForwardUrl("/account") //POST-link after success login
                 .usernameParameter("login")
                 .and()
                 .logout()

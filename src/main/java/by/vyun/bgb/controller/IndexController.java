@@ -35,16 +35,16 @@ public class IndexController {
         return "user_login";
     }
 
-    @PostMapping("/account")
-    public String accountPost(Model model) {
-        User signedUser = userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
-        model.addAttribute("user", signedUser);
-        model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
-        model.addAttribute("gameCollection", signedUser.getGameCollection());
-        model.addAttribute("meetingSet", signedUser.getMeetingSet());
-        model.addAttribute("createdMeets", signedUser.getCreatedMeets());
-        return "user_account";
-    }
+//    @PostMapping("/account")
+//    public String accountPost(Model model) {
+//        User signedUser = userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
+//        model.addAttribute("user", signedUser);
+//        model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
+//        model.addAttribute("gameCollection", signedUser.getGameCollection());
+//        model.addAttribute("meetingSet", signedUser.getMeetingSet());
+//        model.addAttribute("createdMeets", signedUser.getCreatedMeets());
+//        return "user_account";
+//    }
 
 
 }

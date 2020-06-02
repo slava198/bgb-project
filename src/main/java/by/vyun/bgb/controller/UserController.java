@@ -152,13 +152,19 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(Model model, User user) {
+        User signedUser = new User();
         try {
-            securityUserService.signIn(user.getLogin(), user.getPassword());
+            signedUser =  securityUserService.signIn(user.getLogin(), user.getPassword());
         } catch (UserException e) {
             model.addAttribute("error", e.getMessage());
             return "user_login";
         }
-        return "redirect:/user/account";
+        model.addAttribute("user", signedUser);
+        model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
+        model.addAttribute("gameCollection", signedUser.getGameCollection());
+        model.addAttribute("meetingSet", signedUser.getMeetingSet());
+        model.addAttribute("createdMeets", signedUser.getCreatedMeets());
+        return "user_account";
     }
 
     @PostMapping("/registration")
