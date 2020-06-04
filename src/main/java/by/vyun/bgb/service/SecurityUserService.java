@@ -1,5 +1,7 @@
 package by.vyun.bgb.service;
 
+import by.vyun.bgb.convertor.UserToDtoConverter;
+import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.entity.Image;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.repository.CityRepo;
@@ -36,6 +38,7 @@ public class SecurityUserService implements UserDetailsService {
     private CityRepo cityRepo;
     private CityService cityService;
     private EmailService emailService;
+    private UserToDtoConverter userConverter;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -44,12 +47,16 @@ public class SecurityUserService implements UserDetailsService {
         return new BCryptPasswordEncoder(5);
     }
 
-    public SecurityUserService(UserRepo userRepo, ImageRepo imageRepo, CityRepo cityRepo, CityService cityService, EmailService emailService) {
+    public SecurityUserService(UserRepo userRepo, ImageRepo imageRepo,
+                               CityRepo cityRepo, CityService cityService, EmailService emailService,
+                               UserToDtoConverter userConverter) {
         this.userRepo = userRepo;
         this.imageRepo = imageRepo;
         this.cityRepo = cityRepo;
         this.emailService = emailService;
         this.cityService = cityService;
+        this.userConverter = userConverter;
+
     }
 
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
@@ -104,7 +111,7 @@ public class SecurityUserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    public User signIn(String login, String password) throws UserException {
+    public UserDto signIn(String login, String password) throws UserException {
         User foundedUser = userRepo.getFirstByLogin(login);
         if (foundedUser == null) {
             throw new UserException("Login not found");
@@ -114,7 +121,8 @@ public class SecurityUserService implements UserDetailsService {
         if (!passwordEncoder.matches(password, foundedUser.getPassword())) {
             throw new UserException("Invalid password");
         }
-        return foundedUser;
+        UserDto userDto = userConverter.convert(foundedUser);
+        return userDto;
     }
 
     public User update(User currentUser, User changedUser,

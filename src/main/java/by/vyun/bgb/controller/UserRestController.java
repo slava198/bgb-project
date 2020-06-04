@@ -1,5 +1,6 @@
 package by.vyun.bgb.controller;
 
+import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.entity.Meeting;
@@ -88,8 +89,8 @@ public class UserRestController {
     }
 
     @GetMapping("/user")
-    public User signIn(String login, String password) {
-        User signedUser = new User();
+    public UserDto signIn(String login, String password) {
+        UserDto signedUser = null;
         try {
             signedUser = securityUserService.signIn(login, password);
         } catch (UserException ex) {

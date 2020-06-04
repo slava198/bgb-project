@@ -1,5 +1,9 @@
 package by.vyun.bgb.controller;
 
+import by.vyun.bgb.convertor.BoardgameToDtoConverter;
+import by.vyun.bgb.convertor.UserToDtoConverter;
+import by.vyun.bgb.dto.BoardgameDto;
+import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.entity.*;
 import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
@@ -16,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -39,16 +45,31 @@ public class UserController {
         return userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
+//    @GetMapping("/account")
+//    public String account(Model model) {
+//        User signedUser = getCurrentUser();
+//        model.addAttribute("user", signedUser);
+//        model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
+//        model.addAttribute("gameCollection", signedUser.getGameCollection());
+//        model.addAttribute("meetingSet", signedUser.getMeetingSet());
+//        model.addAttribute("createdMeets", signedUser.getCreatedMeets());
+//        return "user_account";
+//    }
+
     @GetMapping("/account")
     public String account(Model model) {
         User signedUser = getCurrentUser();
-        model.addAttribute("user", signedUser);
-        model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
-        model.addAttribute("gameCollection", signedUser.getGameCollection());
-        model.addAttribute("meetingSet", signedUser.getMeetingSet());
-        model.addAttribute("createdMeets", signedUser.getCreatedMeets());
-        return "user_account";
+        UserDto userDto = new UserToDtoConverter().convert(signedUser);
+        model.addAttribute("user", userDto);
+        //(new UserToDtoConverter().convert(signedUser)).getRatings()
+        //signedUser.getRatings().forEach((Rating rating) -> {if (rating.getUser() == signedUser) return;});
+//        model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
+//        model.addAttribute("gameCollection", signedUser.getGameCollection());
+//        model.addAttribute("meetingSet", signedUser.getMeetingSet());
+//        model.addAttribute("createdMeets", signedUser.getCreatedMeets());
+        return "user_account_dto";
     }
+
 
     @GetMapping("/registration")
     public String registrationPage(Model model) {
@@ -133,12 +154,12 @@ public class UserController {
             model.addAttribute("voicedUsers", meetingService.getVoicedUsers(meetId));
             return "meet_account";
         }
-        User currentUser = getCurrentUser();
-        model.addAttribute("user", currentUser);
-        model.addAttribute("gameCollection", currentUser.getGameCollection());
-        model.addAttribute("meetingSet", currentUser.getMeetingSet());
-        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+//        User currentUser = getCurrentUser();
+//        model.addAttribute("user", currentUser);
+//        model.addAttribute("gameCollection", currentUser.getGameCollection());
+//        model.addAttribute("meetingSet", currentUser.getMeetingSet());
+//        model.addAttribute("createdMeets", currentUser.getCreatedMeets());
+        return "redirect:/user/account";
     }
 
     @GetMapping("/createMeet_page")
@@ -150,22 +171,22 @@ public class UserController {
         return "meet_create";
     }
 
-    @PostMapping("/login")
-    public String login(Model model, User user) {
-        User signedUser = new User();
-        try {
-            signedUser =  securityUserService.signIn(user.getLogin(), user.getPassword());
-        } catch (UserException e) {
-            model.addAttribute("error", e.getMessage());
-            return "user_login";
-        }
-        model.addAttribute("user", signedUser);
-        model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
-        model.addAttribute("gameCollection", signedUser.getGameCollection());
-        model.addAttribute("meetingSet", signedUser.getMeetingSet());
-        model.addAttribute("createdMeets", signedUser.getCreatedMeets());
-        return "user_account";
-    }
+//    @PostMapping("/login")
+//    public String login(Model model, User user) {
+//        User signedUser = new User();
+//        try {
+//            signedUser =  securityUserService.signIn(user.getLogin(), user.getPassword());
+//        } catch (UserException e) {
+//            model.addAttribute("error", e.getMessage());
+//            return "user_login";
+//        }
+//        model.addAttribute("user", signedUser);
+//        model.addAttribute("createdMeetings", userService.getCreatedMeets(signedUser));
+//        model.addAttribute("gameCollection", signedUser.getGameCollection());
+//        model.addAttribute("meetingSet", signedUser.getMeetingSet());
+//        model.addAttribute("createdMeets", signedUser.getCreatedMeets());
+//        return "user_account";
+//    }
 
     @PostMapping("/registration")
     public String registration(User user, String passwordConfirm, String cityName,
