@@ -5,6 +5,7 @@ import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
 import by.vyun.bgb.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,8 @@ public class MeetingService {
         return meetingRepo.findAll();
     }
 
+
+    @Transactional
     public Meeting getMeetingById(int id) {
         return meetingRepo.getFirstById(id);
     }

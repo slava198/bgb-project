@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -59,6 +60,7 @@ public class SecurityUserService implements UserDetailsService {
 
     }
 
+    @Transactional
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepo.getFirstByLogin(login);
         if (user == null) {
@@ -100,6 +102,7 @@ public class SecurityUserService implements UserDetailsService {
             avatar.setData(imageRepo.findFirstByName(DEFAULT_AVATAR).getData());
             avatar.setName(user.getLogin());
         } else {
+            System.out.println(imageFile.getContentType());
             avatar.setData(imageFile.getBytes());
             avatar.setName(imageFile.getOriginalFilename());
         }
