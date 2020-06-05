@@ -27,6 +27,7 @@ import static javax.persistence.GenerationType.*;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@userId")
+@Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = AUTO)
@@ -47,7 +48,7 @@ public class User {
     private LocalDate dateOfBirth;
 
     @ManyToOne()
-    @JoinColumn(name = "cityId")
+    @JoinColumn(name = "city_id")
     private City city;
 
     @ElementCollection(fetch = FetchType.EAGER)

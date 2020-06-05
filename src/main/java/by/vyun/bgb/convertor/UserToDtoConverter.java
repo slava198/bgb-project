@@ -41,6 +41,7 @@ public class UserToDtoConverter implements Converter<User, UserDto> {
     private List<BoardgameDto> getGames(List<BoardGame> games) {
         BoardgameToDtoConverter converter = new BoardgameToDtoConverter();
         List<BoardgameDto> gamesDto = new ArrayList<>();
+
         for (BoardGame game : games) {
             gamesDto.add(converter.convert(game));
         }

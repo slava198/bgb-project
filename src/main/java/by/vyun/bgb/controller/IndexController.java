@@ -35,6 +35,7 @@ public class IndexController {
         return "user_login";
     }
 
+
 //    @PostMapping("/account")
 //    public String accountPost(Model model) {
 //        User signedUser = userService.getUserByLogin(SecurityContextHolder.getContext().getAuthentication().getName());

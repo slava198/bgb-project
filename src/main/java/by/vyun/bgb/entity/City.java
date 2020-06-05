@@ -14,6 +14,7 @@ import static javax.persistence.GenerationType.*;
 @Entity
 @ToString(exclude = {"gamers", "meetings"})
 @EqualsAndHashCode(exclude = {"gamers", "meetings"})
+//@Table(name="cities")
 public class City {
     @Id
     @GeneratedValue(strategy = AUTO)

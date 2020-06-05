@@ -26,13 +26,14 @@ import static javax.persistence.GenerationType.*;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@meetingId")
+//@Table(name="meetings")
 public class Meeting {
     @Id
     @GeneratedValue(strategy = AUTO)
     private int id;
 
     @ManyToOne()
-    @JoinColumn(name = "cityId")
+    @JoinColumn(name = "city_id")
     private City city;
     private String location;
 
@@ -40,7 +41,7 @@ public class Meeting {
     private LocalDateTime dateTime;
 
     @ManyToOne
-    @JoinColumn(name = "creatorId")
+    @JoinColumn(name = "creator_id")
     private User creator;
 
     @ManyToOne()
