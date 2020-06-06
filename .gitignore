@@ -25,5 +25,5 @@ hs_err_pid*
 # My own adds for Intellij Idea, Maven and properties files
 .idea/
 target/
-*.properties
+
 
