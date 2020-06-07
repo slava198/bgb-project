@@ -31,7 +31,7 @@
             </tr>
             <th:block th:each="usr : ${users}">
                 <tr>
-                    <td><img th:src="${user.getAvatar()}" width="30"></td>
+                    <td><img th:src="${usr.getAvatar()}" width="30"></td>
                     <td th:text="${usr.getLogin()}" height="16px"></td>
                     <td th:text="${usr.getDateOfBirth()}" ></td>
                     <td th:text="${usr.getTotalExperience()}" align="center"></td>

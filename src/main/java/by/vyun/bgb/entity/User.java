@@ -79,7 +79,6 @@ public class User {
 
 
     public int getAge() {
-        System.out.println("Age of user: " + Period.between(dateOfBirth, LocalDate.now()).getYears());
         return Period.between(dateOfBirth, LocalDate.now()).getYears();
     }
 

@@ -104,8 +104,6 @@ public class SecurityUserService implements UserDetailsService {
         if (foundedUser == null) {
             throw new UserException("Login not found");
         }
-        System.out.println(foundedUser.getPassword() + "\n" + passwordEncoder.encode(password));
-
         if (!passwordEncoder.matches(password, foundedUser.getPassword())) {
             throw new UserException("Invalid password");
         }

@@ -41,6 +41,17 @@ public class BoardGameService {
         return gameRepo.save(game);
     }
 
+    public BoardGame update(BoardGame currentGame, BoardGame changedGame) throws BoardGameException {
+        if (changedGame.getTitle().trim().length() * changedGame.getLogo().trim().length() *
+                changedGame.getDescription().trim().length() == 0) {
+            throw new BoardGameException("Empty logo, title or description field");
+        }
+        currentGame.setTitle(changedGame.getTitle());
+        currentGame.setLogo(changedGame.getLogo());
+        currentGame.setDescription(changedGame.getDescription());
+        return gameRepo.saveAndFlush(currentGame);
+    }
+
     public void changeGameStatus(int id) {
         BoardGame game = gameRepo.getOne(id);
         game.setIsActive(!game.getIsActive());
@@ -71,5 +82,6 @@ public class BoardGameService {
             return 1;
         }
     }
+
 
 }
