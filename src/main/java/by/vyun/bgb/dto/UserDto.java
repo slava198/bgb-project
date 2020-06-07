@@ -24,7 +24,8 @@ public class UserDto {
     private String email;
     private Boolean isActive;
     private Boolean isEnabled;
-    private Image avatar;
+    private String avatar;
+//    private Image avatar;
     private String city;
     private List<RatingDto> ratings;
     private List<BoardgameDto> games;

@@ -189,15 +189,14 @@ public class UserController {
 //    }
 
     @PostMapping("/registration")
-    public String registration(User user, String passwordConfirm, String cityName,
-                               MultipartFile imageFile, Model model) {
+    public String registration(User user, String passwordConfirm, String cityName, Model model) {
         if (user.checkPassword(passwordConfirm)) {
             model.addAttribute("error", "Password and it's confirmations are the different!");
             model.addAttribute("cities", cityService.getAllCityNames());
             return "user_register";
         }
         try {
-            securityUserService.registration(user, cityName, imageFile);
+            securityUserService.registration(user, cityName);
         } catch (UserException | IOException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("cities", cityService.getAllCityNames());
@@ -226,10 +225,10 @@ public class UserController {
     @PostMapping("/update")
     public String update(User changedUser,
                          String newPassword, String newPasswordConfirm,
-                         String cityName, MultipartFile imageFile, Model model) {
+                         String cityName, Model model) {
         User currentUser = getCurrentUser();
         try {
-            securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName, imageFile);
+            securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName);
         } catch (UserException | IOException ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("user", getCurrentUser());

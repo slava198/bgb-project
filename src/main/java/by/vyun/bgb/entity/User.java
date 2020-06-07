@@ -39,10 +39,11 @@ public class User {
     private Boolean isActive = true;
     private Boolean isEnabled = false;
     private String activationCode;
+    private String avatar;
 
-    @OneToOne
-    @JoinColumn(name = "image_id")
-    private Image avatar;
+//    @OneToOne
+//    @JoinColumn(name = "image_id")
+//    private Image avatar;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;

@@ -2,10 +2,8 @@ package by.vyun.bgb.service;
 
 import by.vyun.bgb.convertor.UserToDtoConverter;
 import by.vyun.bgb.dto.UserDto;
-import by.vyun.bgb.entity.Image;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.repository.CityRepo;
-import by.vyun.bgb.repository.ImageRepo;
 import by.vyun.bgb.repository.UserRepo;
 import by.vyun.bgb.entity.User;
 import lombok.Data;
@@ -19,8 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -35,7 +31,6 @@ import static by.vyun.bgb.entity.Const.DEFAULT_AVATAR;
 @Service
 public class SecurityUserService implements UserDetailsService {
     private UserRepo userRepo;
-    private ImageRepo imageRepo;
     private CityRepo cityRepo;
     private CityService cityService;
     private EmailService emailService;
@@ -48,11 +43,10 @@ public class SecurityUserService implements UserDetailsService {
         return new BCryptPasswordEncoder(5);
     }
 
-    public SecurityUserService(UserRepo userRepo, ImageRepo imageRepo,
-                               CityRepo cityRepo, CityService cityService, EmailService emailService,
+    public SecurityUserService(UserRepo userRepo, CityRepo cityRepo,
+                               CityService cityService, EmailService emailService,
                                UserToDtoConverter userConverter) {
         this.userRepo = userRepo;
-        this.imageRepo = imageRepo;
         this.cityRepo = cityRepo;
         this.emailService = emailService;
         this.cityService = cityService;
@@ -60,7 +54,6 @@ public class SecurityUserService implements UserDetailsService {
 
     }
 
-    @Transactional
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepo.getFirstByLogin(login);
         if (user == null) {
@@ -89,7 +82,7 @@ public class SecurityUserService implements UserDetailsService {
         return authorities;
     }
 
-    public void registration(User user, String cityName, MultipartFile imageFile) throws UserException, IOException {
+    public void registration(User user, String cityName) throws UserException, IOException {
         if (user.getLogin().trim().length() * user.getPassword().trim().length() * cityName.trim().length() == 0) {
             throw new UserException("Empty login, password or location field");
         }
@@ -97,17 +90,9 @@ public class SecurityUserService implements UserDetailsService {
             throw new UserException("Login duplicated");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Image avatar = new Image();
-        if (imageFile.isEmpty()) {
-            avatar.setData(imageRepo.findFirstByName(DEFAULT_AVATAR).getData());
-            avatar.setName(user.getLogin());
-        } else {
-            System.out.println(imageFile.getContentType());
-            avatar.setData(imageFile.getBytes());
-            avatar.setName(imageFile.getOriginalFilename());
+        if (user.getAvatar().isEmpty()) {
+            user.setAvatar(DEFAULT_AVATAR);
         }
-        imageRepo.saveAndFlush(avatar);
-        user.setAvatar(avatar);
         user.setCity(cityRepo.getFirstByName(cityName));
         user.setActivationCode(String.valueOf(new Random(LocalDateTime.now().getNano()).nextInt(8999) + 1000));
         sendActivationCode(user);
@@ -130,7 +115,7 @@ public class SecurityUserService implements UserDetailsService {
 
     public User update(User currentUser, User changedUser,
                        String newPassword, String newPasswordConfirm,
-                       String cityName, MultipartFile imageFile) throws UserException, IOException {
+                       String cityName) throws UserException, IOException {
 
         if (changedUser.getPassword().isEmpty()) {
             throw new UserException("Enter current password");
@@ -148,15 +133,10 @@ public class SecurityUserService implements UserDetailsService {
         if (cityName != null && !cityName.isEmpty()) {
             currentUser.setCity(cityService.getCityByName(cityName));
         }
-        if (!imageFile.isEmpty()) {
-            Image avatar = imageRepo.findFirstById(currentUser.getAvatar().getId());
-            avatar.setData(imageFile.getBytes());
-            avatar.setName(imageFile.getOriginalFilename());
-            imageRepo.saveAndFlush(avatar);
-            currentUser.setAvatar(avatar);
+        if (!changedUser.getAvatar().isEmpty()) {
+            currentUser.setAvatar(changedUser.getAvatar());
         }
         currentUser.setAddress(changedUser.getAddress());
-        currentUser.setDateOfBirth(changedUser.getDateOfBirth());
         return userRepo.saveAndFlush(currentUser);
     }
 

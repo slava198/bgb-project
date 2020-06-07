@@ -25,7 +25,6 @@ import static javax.persistence.GenerationType.*;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@boardGameId")
-//@Table(name="board_games")
 public class BoardGame {
     @Id
     @GeneratedValue(strategy = AUTO)

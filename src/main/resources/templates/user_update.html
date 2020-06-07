@@ -17,14 +17,12 @@
     <div class="card w-50" style="margin: 1.5em auto">
         <div class="card-header"><h3>Update user</h3></div>
         <div class="card-body">
-            <form action="/user/update" method="post" enctype="multipart/form-data">
+            <form action="/user/update" method="post" >
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <!--                ERROR-->
                 <div class="alert alert-danger" role="alert" th:if="${error}"
                      th:text="${error}"></div>
-
-
 
                 <!--                PASSWORD-->
                 <div class="form-group row">
@@ -50,8 +48,7 @@
                 <div class="form-group row">
                     <label class="col-md-4 col-form-label">New avatar image:</label>
                     <div class="col-md-8">
-                        <input type="file" name="imageFile"
-                               class="form-control-file">
+                        <input type="text" name="avatar" class="form-control">
                     </div>
                 </div>
 
@@ -74,15 +71,6 @@
                 </div>
 
 
-                <!--                DATE OF BIRTH-->
-                <div class="form-group row">
-                    <label class="col-md-4 col-form-label">Date of birth:</label>
-                    <div class="col-md-8">
-                        <input name="dateOfBirth" type="date" th:value="${user.getDateOfBirth()}"
-                               class="form-control">
-                    </div>
-                </div>
-
                 <button type="submit" class="btn btn-outline-dark btn-sm my-1">Update</button>
 
             </form>
@@ -97,40 +85,6 @@
 
 </div>
 
-<!--<form method="post" action="/user/update">-->
-<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
-<!--    <div>-->
-<!--        <p>Current password: <input name="password" type="password" th:value="${user.password}"></p>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--        <p>New password: <input name="newPassword" type="password" th:value="${user.password}"></p>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--        <p>Confirm new password: <input name="newPasswordConfirm" type="password" th:value="${user.password}"></p>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--        <span>-->
-<!--            <label>Location: </label>-->
-<!--        </span>-->
-<!--        <span>-->
-<!--            <select name="cityName">-->
-<!--            <option th:each="city : ${cities}" th:text="${city}" ></option>-->
-<!--        </select>-->
-<!--        </span>-->
-
-<!--    </div>-->
-<!--    <div>-->
-<!--        <span>-->
-<!--            <label>Date of birth: </label>-->
-<!--        </span>-->
-<!--        <span>-->
-<!--        <input name ="dateOfBirth" type="date" th:value="${user.dateOfBirth}">-->
-<!--        </span>-->
-<!--    </div>-->
-<!--    <input type="submit" value="Update">-->
-<!--    &lt;!&ndash;    <button id="saveBtn">Save</button>&ndash;&gt;-->
-<!--    &lt;!&ndash;    <button id="cancelBtn">Cancel</button>&ndash;&gt;-->
-<!--</form>-->
 
 </body>
 </html>

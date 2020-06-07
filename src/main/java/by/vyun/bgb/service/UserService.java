@@ -6,7 +6,6 @@ import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.entity.Meeting;
 import by.vyun.bgb.entity.User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,6 @@ public class UserService {
         return userRepo.getFirstById(id);
     }
 
-    @Transactional
     public User getUserByLogin(String login) {
         return userRepo.getFirstByLogin(login);
     }
@@ -105,7 +103,6 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    @Transactional
     public void enable(String login, String code) throws UserException {
         User user = userRepo.getFirstByLogin(login);
         if (user == null) {

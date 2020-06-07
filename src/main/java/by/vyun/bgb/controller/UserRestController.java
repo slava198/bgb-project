@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -65,12 +65,12 @@ public class UserRestController {
 
     @PostMapping("/user")
     public String registration(@RequestBody User user, String passwordConfirm,
-                               String cityName, @RequestBody MultipartFile imageFile) {
+                               String cityName) {
         if (user.checkPassword(passwordConfirm)) {
             return "false";
         }
         try {
-            securityUserService.registration(user, cityName, imageFile);
+            securityUserService.registration(user, cityName);
         } catch (UserException | IOException e) {
             System.out.println(e.getMessage());
             return e.getMessage();
@@ -102,10 +102,10 @@ public class UserRestController {
     @PutMapping("/user")
     public User update(int userId, @RequestBody User changedUser,
                        String newPassword, String newPasswordConfirm,
-                       String cityName, @RequestBody MultipartFile imageFile) {
+                       String cityName) {
         User currentUser = userService.getUserById(userId);
         try {
-            currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName, imageFile);
+            currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName);
         } catch (UserException | IOException ex) {
             System.out.println(ex.getMessage());
         }
