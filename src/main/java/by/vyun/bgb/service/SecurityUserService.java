@@ -33,7 +33,6 @@ public class SecurityUserService implements UserDetailsService {
     private UserRepo userRepo;
     private CityRepo cityRepo;
     private CityService cityService;
-    private EmailService emailService;
     private UserToDtoConverter userConverter;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -44,11 +43,10 @@ public class SecurityUserService implements UserDetailsService {
     }
 
     public SecurityUserService(UserRepo userRepo, CityRepo cityRepo,
-                               CityService cityService, EmailService emailService,
+                               CityService cityService,
                                UserToDtoConverter userConverter) {
         this.userRepo = userRepo;
         this.cityRepo = cityRepo;
-        this.emailService = emailService;
         this.cityService = cityService;
         this.userConverter = userConverter;
 
@@ -94,8 +92,6 @@ public class SecurityUserService implements UserDetailsService {
             user.setAvatar(DEFAULT_AVATAR);
         }
         user.setCity(cityRepo.getFirstByName(cityName));
-        user.setActivationCode(String.valueOf(new Random(LocalDateTime.now().getNano()).nextInt(8999) + 1000));
-        sendActivationCode(user);
         userRepo.save(user);
     }
 
@@ -138,22 +134,5 @@ public class SecurityUserService implements UserDetailsService {
         return userRepo.saveAndFlush(currentUser);
     }
 
-    public void rescuePassword(int userId) throws UserException {
-        User user = userRepo.getFirstById(userId);
-        if (user == null) {
-            throw new UserException("User not found");
-        }
-        String newPassword = String.valueOf(new Random(LocalDateTime.now().getNano()).nextInt(8999) + 1000);
-        user.setPassword(passwordEncoder.encode(newPassword));
-        sendNewPassword(user, newPassword);
-        userRepo.save(user);
-    }
 
-    private void sendActivationCode(User user) {
-        emailService.sendMessage(user.getEmail(), "Activate account", "Your confirmation code is:  " + user.getActivationCode());
-    }
-
-    private void sendNewPassword(User user, String password) {
-            emailService.sendMessage(user.getEmail(), "Reset password", "Your new password is:  " + password);
-    }
 }

@@ -37,7 +37,7 @@ public class User {
     private String address;
     private String email;
     private Boolean isActive = true;
-    private Boolean isEnabled = false;
+    private Boolean isEnabled = true;
     private String activationCode;
     private String avatar;
 

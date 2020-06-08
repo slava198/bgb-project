@@ -148,18 +148,5 @@ public class AdminController {
         return "admin_users";
     }
 
-    @GetMapping("/changeUserPassword")
-    public String changeUserPassword(int userId, Model model) {
-        try {
-            securityUserService.rescuePassword(userId);
-        } catch (UserException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("users", userService.getAllUsers());
-            return "admin_users";
-        }
-        model.addAttribute("users", userService.getAllUsers());
-        return "admin_users";
-    }
-
 
 }
