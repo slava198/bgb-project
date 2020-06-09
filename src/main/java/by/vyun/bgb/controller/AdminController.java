@@ -101,7 +101,7 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        return "user_account_dto";
     }
 
     @GetMapping("/users")
@@ -116,7 +116,7 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        return "user_account_dto";
     }
 
     @GetMapping("/cities")
@@ -130,7 +130,7 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        return "user_account_dto";
     }
 
     @GetMapping("/changeGameStatus")

@@ -18,6 +18,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,8 +38,11 @@ public class SecurityUserService implements UserDetailsService {
     private CityRepo cityRepo;
     private CityService cityService;
     private UserToDtoConverter userConverter;
+    private Validator validator;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -49,6 +56,7 @@ public class SecurityUserService implements UserDetailsService {
         this.cityRepo = cityRepo;
         this.cityService = cityService;
         this.userConverter = userConverter;
+        this.validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     }
 
@@ -80,9 +88,13 @@ public class SecurityUserService implements UserDetailsService {
         return authorities;
     }
 
-    public void registration(User user, String cityName) throws UserException, IOException {
-        if (user.getLogin().trim().length() * user.getPassword().trim().length() * cityName.trim().length() == 0) {
-            throw new UserException("Empty login, password or location field");
+    public void registration(User user, String passwordConfirm, String cityName) throws UserException, IOException {
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        if (!violations.isEmpty()) {
+            throw new UserException(violations.iterator().next().getMessage());
+        }
+        if (user.checkPassword(passwordConfirm)) {
+            throw new UserException("Different password and confirmation");
         }
         if (userRepo.getFirstByLogin(user.getLogin()) != null) {
             throw new UserException("Login duplicated");
@@ -109,8 +121,7 @@ public class SecurityUserService implements UserDetailsService {
 
     public User update(User currentUser, User changedUser,
                        String newPassword, String newPasswordConfirm,
-                       String cityName) throws UserException, IOException {
-
+                       String cityName) throws UserException {
         if (changedUser.getPassword().isEmpty()) {
             throw new UserException("Enter current password");
         }
@@ -119,7 +130,7 @@ public class SecurityUserService implements UserDetailsService {
         }
         if (!newPassword.isEmpty() || !newPasswordConfirm.isEmpty()) {
             if (!newPassword.equals(newPasswordConfirm)) {
-                throw new UserException("New password and it's confirmations are the different");
+                throw new UserException("Different new password and confirmation");
             } else {
                 currentUser.setPassword(passwordEncoder.encode(newPassword));
             }

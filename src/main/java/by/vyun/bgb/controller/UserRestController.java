@@ -1,6 +1,7 @@
 package by.vyun.bgb.controller;
 
 import by.vyun.bgb.dto.UserDto;
+import by.vyun.bgb.exception.MeetingException;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.entity.Meeting;
@@ -66,11 +67,9 @@ public class UserRestController {
     @PostMapping("/user")
     public String registration(@RequestBody User user, String passwordConfirm,
                                String cityName) {
-        if (user.checkPassword(passwordConfirm)) {
-            return "false";
-        }
+
         try {
-            securityUserService.registration(user, cityName);
+            securityUserService.registration(user, passwordConfirm, cityName);
         } catch (UserException | IOException e) {
             System.out.println(e.getMessage());
             return e.getMessage();
@@ -106,7 +105,7 @@ public class UserRestController {
         User currentUser = userService.getUserById(userId);
         try {
             currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName);
-        } catch (UserException | IOException ex) {
+        } catch (UserException ex) {
             System.out.println(ex.getMessage());
         }
         return currentUser;
@@ -131,7 +130,12 @@ public class UserRestController {
     public String createMeet(int userId, int gameId, @RequestBody Meeting meet, String cityName) {
         User currentUser = userService.getUserById(userId);
         meet.setGame(gameService.getGameById(gameId));
-        meetingService.createMeet(currentUser.getId(), meet, cityName);
+        try {
+            meetingService.createMeet(currentUser.getId(), meet, cityName);
+        } catch (MeetingException e) {
+            System.out.println(e.getMessage());
+            return "false";
+        }
         return "true";
     }
 

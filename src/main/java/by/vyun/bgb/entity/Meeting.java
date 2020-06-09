@@ -11,6 +11,9 @@ import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,8 +38,11 @@ public class Meeting {
     @ManyToOne()
     @JoinColumn(name = "city_id")
     private City city;
+    @NotBlank(message = "Empty location field")
     private String location;
 
+    @NotNull(message = "Invalid date field")
+    @Future(message = "Invalid date field")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateTime;
 

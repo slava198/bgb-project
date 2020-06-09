@@ -26,14 +26,17 @@
                     <div class="alert alert-danger" role="alert" th:if="${error}"
                          th:text="${error}"></div>
 
-
                     <!--                CITY-->
                     <div class="form-group row">
                         <label class="col-md-4 col-form-label">City:</label>
                         <div class="col-md-8">
                             <select  class="form-control" name="cityName">
-                                <option th:each="city : ${cities}" th:text="${city}"
+                                <option th:if="!${formData}"
+                                        th:each="city : ${cities}" th:text="${city}"
                                         th:selected="${city==user.getCity().getName()}"></option>
+                                <option th:if="${formData}"
+                                        th:each="city : ${cities}" th:text="${city}"
+                                        th:selected="${city==formData.get('cityName')}"></option>
                             </select>
                         </div>
                     </div>
@@ -42,8 +45,12 @@
                     <div class="form-group row">
                         <label class="col-md-4 col-form-label">Location:</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" name="location"
+                            <input th:if="!${formData}"
+                                    type="text" class="form-control" name="location"
                                    th:value="${user.getAddress()}"/>
+                            <input th:if="${formData}"
+                                    type="text" class="form-control" name="location"
+                                   th:value="${formData.get('location')}"/>
                         </div>
                     </div>
 
@@ -51,7 +58,12 @@
                     <div class="form-group row">
                         <label class="col-md-4 col-form-label">Date and time:</label>
                         <div class="col-md-8">
-                            <input name ="dateTime" type="datetime-local" value="2020-01-01 20:00" class="form-control">
+                            <input
+                                    name ="dateTime" type="datetime-local" th:value="${{#dates.createNow()}}" class="form-control">
+<!--                            <input th:if="${formData}"-->
+<!--                                    name ="dateTime"-->
+<!--                                   type="datetime-local" th:value="${{#dates.format('yyyy-MM-dd HH:mm', formData.get('dateTime'))}}"-->
+<!--                            class="form-control">-->
                         </div>
                     </div>
 

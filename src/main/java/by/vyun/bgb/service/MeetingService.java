@@ -3,11 +3,16 @@ package by.vyun.bgb.service;
 import by.vyun.bgb.entity.*;
 import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
+import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.repository.*;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static by.vyun.bgb.entity.Const.*;
 
@@ -18,6 +23,7 @@ public class MeetingService {
     private final UserRepo userRepo;
     private final CityRepo cityRepo;
     private final RatingRepo ratingRepo;
+    private final Validator validator;
 
     public MeetingService(MeetingRepo meetingRepo, MeetingResultRepo meetingResultRepo,
                           UserRepo userRepo, CityRepo cityRepo, RatingRepo ratingRepo) {
@@ -26,6 +32,7 @@ public class MeetingService {
         this.userRepo = userRepo;
         this.cityRepo = cityRepo;
         this.ratingRepo = ratingRepo;
+        this.validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     public List<Meeting> getAllMeetings() {
@@ -37,7 +44,11 @@ public class MeetingService {
         return meetingRepo.getFirstById(id);
     }
 
-    public Meeting createMeet(int userId, Meeting meeting, String cityName) {
+    public Meeting createMeet(int userId, Meeting meeting, String cityName) throws MeetingException {
+        Set<ConstraintViolation<Meeting>> violations = validator.validate(meeting);
+        if (!violations.isEmpty()) {
+            throw new MeetingException(violations.iterator().next().getMessage());
+        }
         meeting.setCity(cityRepo.getFirstByName(cityName));
         meeting.setCreator(userRepo.getFirstById(userId));
         return meetingRepo.saveAndFlush(meeting);

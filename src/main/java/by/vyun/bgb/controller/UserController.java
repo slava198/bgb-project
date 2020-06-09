@@ -9,6 +9,7 @@ import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/user")
@@ -31,6 +32,9 @@ public class UserController {
     private final BoardGameService gameService;
     private final MeetingService meetingService;
     private final CityService cityService;
+
+//    @Autowired
+//    private Validator validator;
 
     public UserController(UserService userService, SecurityUserService securityUserService,
                           BoardGameService gameService, MeetingService meetingService, CityService cityService) {
@@ -190,13 +194,8 @@ public class UserController {
 
     @PostMapping("/registration")
     public String registration(User user, String passwordConfirm, String cityName, Model model) {
-        if (user.checkPassword(passwordConfirm)) {
-            model.addAttribute("error", "Password and it's confirmations are the different!");
-            model.addAttribute("cities", cityService.getAllCityNames());
-            return "user_register";
-        }
         try {
-            securityUserService.registration(user, cityName);
+            securityUserService.registration(user, passwordConfirm, cityName);
         } catch (UserException | IOException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("cities", cityService.getAllCityNames());
@@ -229,7 +228,7 @@ public class UserController {
         User currentUser = getCurrentUser();
         try {
             securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName);
-        } catch (UserException | IOException ex) {
+        } catch (UserException ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("user", getCurrentUser());
             model.addAttribute("cities", cityService.getAllCityNames());
@@ -300,7 +299,22 @@ public class UserController {
         meet.setLocation(location);
         meet.setDateTime(dateTime);
         meet.setGame(game);
-        meet = meetingService.createMeet(currentUser.getId(), meet, cityName);
+        try {
+            meet = meetingService.createMeet(currentUser.getId(), meet, cityName);
+        } catch (MeetingException e) {
+            Map<String, Object> formData = new HashMap<>();
+            formData.put("cityName", cityName);
+            formData.put("location", location);
+            formData.put("dateTime", dateTime);
+            //System.out.println(dateTime.);
+            model.addAttribute("formData", formData);
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("user", getCurrentUser());
+            model.addAttribute("game", game);
+            model.addAttribute("cities", cityService.getAllCityNames());
+            return "meet_create";
+        }
+
         userService.takePartInMeeting(currentUser.getId(), meet.getId());
         currentUser = userService.getUserById(currentUser.getId());
         model.addAttribute("user", currentUser);
