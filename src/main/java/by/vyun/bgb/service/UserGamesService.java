@@ -23,6 +23,6 @@ public class UserGamesService {
     }
 
     public GameDto addGame(Long userId, Long gameId) {
-        return new GameDto();
+        return GameDto.builder().build();
     }
 }

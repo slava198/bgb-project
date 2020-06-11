@@ -16,15 +16,15 @@ public class GamesService {
     }
 
     public GameDto getGame(Long gameId) {
-        return new GameDto();
+        return GameDto.builder().build();
     }
 
     public GameDto createGame(CreateGameRequestDto createGameRequestDto) {
-        return new GameDto();
+        return GameDto.builder().build();
     }
 
     public GameDto updateGame(Long gameId, UpdateGameRequestDto updateGameRequestDto) {
-        return new GameDto();
+        return GameDto.builder().build();
     }
 
     public void changeGameStatus(Long gameId) {
