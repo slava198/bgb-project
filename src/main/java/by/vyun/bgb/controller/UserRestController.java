@@ -128,10 +128,10 @@ public class UserRestController {
 
     @PostMapping("/user/meet")
     public String createMeet(int userId, int gameId, @RequestBody Meeting meet, String cityName) {
-        User currentUser = userService.getUserById(userId);
+        //User currentUser = userService.getUserById(userId);
         meet.setGame(gameService.getGameById(gameId));
         try {
-            meetingService.createMeet(currentUser.getId(), meet, cityName);
+            meetingService.createMeet(userId, meet, cityName);
         } catch (MeetingException e) {
             System.out.println(e.getMessage());
             return "false";

@@ -20,6 +20,7 @@ public class UserDto {
     private int id;
     private String login;
     private int age;
+    private String dateOfBirth;
     private String address;
     private String email;
     private Boolean isActive;

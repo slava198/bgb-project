@@ -27,6 +27,7 @@ public class UserToDtoConverter implements Converter<User, UserDto> {
                 .isActive(user.getIsActive())
                 .isEnabled(user.getIsEnabled())
                 .age(user.getAge())
+                .dateOfBirth(user.getDateOfBirth().toString())
                 .avatar(user.getAvatar())
                 .city(user.getCity().getName())
                 .address(user.getAddress())

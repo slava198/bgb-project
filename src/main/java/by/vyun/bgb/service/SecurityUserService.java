@@ -40,12 +40,12 @@ public class SecurityUserService implements UserDetailsService {
     private UserToDtoConverter userConverter;
     private Validator validator;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
 
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(5);
     }
 
@@ -99,7 +99,7 @@ public class SecurityUserService implements UserDetailsService {
         if (userRepo.getFirstByLogin(user.getLogin()) != null) {
             throw new UserException("Login duplicated");
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder().encode(user.getPassword()));
         if (user.getAvatar().isEmpty()) {
             user.setAvatar(DEFAULT_AVATAR);
         }
@@ -112,7 +112,7 @@ public class SecurityUserService implements UserDetailsService {
         if (foundedUser == null) {
             throw new UserException("Login not found");
         }
-        if (!passwordEncoder.matches(password, foundedUser.getPassword())) {
+        if (!passwordEncoder().matches(password, foundedUser.getPassword())) {
             throw new UserException("Invalid password");
         }
         UserDto userDto = userConverter.convert(foundedUser);
@@ -125,14 +125,14 @@ public class SecurityUserService implements UserDetailsService {
         if (changedUser.getPassword().isEmpty()) {
             throw new UserException("Enter current password");
         }
-        if (!passwordEncoder.matches(changedUser.getPassword(), currentUser.getPassword())) {
+        if (!passwordEncoder().matches(changedUser.getPassword(), currentUser.getPassword())) {
             throw new UserException("Invalid current password");
         }
         if (!newPassword.isEmpty() || !newPasswordConfirm.isEmpty()) {
             if (!newPassword.equals(newPasswordConfirm)) {
                 throw new UserException("Different new password and confirmation");
             } else {
-                currentUser.setPassword(passwordEncoder.encode(newPassword));
+                currentUser.setPassword(passwordEncoder().encode(newPassword));
             }
         }
         if (cityName != null && !cityName.isEmpty()) {
