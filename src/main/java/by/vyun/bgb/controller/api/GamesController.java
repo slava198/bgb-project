@@ -2,6 +2,7 @@ package by.vyun.bgb.controller.api;
 
 import by.vyun.bgb.dto.game.CreateGameRequestDto;
 import by.vyun.bgb.dto.game.GameDto;
+import by.vyun.bgb.dto.game.UpdateGameRequestDto;
 import by.vyun.bgb.service.GamesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

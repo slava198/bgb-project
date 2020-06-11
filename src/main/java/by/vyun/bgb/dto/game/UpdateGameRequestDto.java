@@ -1,4 +1,4 @@
-package by.vyun.bgb.controller.api;
+package by.vyun.bgb.dto.game;
 
 public class UpdateGameRequestDto {
 }

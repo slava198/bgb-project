@@ -1,6 +1,6 @@
 package by.vyun.bgb.service;
 
-import by.vyun.bgb.controller.api.UpdateGameRequestDto;
+import by.vyun.bgb.dto.game.UpdateGameRequestDto;
 import by.vyun.bgb.dto.game.CreateGameRequestDto;
 import by.vyun.bgb.dto.game.GameDto;
 import org.springframework.stereotype.Service;
