@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,24 +35,24 @@ public class GamesController {
         return ResponseEntity.ok(gamesService.getGames());
     }
 
-    @GetMapping("{gameId}")
+    @GetMapping("/{gameId}")
     public ResponseEntity<GameDto> getGame(@PathVariable("gameId") Long gameId) {
         return ResponseEntity.ok(gamesService.getGame(gameId));
     }
 
     @PostMapping
-    public ResponseEntity<GameDto> createGame(@RequestBody CreateGameRequestDto createGameRequest) {
+    public ResponseEntity<GameDto> createGame(@Valid @RequestBody CreateGameRequestDto createGameRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(gamesService.createGame(createGameRequest));
     }
 
-    @PutMapping("{gameId}")
+    @PutMapping("/{gameId}")
     public ResponseEntity<GameDto> updateGame(@PathVariable("gameId") Long gameId,
-                                              @RequestBody UpdateGameRequestDto updateGameRequest) {
+                                              @Valid @RequestBody UpdateGameRequestDto updateGameRequest) {
         return ResponseEntity.ok(gamesService.updateGame(gameId, updateGameRequest));
     }
 
     //todo security endpoint for admin
-    @PutMapping("{gameId}/status")
+    @PutMapping("/{gameId}/status")
     public void changeStatus(@PathVariable("gameId") Long gameId) {
         gamesService.changeGameStatus(gameId);
     }
