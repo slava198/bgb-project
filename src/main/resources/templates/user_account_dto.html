@@ -19,7 +19,7 @@
     <div class="row justify-content-center">
         <div class="col-3">
             <br>
-            <img th:src="${'data:image/png;base64,' + user.getAvatar().getPicture()}" padding="10px" width="120">
+            <img th:src="${user.getAvatar()}" padding="10px" width="120">
             <h4><span th:text="${user.getAge()}"></span> years old</h4>
             <h5><span th:text="${user.getTotalExperience()}"></span> experience points</h5>
             <h5><span th:text="${user.getCompletedMeetsNumber()}"></span> meets completed</h5>
@@ -46,7 +46,7 @@
                         </td>
                         <td th:text="${game.getTitle()}" height="16px"></td>
                         <td th:text="${#numbers.formatDecimal(game.getRatingValue(),1,2)}" align="center"></td>
-<!--                        <td th:text="${user.getExperienceInGame(game)}" align="center"></td>-->
+                        <!--                        <td th:text="${user.getExperienceInGame(game)}" align="center"></td>-->
                         <td th:text="${user.ratings.indexOf(game)}" align="center"></td>
                         <td>
                             <a class="btn btn-outline-dark btn-sm my-1" th:href="@{/user/game(gameId = ${game.id})}">See more...</a>
@@ -98,3 +98,4 @@
 <script th:replace="insert/fragment :: table-sort"></script>
 </body>
 </html>
+

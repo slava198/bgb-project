@@ -1,8 +1,6 @@
 package by.vyun.bgb.controller;
 
-import by.vyun.bgb.convertor.BoardgameToDtoConverter;
 import by.vyun.bgb.convertor.UserToDtoConverter;
-import by.vyun.bgb.dto.BoardgameDto;
 import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.entity.*;
 import by.vyun.bgb.exception.InvalidInputException;
@@ -20,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/user")

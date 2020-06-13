@@ -10,5 +10,7 @@ public class GameDto {
     String title;
     String description;
     String image_url;
-    Float rating;
+    Double rating;
+    Integer numberOfOwners;
+    Integer numberOfMeetings;
 }

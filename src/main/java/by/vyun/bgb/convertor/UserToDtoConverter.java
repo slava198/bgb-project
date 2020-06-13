@@ -4,11 +4,11 @@ import by.vyun.bgb.dto.BoardgameDto;
 import by.vyun.bgb.dto.MeetingDto;
 import by.vyun.bgb.dto.RatingDto;
 import by.vyun.bgb.dto.UserDto;
+import by.vyun.bgb.dto.game.GameDto;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.entity.Meeting;
 import by.vyun.bgb.entity.Rating;
 import by.vyun.bgb.entity.User;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -38,9 +38,9 @@ public class UserToDtoConverter implements Converter<User, UserDto> {
                 .build();
     }
 
-    private List<BoardgameDto> getGames(List<BoardGame> games) {
-        BoardgameToDtoConverter converter = new BoardgameToDtoConverter();
-        List<BoardgameDto> gamesDto = new ArrayList<>();
+    private List<GameDto> getGames(List<BoardGame> games) {
+        GameToDtoConverter converter = new GameToDtoConverter();
+        List<GameDto> gamesDto = new ArrayList<>();
         for (BoardGame game : games) {
             gamesDto.add(converter.convert(game));
         }
