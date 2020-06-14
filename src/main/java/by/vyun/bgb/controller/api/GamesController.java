@@ -3,6 +3,9 @@ package by.vyun.bgb.controller.api;
 import by.vyun.bgb.dto.game.CreateGameRequestDto;
 import by.vyun.bgb.dto.game.GameDto;
 import by.vyun.bgb.dto.game.UpdateGameRequestDto;
+
+import by.vyun.bgb.exception.BoardGameException;
+
 import by.vyun.bgb.service.GamesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +40,14 @@ public class GamesController {
 
     @GetMapping("/{gameId}")
     public ResponseEntity<GameDto> getGame(@PathVariable("gameId") Long gameId) {
-        return ResponseEntity.ok(gamesService.getGame(gameId));
+
+        try {
+            return ResponseEntity.ok(gamesService.getGame(gameId));
+        } catch (BoardGameException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+
     }
 
     @PostMapping
@@ -56,4 +66,6 @@ public class GamesController {
     public void changeStatus(@PathVariable("gameId") Long gameId) {
         gamesService.changeGameStatus(gameId);
     }
+
 }
+

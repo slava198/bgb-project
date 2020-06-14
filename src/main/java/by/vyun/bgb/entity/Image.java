@@ -2,16 +2,14 @@ package by.vyun.bgb.entity;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.*;
 import java.util.Base64;
 
 import static javax.persistence.GenerationType.*;
 
 @Data
 @Entity
+//@Table(name="images")
 public class Image {
     @Id
     @GeneratedValue(strategy = IDENTITY)

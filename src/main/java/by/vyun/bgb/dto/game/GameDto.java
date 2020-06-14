@@ -11,4 +11,9 @@ public class GameDto {
     String description;
     String image_url;
     Float rating;
+
+    private Boolean isActive = true;
+    public int numberOfOwners;
+    public int numberOfMeetings;
+
 }

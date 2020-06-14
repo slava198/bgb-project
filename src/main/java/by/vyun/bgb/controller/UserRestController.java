@@ -1,6 +1,7 @@
 package by.vyun.bgb.controller;
 
 import by.vyun.bgb.dto.UserDto;
+import by.vyun.bgb.exception.MeetingException;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.entity.Meeting;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -65,12 +66,10 @@ public class UserRestController {
 
     @PostMapping("/user")
     public String registration(@RequestBody User user, String passwordConfirm,
-                               String cityName, @RequestBody MultipartFile imageFile) {
-        if (user.checkPassword(passwordConfirm)) {
-            return "false";
-        }
+                               String cityName) {
+
         try {
-            securityUserService.registration(user, cityName, imageFile);
+            securityUserService.registration(user, passwordConfirm, cityName);
         } catch (UserException | IOException e) {
             System.out.println(e.getMessage());
             return e.getMessage();
@@ -102,11 +101,11 @@ public class UserRestController {
     @PutMapping("/user")
     public User update(int userId, @RequestBody User changedUser,
                        String newPassword, String newPasswordConfirm,
-                       String cityName, @RequestBody MultipartFile imageFile) {
+                       String cityName) {
         User currentUser = userService.getUserById(userId);
         try {
-            currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName, imageFile);
-        } catch (UserException | IOException ex) {
+            currentUser = securityUserService.update(currentUser, changedUser, newPassword, newPasswordConfirm, cityName);
+        } catch (UserException ex) {
             System.out.println(ex.getMessage());
         }
         return currentUser;
@@ -129,9 +128,14 @@ public class UserRestController {
 
     @PostMapping("/user/meet")
     public String createMeet(int userId, int gameId, @RequestBody Meeting meet, String cityName) {
-        User currentUser = userService.getUserById(userId);
+        //User currentUser = userService.getUserById(userId);
         meet.setGame(gameService.getGameById(gameId));
-        meetingService.createMeet(currentUser.getId(), meet, cityName);
+        try {
+            meetingService.createMeet(userId, meet, cityName);
+        } catch (MeetingException e) {
+            System.out.println(e.getMessage());
+            return "false";
+        }
         return "true";
     }
 

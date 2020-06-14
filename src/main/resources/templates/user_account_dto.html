@@ -19,7 +19,7 @@
     <div class="row justify-content-center">
         <div class="col-3">
             <br>
-            <img th:src="${'data:image/png;base64,' + user.getAvatar().getPicture()}" padding="10px" width="120">
+            <img th:src="${user.getAvatar()}" padding="10px" width="120">
             <h4><span th:text="${user.getAge()}"></span> years old</h4>
             <h5><span th:text="${user.getTotalExperience()}"></span> experience points</h5>
             <h5><span th:text="${user.getCompletedMeetsNumber()}"></span> meets completed</h5>

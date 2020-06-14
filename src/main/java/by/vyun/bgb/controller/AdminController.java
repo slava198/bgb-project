@@ -41,6 +41,12 @@ public class AdminController {
         return "game_create";
     }
 
+    @GetMapping("/update_game")
+    public String updateGame(int gameId, Model model) {
+        model.addAttribute("game", gameService.getGameById(gameId));
+        return "game_update";
+    }
+
     @PostMapping("/game")
     public String addGame(BoardGame game, Model model) {
         try {
@@ -48,6 +54,20 @@ public class AdminController {
         } catch (BoardGameException ex) {
             model.addAttribute("error", ex.getMessage());
             return "game_create";
+        }
+        model.addAttribute("games", gameService.getAllGames());
+        return "admin_games";
+    }
+
+    @PostMapping("/game_upd")
+    public String updGame(BoardGame changedGame, Model model) {
+        BoardGame currentGame = gameService.getGameById(changedGame.getId());
+        try {
+            gameService.update(currentGame, changedGame);
+        } catch (BoardGameException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("game", currentGame);
+            return "game_update";
         }
         model.addAttribute("games", gameService.getAllGames());
         return "admin_games";
@@ -81,7 +101,7 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        return "user_account_dto";
     }
 
     @GetMapping("/users")
@@ -96,7 +116,7 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        return "user_account_dto";
     }
 
     @GetMapping("/cities")
@@ -110,33 +130,20 @@ public class AdminController {
         model.addAttribute("gameCollection", currentUser.getGameCollection());
         model.addAttribute("meetingSet", currentUser.getMeetingSet());
         model.addAttribute("createdMeets", currentUser.getCreatedMeets());
-        return "user_account";
+        return "user_account_dto";
     }
 
     @GetMapping("/changeGameStatus")
     public String changeGameStatus(int gameId, Model model) {
         gameService.changeGameStatus(gameId);
-        model.addAttribute("games", gameService.getAllGames());
-        return "admin_games";
+        model.addAttribute("game", gameService.getGameById(gameId));
+        return "game_update";
     }
 
 
     @GetMapping("/changeUserStatus")
     public String changeUserStatus(int userId, Model model) {
         userService.changeUserStatus(userId);
-        model.addAttribute("users", userService.getAllUsers());
-        return "admin_users";
-    }
-
-    @GetMapping("/changeUserPassword")
-    public String changeUserPassword(int userId, Model model) {
-        try {
-            securityUserService.rescuePassword(userId);
-        } catch (UserException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("users", userService.getAllUsers());
-            return "admin_users";
-        }
         model.addAttribute("users", userService.getAllUsers());
         return "admin_users";
     }

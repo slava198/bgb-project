@@ -25,4 +25,6 @@ public class UserGamesService {
     public GameDto addGame(Long userId, Long gameId) {
         return GameDto.builder().build();
     }
+
 }
+
