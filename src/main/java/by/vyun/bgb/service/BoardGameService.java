@@ -27,8 +27,13 @@ public class BoardGameService {
         return gameRepo.findAll();
     }
 
-    public BoardGame getGameById(int id) {
-        return gameRepo.getFirstById(id);
+    public BoardGame getGameById(long id) {
+        try {
+            return gameRepo.getFirstById(id).get();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     public BoardGame add(BoardGame game) throws BoardGameException {
@@ -52,13 +57,13 @@ public class BoardGameService {
         return gameRepo.saveAndFlush(currentGame);
     }
 
-    public void changeGameStatus(int id) {
+    public void changeGameStatus(long id) {
         BoardGame game = gameRepo.getOne(id);
         game.setIsActive(!game.getIsActive());
         gameRepo.saveAndFlush(game);
     }
 
-    public void rateGame(Integer gameId, Integer userId, float gameRate) throws InvalidInputException {
+    public void rateGame(long gameId, Integer userId, float gameRate) throws InvalidInputException {
         if (gameRate < 1 || gameRate > 10) {
             throw new InvalidInputException("Rating must be from 1 to 10");
         }
@@ -67,7 +72,7 @@ public class BoardGameService {
             rating.setGameRate(gameRate);
         } else {
             rating = new Rating();
-            rating.setGame(gameRepo.getFirstById(gameId));
+            rating.setGame(gameRepo.getFirstById(gameId).get());
             rating.setUser(userRepo.getFirstById(userId));
             rating.setGameRate(gameRate);
         }

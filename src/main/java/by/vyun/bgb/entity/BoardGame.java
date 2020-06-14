@@ -51,11 +51,11 @@ public class BoardGame {
     private List<Rating> ratings;
 
     @Transactional
-    public double getRatingValue() {
+    public float getRatingValue() {
         if (ratings == null || ratings.isEmpty()) {
             return 0;
         }
-        double ratingSum = 0;
+        float ratingSum = 0;
         int ratingNum = 0;
         for (Rating rating : ratings) {
             double rate = rating.getGameRate();

@@ -1,15 +1,12 @@
 package by.vyun.bgb.controller;
 
-import by.vyun.bgb.convertor.BoardgameToDtoConverter;
 import by.vyun.bgb.convertor.UserToDtoConverter;
-import by.vyun.bgb.dto.BoardgameDto;
 import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.entity.*;
 import by.vyun.bgb.exception.InvalidInputException;
 import by.vyun.bgb.exception.MeetingException;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,9 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
