@@ -1,6 +1,6 @@
 package by.vyun.bgb.convertor;
 
-import by.vyun.bgb.dto.BoardgameDto;
+
 import by.vyun.bgb.dto.MeetingDto;
 import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.dto.game.GameDto;

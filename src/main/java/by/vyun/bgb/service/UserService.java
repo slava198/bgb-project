@@ -37,15 +37,15 @@ public class UserService {
         return userRepo.getFirstByLogin(login);
     }
 
-    public User deleteGame(int userId, int gameId) {
+    public User deleteGame(int userId, long gameId) {
         User user = userRepo.getFirstById(userId);
-        user.deleteGameFromCollection(gameRepo.getFirstById(gameId));
+        user.deleteGameFromCollection(gameRepo.getFirstById(gameId).get());
         return userRepo.saveAndFlush(user);
     }
 
-    public User addGame(int userId, int gameId) {
+    public User addGame(int userId, long gameId) {
         User user = userRepo.getFirstById(userId);
-        BoardGame game = gameRepo.getFirstById(gameId);
+        BoardGame game = gameRepo.getFirstById(gameId).get();
         if (!user.getGameCollection().contains(game)) {
             user.addGameToCollection(game);
         }

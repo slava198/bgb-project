@@ -10,7 +10,10 @@ public class GameDto {
     String title;
     String description;
     String image_url;
-    Double rating;
-    Integer numberOfOwners;
-    Integer numberOfMeetings;
+    Float rating;
+
+    private Boolean isActive = true;
+    public int numberOfOwners;
+    public int numberOfMeetings;
+
 }

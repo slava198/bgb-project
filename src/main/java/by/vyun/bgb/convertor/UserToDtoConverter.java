@@ -1,6 +1,6 @@
 package by.vyun.bgb.convertor;
 
-import by.vyun.bgb.dto.BoardgameDto;
+
 import by.vyun.bgb.dto.MeetingDto;
 import by.vyun.bgb.dto.RatingDto;
 import by.vyun.bgb.dto.UserDto;
@@ -27,6 +27,7 @@ public class UserToDtoConverter implements Converter<User, UserDto> {
                 .isActive(user.getIsActive())
                 .isEnabled(user.getIsEnabled())
                 .age(user.getAge())
+                .dateOfBirth(user.getDateOfBirth().toString())
                 .avatar(user.getAvatar())
                 .city(user.getCity().getName())
                 .address(user.getAddress())

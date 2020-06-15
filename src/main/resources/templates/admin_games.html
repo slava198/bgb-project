@@ -29,6 +29,7 @@
                     <th class="btn-dark" onclick="sortTable(2, 'games')" align="center"><a>Rating</a></th>
                     <th class="btn-dark" onclick="sortTable(3, 'games')" align="center"><a>Owners</a></th>
                     <th class="btn-dark" onclick="sortTable(4, 'games')" align="center"><a>Meetings</a></th>
+                    <th class="btn-dark">Status</th>
                     <th class="btn-dark"></th>
                 </tr>
                 <th:block th:each="game : ${games}">
@@ -38,11 +39,10 @@
                         <td th:text="${#numbers.formatDecimal(game.getRatingValue(), 1, 2)}" align="center"></td>
                         <td th:text="${game.getNumberOfOwners()}" align="center"></td>
                         <td th:text="${game.getNumberOfMeetings()}" align="center"></td>
-                        <td th:if="${game.getIsActive()}"><a class="btn btn-outline-dark btn-sm my-1"
-                                                             th:href="@{/admin/changeGameStatus(gameId = ${game.getId()})}">Deactivate</a>
-                        </td>
-                        <td th:if="${!game.getIsActive()}"><a class="btn btn-outline-dark btn-sm my-1"
-                                                              th:href="@{/admin/changeGameStatus(gameId = ${game.getId()})}">Activate</a>
+                        <td th:if="${game.getIsActive()}">Activated</td>
+                        <td th:if="!${game.getIsActive()}">Deactivated</td>
+                        <td><a class="btn btn-outline-dark btn-sm my-1"
+                               th:href="@{/admin/update_game(gameId = ${game.getId()})}">Change</a>
                         </td>
                     </tr>
                 </th:block>

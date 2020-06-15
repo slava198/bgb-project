@@ -10,6 +10,9 @@ import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Collections;
@@ -27,27 +30,34 @@ import static javax.persistence.GenerationType.*;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.IntSequenceGenerator.class,
         property = "@userId")
+@Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = AUTO)
     private Integer id;
+    @NotBlank(message = "Empty login field")
     private String login;
+    @NotBlank(message = "Empty password field")
     private String password;
     private String address;
+    @Email
+    @NotBlank(message = "Empty e-mail field")
     private String email;
     private Boolean isActive = true;
-    private Boolean isEnabled = false;
+    private Boolean isEnabled = true;
     private String activationCode;
+    private String avatar;
 
-    @OneToOne
-    @JoinColumn(name = "image_id")
-    private Image avatar;
+//    @OneToOne
+//    @JoinColumn(name = "image_id")
+//    private Image avatar;
 
+    @Past(message = "Invalid date of birth field")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     @ManyToOne()
-    @JoinColumn(name = "cityId")
+    @JoinColumn(name = "city_id")
     private City city;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -77,7 +87,6 @@ public class User {
 
 
     public int getAge() {
-        System.out.println("Age of user: " + Period.between(dateOfBirth, LocalDate.now()).getYears());
         return Period.between(dateOfBirth, LocalDate.now()).getYears();
     }
 

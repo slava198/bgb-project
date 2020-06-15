@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update board game</title>
+    <script th:replace="insert/fragment :: headerElement"></script>
+</head>
+
+<script th:replace="insert/fragment :: navbar"></script>
+<div class="container">
+    <div class="row">
+        <a class="btn btn-outline-dark btn-sm my-1" href="/admin/games">Back</a>
+    </div>
+    <div class="card w-50" style="margin: 1.5em auto">
+        <div class="card-header"><h3>Change board game</h3></div>
+        <div class="card-body">
+            <form method="post" action="/admin/game_upd">
+                <!--                ERROR-->
+                <div class="alert alert-danger" role="alert" th:if="${error}"
+                     th:text="${error}"></div>
+                <!--                TITLE-->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Title:</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" name="title" th:value="${game.getTitle()}"/>
+                    </div>
+                </div>
+
+                <!--                LOGO-->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Logo (url):</label>
+                    <div class="col-md-12">
+                        <textarea class="form-control" name="logo" th:text="${game.getLogo()}"></textarea>
+                    </div>
+                </div>
+
+                <!--                DESCRIPTION-->
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Description:</label>
+                    <div class="col-md-12">
+                        <textarea class="form-control" name="description" th:text="${game.getDescription()}"></textarea>
+                    </div>
+                </div>
+                <input type="hidden" name="id" th:value="${game.getId()}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input class="btn btn-outline-dark btn-sm my-1" type="submit" value="Update game">
+                <a th:if="${game.getIsActive()}" class="btn btn-outline-dark btn-sm my-1"
+                   th:href="@{/admin/changeGameStatus(gameId = ${game.getId()})}">Deactivate</a>
+                <a th:if="${!game.getIsActive()}" class="btn btn-outline-dark btn-sm my-1"
+                   th:href="@{/admin/changeGameStatus(gameId = ${game.getId()})}">Activate</a>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+</html>

@@ -13,3 +13,4 @@ public class GlobalExceptionHandler {
     public void handleGlobalException(Exception exception) {
     }
 }
+

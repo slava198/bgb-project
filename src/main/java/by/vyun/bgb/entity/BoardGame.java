@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.List;
@@ -30,6 +31,7 @@ public class BoardGame {
     private Integer id;
     private String logo;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private Integer age = 0;
     private Boolean isActive = true;
@@ -48,11 +50,12 @@ public class BoardGame {
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<Rating> ratings;
 
-    public double getRatingValue() {
+    @Transactional
+    public float getRatingValue() {
         if (ratings == null || ratings.isEmpty()) {
             return 0;
         }
-        double ratingSum = 0;
+        float ratingSum = 0;
         int ratingNum = 0;
         for (Rating rating : ratings) {
             double rate = rating.getGameRate();
