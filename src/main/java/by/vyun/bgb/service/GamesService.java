@@ -5,6 +5,7 @@ import by.vyun.bgb.dto.game.GameDto;
 import by.vyun.bgb.dto.game.GamePreviewDto;
 import by.vyun.bgb.dto.game.UpdateGameRequestDto;
 import by.vyun.bgb.entity.BoardGame;
+import by.vyun.bgb.exception.ResourceNotFoundException;
 import by.vyun.bgb.repository.BoardGameRepo;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,14 @@ public class GamesService {
 
     }
 
-
     public List<GamePreviewDto> getGames() {
         List<GameDto> collect = gameRepo.findAll().stream().map(converter::convert).collect(Collectors.toList());
         return Collections.emptyList();
     }
 
     public GameDto getGame(Long gameId) {
+        final BoardGame gameEntity = gameRepo.findById(gameId.intValue())
+                .orElseThrow(() -> new ResourceNotFoundException("Game", gameId));
         return GameDto.builder().build();
     }
 
