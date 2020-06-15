@@ -2,6 +2,7 @@ package by.vyun.bgb.controller.api;
 
 import by.vyun.bgb.dto.game.CreateGameRequestDto;
 import by.vyun.bgb.dto.game.GameDto;
+import by.vyun.bgb.dto.game.GamePreviewDto;
 import by.vyun.bgb.dto.game.UpdateGameRequestDto;
 import by.vyun.bgb.service.GamesService;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class GamesController {
     //todo extend with filter
     @GetMapping
     //return only active games
-    public ResponseEntity<List<GameDto>> getGames() {
+    public ResponseEntity<List<GamePreviewDto>> getGames() {
         return ResponseEntity.ok(gamesService.getGames());
     }
 
