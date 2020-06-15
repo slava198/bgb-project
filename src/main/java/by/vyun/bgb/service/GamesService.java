@@ -1,41 +1,32 @@
 package by.vyun.bgb.service;
 
-import by.vyun.bgb.convertor.GameToDtoConverter;
+import by.vyun.bgb.converter.GameToPreviewDtoConverter;
 import by.vyun.bgb.dto.game.GamePreviewDto;
 import by.vyun.bgb.dto.game.UpdateGameRequestDto;
 import by.vyun.bgb.dto.game.CreateGameRequestDto;
 import by.vyun.bgb.dto.game.GameDto;
 import by.vyun.bgb.entity.BoardGame;
 
-import by.vyun.bgb.exception.BoardGameException;
-
 import by.vyun.bgb.exception.ResourceNotFoundException;
 
 import by.vyun.bgb.repository.BoardGameRepo;
-import by.vyun.bgb.repository.RatingRepo;
-import by.vyun.bgb.repository.UserRepo;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class GamesService {
-    private final UserRepo userRepo;
+    //private final UserRepo userRepo;
     private final BoardGameRepo gameRepo;
-    private final GameToDtoConverter converter;
-    private final RatingRepo ratingRepo;
+    private final GameToPreviewDtoConverter converter;
+    //private final RatingRepo ratingRepo;
 
-    public GamesService(UserRepo userRepo, BoardGameRepo gameRepo,
-                        RatingRepo ratingRepo, GameToDtoConverter converter) {
-        this.userRepo = userRepo;
+    public GamesService(BoardGameRepo gameRepo, GameToPreviewDtoConverter converter) {
+        //this.userRepo = userRepo;
         this.gameRepo = gameRepo;
-        this.ratingRepo = ratingRepo;
+        //this.ratingRepo = ratingRepo;
         this.converter = converter;
 
     }
@@ -62,14 +53,24 @@ public class GamesService {
 
 
     public List<GamePreviewDto> getGames() {
-        List<GameDto> collect = gameRepo.findAll().stream().map(converter::convert).collect(Collectors.toList());
-        return Collections.emptyList();
+        return gameRepo.findAll()
+                .stream()
+                .filter(BoardGame::getIsActive)
+                .map(converter::convert)
+                .collect(Collectors.toList());
     }
 
     public GameDto getGame(Long gameId) {
         final BoardGame gameEntity = gameRepo.findById(gameId)
                 .orElseThrow(() -> new ResourceNotFoundException("Game", gameId));
-        return GameDto.builder().build();
+        return GameDto.builder()
+                .gameId(gameEntity.getId())
+                .title(gameEntity.getTitle())
+                .imageUrl(gameEntity.getLogo())
+                .rating(gameEntity.getRatingValue())
+                .numberOfMeetings(gameEntity.getNumberOfMeetings())
+                .numberOfOwners(gameEntity.getNumberOfOwners())
+                .build();
     }
 
     public GameDto createGame(CreateGameRequestDto createGameRequestDto) {

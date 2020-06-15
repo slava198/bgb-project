@@ -1,4 +1,4 @@
-package by.vyun.bgb.convertor;
+package by.vyun.bgb.converter;
 
 import by.vyun.bgb.dto.MeetingDto;
 import by.vyun.bgb.dto.UserDto;
@@ -7,9 +7,7 @@ import by.vyun.bgb.entity.User;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MeetingToDtoConverter implements Converter<Meeting, MeetingDto> {
     @Override

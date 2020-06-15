@@ -9,7 +9,7 @@ public class GameDto {
     Long gameId;
     String title;
     String description;
-    String image_url;
+    String imageUrl;
     Float rating;
 
     private Boolean isActive = true;

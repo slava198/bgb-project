@@ -28,7 +28,7 @@ import static javax.persistence.GenerationType.*;
 public class BoardGame {
     @Id
     @GeneratedValue(strategy = AUTO)
-    private Integer id;
+    private Long id;
     private String logo;
     private String title;
     @Column(columnDefinition = "TEXT")

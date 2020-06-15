@@ -1,13 +1,12 @@
 package by.vyun.bgb.service;
 
-import by.vyun.bgb.convertor.UserToDtoConverter;
+import by.vyun.bgb.converter.UserToDtoConverter;
 import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.exception.UserException;
 import by.vyun.bgb.repository.CityRepo;
 import by.vyun.bgb.repository.UserRepo;
 import by.vyun.bgb.entity.User;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,12 +20,9 @@ import org.springframework.stereotype.Service;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import static by.vyun.bgb.entity.Const.DEFAULT_AVATAR;

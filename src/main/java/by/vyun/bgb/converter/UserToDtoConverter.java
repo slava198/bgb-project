@@ -1,10 +1,11 @@
-package by.vyun.bgb.convertor;
+package by.vyun.bgb.converter;
 
 
 import by.vyun.bgb.dto.MeetingDto;
 import by.vyun.bgb.dto.RatingDto;
 import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.dto.game.GameDto;
+import by.vyun.bgb.dto.game.GamePreviewDto;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.entity.Meeting;
 import by.vyun.bgb.entity.Rating;
@@ -39,9 +40,9 @@ public class UserToDtoConverter implements Converter<User, UserDto> {
                 .build();
     }
 
-    private List<GameDto> getGames(List<BoardGame> games) {
-        GameToDtoConverter converter = new GameToDtoConverter();
-        List<GameDto> gamesDto = new ArrayList<>();
+    private List<GamePreviewDto> getGames(List<BoardGame> games) {
+        GameToPreviewDtoConverter converter = new GameToPreviewDtoConverter();
+        List<GamePreviewDto> gamesDto = new ArrayList<>();
         for (BoardGame game : games) {
             gamesDto.add(converter.convert(game));
         }

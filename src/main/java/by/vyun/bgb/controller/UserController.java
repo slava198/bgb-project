@@ -1,6 +1,6 @@
 package by.vyun.bgb.controller;
 
-import by.vyun.bgb.convertor.UserToDtoConverter;
+import by.vyun.bgb.converter.UserToDtoConverter;
 import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.entity.*;
 import by.vyun.bgb.exception.InvalidInputException;

@@ -1,4 +1,4 @@
-package by.vyun.bgb.convertor;
+package by.vyun.bgb.converter;
 
 import by.vyun.bgb.dto.RatingDto;
 import by.vyun.bgb.entity.Rating;

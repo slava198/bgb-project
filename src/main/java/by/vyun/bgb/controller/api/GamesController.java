@@ -42,12 +42,8 @@ public class GamesController {
     @GetMapping("/{gameId}")
     public ResponseEntity<GameDto> getGame(@PathVariable("gameId") Long gameId) {
 
-        try {
             return ResponseEntity.ok(gamesService.getGame(gameId));
-        } catch (BoardGameException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
+
 
     }
 

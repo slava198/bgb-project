@@ -10,5 +10,5 @@ public class GamePreviewDto {
     Long gameId;
     String title;
     String imageUrl;
-    Double rating;
+    Float rating;
 }

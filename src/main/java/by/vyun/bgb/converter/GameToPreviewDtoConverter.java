@@ -1,13 +1,13 @@
-package by.vyun.bgb.convertor;
+package by.vyun.bgb.converter;
 
 
 import by.vyun.bgb.dto.MeetingDto;
 import by.vyun.bgb.dto.UserDto;
 import by.vyun.bgb.dto.game.GameDto;
+import by.vyun.bgb.dto.game.GamePreviewDto;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.entity.Meeting;
 import by.vyun.bgb.entity.User;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -15,18 +15,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-public class GameToDtoConverter implements Converter<BoardGame, GameDto> {
+public class GameToPreviewDtoConverter implements Converter<BoardGame, GamePreviewDto> {
 
 
     @Override
-    public GameDto convert(BoardGame game) {
-        return GameDto.builder()
-                .gameId(game.getId().longValue())
+    public GamePreviewDto convert(BoardGame game) {
+        return GamePreviewDto.builder()
+                .gameId(game.getId())
                 .title(game.getTitle())
-                .image_url(game.getLogo())
-                .description(game.getDescription())
-                .numberOfOwners(game.getNumberOfOwners())
-                .numberOfMeetings(game.getNumberOfMeetings())
+                .imageUrl(game.getLogo())
                 .rating(game.getRatingValue())
                 //.meetings(getMeetings(game.getMeetings()))
                 //.owners(getOwners(game.getOwners()))
