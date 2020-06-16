@@ -3,10 +3,11 @@ package by.vyun.bgb.service;
 import by.vyun.bgb.converter.GameToPreviewDtoConverter;
 import by.vyun.bgb.dto.game.GamePreviewDto;
 import by.vyun.bgb.dto.game.UpdateGameRequestDto;
-import by.vyun.bgb.dto.game.CreateGameRequestDto;
+import by.vyun.bgb.dto.game.GameRequestDto;
 import by.vyun.bgb.dto.game.GameDto;
 import by.vyun.bgb.entity.BoardGame;
 
+import by.vyun.bgb.exception.ResourceDuplicateException;
 import by.vyun.bgb.exception.ResourceNotFoundException;
 
 import by.vyun.bgb.repository.BoardGameRepo;
@@ -18,38 +19,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class GamesService {
-    //private final UserRepo userRepo;
     private final BoardGameRepo gameRepo;
     private final GameToPreviewDtoConverter converter;
-    //private final RatingRepo ratingRepo;
 
     public GamesService(BoardGameRepo gameRepo, GameToPreviewDtoConverter converter) {
-        //this.userRepo = userRepo;
         this.gameRepo = gameRepo;
-        //this.ratingRepo = ratingRepo;
         this.converter = converter;
-
     }
-
-
-//    public List<GameDto> getGames() {
-//        List<GameDto> bgDtoList = gameRepo.findAll().stream()
-//                .filter(BoardGame::getIsActive)
-//                .map(converter::convert)
-//                .collect(Collectors.toList());
-//        return bgDtoList;
-//
-//
-//    }
-//
-//    public GameDto getGame(Long gameId) throws BoardGameException {
-//        Optional<BoardGame> game = gameRepo.getFirstById(gameId);
-//        if (game.isPresent()) {
-//            return converter.convert(game.get());
-//        } else {
-//            throw new BoardGameException("Not found");
-//        }
-//        return GameDto.builder().build();
 
 
     public List<GamePreviewDto> getGames() {
@@ -59,6 +35,7 @@ public class GamesService {
                 .map(converter::convert)
                 .collect(Collectors.toList());
     }
+
 
     public GameDto getGame(Long gameId) {
         final BoardGame gameEntity = gameRepo.findById(gameId)
@@ -73,17 +50,54 @@ public class GamesService {
                 .build();
     }
 
-    public GameDto createGame(CreateGameRequestDto createGameRequestDto) {
-        return GameDto.builder().build();
+
+    public GameDto createGame(GameRequestDto gameRequestDto) {
+       if(gameRepo.getFirstByTitle(gameRequestDto.getTitle()) != null) {
+           throw new ResourceDuplicateException("Game duplicated: " +  gameRequestDto.getTitle());
+       }
+       BoardGame game = gameRepo.save(BoardGame.builder()
+                .title(gameRequestDto.getTitle())
+                .logo(gameRequestDto.getImageUrl())
+                .description(gameRequestDto.getDescription())
+                .build());
+        return GameDto.builder()
+                .gameId(game.getId())
+                .title(game.getTitle())
+                .imageUrl(game.getLogo())
+                .description(game.getDescription())
+                .rating(game.getRatingValue())
+                .numberOfOwners(game.getNumberOfOwners())
+                .numberOfMeetings(game.getNumberOfMeetings())
+                .build();
     }
 
-    public GameDto updateGame(Long gameId, UpdateGameRequestDto updateGameRequestDto) {
-        return GameDto.builder().build();
+
+    public GameDto updateGame(Long gameId, GameRequestDto gameRequestDto) {
+        final BoardGame game = gameRepo.findById(gameId)
+                .orElseThrow(() -> new ResourceNotFoundException("Game", gameId));
+        game.setTitle(gameRequestDto.getTitle());
+        game.setLogo(gameRequestDto.getImageUrl());
+        game.setDescription(gameRequestDto.getDescription());
+        gameRepo.save(game);
+
+        return GameDto.builder()
+                .gameId(game.getId())
+                .title(game.getTitle())
+                .imageUrl(game.getLogo())
+                .description(game.getDescription())
+                .rating(game.getRatingValue())
+                .numberOfOwners(game.getNumberOfOwners())
+                .numberOfMeetings(game.getNumberOfMeetings())
+                .build();
     }
 
     public void changeGameStatus(Long gameId) {
+        BoardGame game = gameRepo.getOne(gameId);
+        game.setIsActive(!game.getIsActive());
+        gameRepo.save(game);
 
     }
+
 
 
 }
