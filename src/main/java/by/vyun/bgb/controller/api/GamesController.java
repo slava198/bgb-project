@@ -39,10 +39,7 @@ public class GamesController {
 
     @GetMapping("/{gameId}")
     public ResponseEntity<GameDto> getGame(@PathVariable("gameId") Long gameId) {
-
             return ResponseEntity.ok(gamesService.getGame(gameId));
-
-
     }
 
     @PostMapping

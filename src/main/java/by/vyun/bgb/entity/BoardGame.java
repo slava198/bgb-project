@@ -47,7 +47,6 @@ public class BoardGame {
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<Rating> ratings;
 
-    @Transactional
     public float getRatingValue() {
         if (ratings == null || ratings.isEmpty()) {
             return 0;
@@ -78,4 +77,8 @@ public class BoardGame {
         return meetings.size();
     }
 
+    public BoardGame inverseActive() {
+        setIsActive(!getIsActive());
+        return this;
+    }
 }
