@@ -23,13 +23,13 @@ public class UserService {
         this.meetingRepo = meetingRepo;
     }
 
-    public void changeUserStatus(int userId) {
+    public void changeUserStatus(long userId) {
         User user = userRepo.getFirstById(userId);
         user.setIsActive(!user.getIsActive());
         userRepo.saveAndFlush(user);
     }
 
-    public User getUserById(Integer id) {
+    public User getUserById(long id) {
         return userRepo.getFirstById(id);
     }
 
@@ -37,13 +37,13 @@ public class UserService {
         return userRepo.getFirstByLogin(login);
     }
 
-    public User deleteGame(int userId, long gameId) {
+    public User deleteGame(long userId, long gameId) {
         User user = userRepo.getFirstById(userId);
         user.deleteGameFromCollection(gameRepo.getFirstById(gameId).get());
         return userRepo.saveAndFlush(user);
     }
 
-    public User addGame(int userId, long gameId) {
+    public User addGame(long userId, long gameId) {
         User user = userRepo.getFirstById(userId);
         BoardGame game = gameRepo.getFirstById(gameId).get();
         if (!user.getGameCollection().contains(game)) {
@@ -68,7 +68,7 @@ public class UserService {
         return allGames;
     }
 
-    public User takePartInMeeting(int userId, int meetingId) {
+    public User takePartInMeeting(long userId, int meetingId) {
         User currentUser = userRepo.getFirstById(userId);
         Meeting meeting = meetingRepo.getFirstById(meetingId);
         if (!currentUser.getMeetingSet().contains(meeting)) {
@@ -77,13 +77,13 @@ public class UserService {
         return userRepo.saveAndFlush(currentUser);
     }
 
-    public void leaveMeeting(int userId, int meetingId) {
+    public void leaveMeeting(long userId, int meetingId) {
         User currentUser = userRepo.getFirstById(userId);
         currentUser.leaveMeeting(meetingRepo.getFirstById(meetingId));
         userRepo.saveAndFlush(currentUser);
     }
 
-    public void deleteMeeting(int userId, int meetingId) {
+    public void deleteMeeting(long userId, int meetingId) {
         User currentUser = userRepo.getFirstById(userId);
         currentUser.deleteMeeting(meetingRepo.getFirstById(meetingId));
         userRepo.saveAndFlush(currentUser);

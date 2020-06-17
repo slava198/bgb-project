@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class MeetingResultElement {
-    Integer userIdTo;
+    Long userIdTo;
     Integer rate;
 }

@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 @JsonIgnoreProperties
 public class UserDto {
-    private int id;
+    private long id;
     private String login;
     private int age;
     private String dateOfBirth;
@@ -31,7 +31,7 @@ public class UserDto {
 //    private Image avatar;
     private String city;
     private List<RatingDto> ratings;
-    private List<GamePreviewDto> games;
+    private List<GameDto> games;
     private List<MeetingDto> meetings;
     private double totalExperience;
     private int completedMeetsNumber;

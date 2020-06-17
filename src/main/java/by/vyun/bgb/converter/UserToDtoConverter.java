@@ -40,9 +40,9 @@ public class UserToDtoConverter implements Converter<User, UserDto> {
                 .build();
     }
 
-    private List<GamePreviewDto> getGames(List<BoardGame> games) {
-        GameToPreviewDtoConverter converter = new GameToPreviewDtoConverter();
-        List<GamePreviewDto> gamesDto = new ArrayList<>();
+    private List<GameDto> getGames(List<BoardGame> games) {
+        GameToDtoConverter converter = new GameToDtoConverter();
+        List<GameDto> gamesDto = new ArrayList<>();
         for (BoardGame game : games) {
             gamesDto.add(converter.convert(game));
         }

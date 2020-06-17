@@ -2,6 +2,7 @@ package by.vyun.bgb.controller.api;
 
 import by.vyun.bgb.dto.RatingRequestDto;
 import by.vyun.bgb.dto.game.GameDto;
+import by.vyun.bgb.dto.game.GamePreviewDto;
 import by.vyun.bgb.service.UserGamesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class UserGamesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GameDto>> getUserGames(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<GamePreviewDto>> getUserGames(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(userGamesService.getUserGames(userId));
     }
 

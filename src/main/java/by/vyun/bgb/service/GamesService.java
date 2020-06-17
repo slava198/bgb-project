@@ -48,14 +48,18 @@ public class GamesService {
 
     public GameDto createGame(GameRequestDto gameRequestDto) {
         if (gameRepo.getFirstByTitle(gameRequestDto.getTitle()) != null) {
-            throw new ResourceDuplicateException("Game duplicated: " + gameRequestDto.getTitle());
+            throw new ResourceDuplicateException("Game", gameRequestDto.getTitle());
         }
         return gameToDtoConverter.convert(gameRepo.save(requestToGameConverter.convert(gameRequestDto)));
     }
 
     public GameDto updateGame(Long gameId, GameRequestDto gameRequestDto) {
+        if (gameRepo.getFirstByTitle(gameRequestDto.getTitle()) != null) {
+            throw new ResourceDuplicateException("Game", gameRequestDto.getTitle());
+        }
         final BoardGame gameEntity = gameRepo.findById(gameId)
                 .orElseThrow(() -> new ResourceNotFoundException("Game", gameId));
+
         gameEntity.setTitle(gameRequestDto.getTitle());
         gameEntity.setLogo(gameRequestDto.getImageUrl());
         gameEntity.setDescription(gameRequestDto.getDescription());

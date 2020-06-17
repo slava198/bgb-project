@@ -34,7 +34,7 @@ import static javax.persistence.GenerationType.*;
 public class User {
     @Id
     @GeneratedValue(strategy = AUTO)
-    private Integer id;
+    private Long id;
     @NotBlank(message = "Empty login field")
     private String login;
     @NotBlank(message = "Empty password field")

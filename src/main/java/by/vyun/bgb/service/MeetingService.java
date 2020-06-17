@@ -44,7 +44,7 @@ public class MeetingService {
         return meetingRepo.getFirstById(id);
     }
 
-    public Meeting createMeet(int userId, Meeting meeting, String cityName) throws MeetingException {
+    public Meeting createMeet(long userId, Meeting meeting, String cityName) throws MeetingException {
         Set<ConstraintViolation<Meeting>> violations = validator.validate(meeting);
         if (!violations.isEmpty()) {
             throw new MeetingException(violations.iterator().next().getMessage());

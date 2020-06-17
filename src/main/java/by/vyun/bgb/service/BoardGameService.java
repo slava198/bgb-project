@@ -63,7 +63,7 @@ public class BoardGameService {
         gameRepo.saveAndFlush(game);
     }
 
-    public void rateGame(long gameId, Integer userId, float gameRate) throws InvalidInputException {
+    public void rateGame(long gameId, long userId, float gameRate) throws InvalidInputException {
         if (gameRate < 1 || gameRate > 10) {
             throw new InvalidInputException("Rating must be from 1 to 10");
         }
@@ -79,7 +79,7 @@ public class BoardGameService {
         ratingRepo.saveAndFlush(rating);
     }
 
-    public double getRatingValueByUserIdAndGameId(int gameId, int userId) {
+    public double getRatingValueByUserIdAndGameId(Long gameId, Long userId) {
         Rating rating = ratingRepo.findGameRatingByUserIdAndGameId(userId, gameId);
         if (rating != null) {
             return rating.getGameRate();

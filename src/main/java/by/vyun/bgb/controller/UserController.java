@@ -94,7 +94,7 @@ public class UserController {
     }
 
     @GetMapping("/rate_game")
-    public String rateGamePage(int gameId, Model model) {
+    public String rateGamePage(Long gameId, Model model) {
         model.addAttribute("game", gameService.getGameById(gameId));
         model.addAttribute("oldRate",
                 gameService.getRatingValueByUserIdAndGameId(gameId, getCurrentUser().getId()));
@@ -251,7 +251,7 @@ public class UserController {
     }
 
     @PostMapping("/rate_game")
-    public String rateGame(Integer gameId, float rate, Model model) {
+    public String rateGame(Long gameId, float rate, Model model) {
         User currentUser = getCurrentUser();
         BoardGame game = gameService.getGameById(gameId);
         try {
