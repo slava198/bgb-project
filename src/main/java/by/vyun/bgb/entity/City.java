@@ -1,8 +1,6 @@
 package by.vyun.bgb.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,13 +10,16 @@ import static javax.persistence.GenerationType.*;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(exclude = {"gamers", "meetings"})
 @EqualsAndHashCode(exclude = {"gamers", "meetings"})
 //@Table(name="cities")
 public class City {
     @Id
     @GeneratedValue(strategy = AUTO)
-    private Integer id;
+    private Long id;
     private String logo;
     private String name;
 

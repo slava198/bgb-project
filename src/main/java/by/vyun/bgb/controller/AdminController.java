@@ -86,7 +86,7 @@ public class AdminController {
             model.addAttribute("error", ex.getMessage());
             return "city_create";
         }
-        model.addAttribute("cities", cityService.getAllCities());
+        model.addAttribute("cities", cityService.getCities());
         return "admin_cities";
     }
 
@@ -123,7 +123,7 @@ public class AdminController {
     public String getCities(Model model) {
         User currentUser = getCurrentUser();
         if (currentUser.getRoles().contains("ROLE_ADMIN")) {
-            model.addAttribute("cities", cityService.getAllCities());
+            model.addAttribute("cities", cityService.getCities());
             return "admin_cities";
         }
         model.addAttribute("createdMeetings", userService.getCreatedMeets(currentUser));
