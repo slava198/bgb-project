@@ -42,7 +42,8 @@ public class Meeting {
     private String location;
 
     @NotNull(message = "Invalid date field")
-    @Future(message = "Invalid date field")
+    //@Future(message = "Invalid date field")
+    // block resaving meets after change status)))) todo: add this validation in createMeetDto
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateTime;
 
