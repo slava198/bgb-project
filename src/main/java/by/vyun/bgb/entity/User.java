@@ -152,11 +152,11 @@ public class User {
         return !this.getPassword().equals(password);
     }
 
-    public void addGameToCollection(BoardGame game) {
+    public void addGame(BoardGame game) {
         gameCollection.add(game);
     }
 
-    public void deleteGameFromCollection(BoardGame game) {
+    public void deleteGame(BoardGame game) {
         gameCollection.remove(game);
     }
 

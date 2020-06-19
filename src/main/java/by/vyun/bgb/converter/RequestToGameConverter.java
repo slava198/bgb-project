@@ -21,6 +21,7 @@ public class RequestToGameConverter implements Converter<GameRequestDto, BoardGa
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .logo(request.getImageUrl())
+                .isActive(true)
                 .build();
     }
 

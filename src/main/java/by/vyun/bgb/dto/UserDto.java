@@ -30,7 +30,7 @@ public class UserDto {
     private String avatar;
 //    private Image avatar;
     private String city;
-    private List<RatingDto> ratings;
+    //private List<RatingDto> ratings;
     private List<GameDto> games;
     private List<MeetingDto> meetings;
     private double totalExperience;

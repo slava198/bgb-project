@@ -4,7 +4,7 @@ import by.vyun.bgb.service.BoardGameService;
 import by.vyun.bgb.service.UserService;
 import by.vyun.bgb.entity.User;
 import by.vyun.bgb.service.MeetingService;
-import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

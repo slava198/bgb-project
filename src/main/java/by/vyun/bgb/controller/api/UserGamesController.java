@@ -40,16 +40,16 @@ public class UserGamesController {
         userGamesService.deleteUserGame(userId, gameId);
     }
 
-    @PutMapping("/{gameId}/rating")
+    @PutMapping("/{gameId}/rating/{gameRating}")
     public void rateGame(@PathVariable("userId") Long userId,
                          @PathVariable("gameId") Long gameId,
-                         @Valid @RequestBody RatingRequestDto gameRating) {
+                         @Valid @PathVariable("gameRating") int gameRating) {
         userGamesService.rateGame(userId, gameId, gameRating);
     }
 
     @PostMapping("/{gameId}")
     public ResponseEntity<GameDto> addGame(@PathVariable("userId") Long userId, @PathVariable("gameId") Long gameId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userGamesService.addGame(userId, gameId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userGamesService.addUserGame(userId, gameId));
     }
 
 }

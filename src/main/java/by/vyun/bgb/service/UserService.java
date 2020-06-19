@@ -39,7 +39,7 @@ public class UserService {
 
     public User deleteGame(long userId, long gameId) {
         User user = userRepo.getFirstById(userId);
-        user.deleteGameFromCollection(gameRepo.getFirstById(gameId).get());
+        user.deleteGame(gameRepo.getFirstById(gameId).get());
         return userRepo.saveAndFlush(user);
     }
 
@@ -47,7 +47,7 @@ public class UserService {
         User user = userRepo.getFirstById(userId);
         BoardGame game = gameRepo.getFirstById(gameId).get();
         if (!user.getGameCollection().contains(game)) {
-            user.addGameToCollection(game);
+            user.addGame(game);
         }
         gameRepo.flush();
         return userRepo.saveAndFlush(user);

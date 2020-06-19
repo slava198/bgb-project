@@ -28,7 +28,7 @@ public class BoardGame {
     private Long id;
     private String logo;
     private String title;
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 2048)
     private String description;
     private Integer age = 0;
     private Boolean isActive = true;

@@ -23,6 +23,7 @@ public class GameToDtoConverter implements Converter<BoardGame, GameDto> {
                 .gameId(game.getId())
                 .title(game.getTitle())
                 .imageUrl(game.getLogo())
+                .description(game.getDescription())
                 .rating(game.getRatingValue())
                 .numberOfMeetings(game.getNumberOfMeetings())
                 .numberOfOwners(game.getNumberOfOwners())

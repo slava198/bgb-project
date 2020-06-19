@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class GamesService {
@@ -33,11 +34,16 @@ public class GamesService {
     }
 
     public List<GamePreviewDto> getGames() {
-        return gameRepo.findAll()
+        Stream<BoardGame> stream = gameRepo.findAll()
                 .stream()
-                .filter(BoardGame::getIsActive)
-                .map(gameToPreviewConverter::convert)
-                .collect(Collectors.toList());
+                .filter(BoardGame::getIsActive);
+        Stream<GamePreviewDto> previewDtoStream = stream
+                .map(gameToPreviewConverter::convert);
+        List<GamePreviewDto> lst = previewDtoStream
+         .collect(Collectors.toList());
+
+
+        return lst;
     }
 
     public GameDto getGame(Long gameId) {

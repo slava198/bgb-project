@@ -34,7 +34,7 @@ public class UserToDtoConverter implements Converter<User, UserDto> {
                 .address(user.getAddress())
                 .meetings(getMeetings(user.getMeetingSet()))
                 .games(getGames(user.getGameCollection()))
-                .ratings(getRatings(user.getRatings()))
+                //.ratings(getRatings(user.getRatings()))
                 .totalExperience(user.getTotalExperience())
                 .completedMeetsNumber(user.getCompletedMeetsNumber())
                 .build();

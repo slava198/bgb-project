@@ -3,7 +3,6 @@ package by.vyun.bgb.converter;
 
 import by.vyun.bgb.dto.MeetingDto;
 import by.vyun.bgb.dto.UserDto;
-import by.vyun.bgb.dto.game.GameDto;
 import by.vyun.bgb.dto.game.GamePreviewDto;
 import by.vyun.bgb.entity.BoardGame;
 import by.vyun.bgb.entity.Meeting;
@@ -20,7 +19,7 @@ public class GameToPreviewDtoConverter implements Converter<BoardGame, GamePrevi
 
     @Override
     public GamePreviewDto convert(BoardGame game) {
-        return GamePreviewDto.builder()
+        GamePreviewDto dto = GamePreviewDto.builder()
                 .gameId(game.getId())
                 .title(game.getTitle())
                 .imageUrl(game.getLogo())
@@ -28,6 +27,7 @@ public class GameToPreviewDtoConverter implements Converter<BoardGame, GamePrevi
                 //.meetings(getMeetings(game.getMeetings()))
                 //.owners(getOwners(game.getOwners()))
                 .build();
+        return dto;
     }
 
     private Set<UserDto> getOwners(Set<User> users) {
