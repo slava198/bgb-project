@@ -71,11 +71,11 @@ public class CityService {
 
 
     public CityPreviewDto updateCity(Long cityId, CityRequestDto updateCityRequest) {
+        final City cityEntity = cityRepo.findById(cityId)
+                .orElseThrow(() -> new ResourceNotFoundException("City", cityId));
         if (cityRepo.getFirstByName(updateCityRequest.getName()) != null) {
             throw new ResourceDuplicateException("City", updateCityRequest.getName());
         }
-        final City cityEntity = cityRepo.findById(cityId)
-                .orElseThrow(() -> new ResourceNotFoundException("City", cityId));
 
         cityEntity.setName(updateCityRequest.getName());
         cityEntity.setLogo(updateCityRequest.getLogo());

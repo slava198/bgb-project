@@ -60,11 +60,11 @@ public class GamesService {
     }
 
     public GameDto updateGame(Long gameId, GameRequestDto gameRequestDto) {
+        final BoardGame gameEntity = gameRepo.findById(gameId)
+                .orElseThrow(() -> new ResourceNotFoundException("Game", gameId));
         if (gameRepo.getFirstByTitle(gameRequestDto.getTitle()) != null) {
             throw new ResourceDuplicateException("Game", gameRequestDto.getTitle());
         }
-        final BoardGame gameEntity = gameRepo.findById(gameId)
-                .orElseThrow(() -> new ResourceNotFoundException("Game", gameId));
 
         gameEntity.setTitle(gameRequestDto.getTitle());
         gameEntity.setLogo(gameRequestDto.getImageUrl());
